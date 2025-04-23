@@ -1,43 +1,14 @@
-import clsx from 'clsx';
-import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import React, { useEffect } from 'react';
+import { useHistory } from '@docusaurus/router';
 
-import Heading from '@theme/Heading';
-import styles from './index.module.css';
+const HomePageRedirect = () => {
+  const history = useHistory();
 
+  useEffect(() => {
+    history.push('/2025-1B-T12-EC05-G03/introducao');
+  }, [history]);
 
-function HomepageHeader() {
-  const {siteConfig} = useDocusaurusContext();
-  return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
-        <Heading as="h1" className="hero__title">
-          {siteConfig.title}
-        </Heading>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
-         
-        </div>
-      </div>
-    
-    </header>
-  );
-}
+  return null;
+};
 
-export default function Home() {
-  const {siteConfig} = useDocusaurusContext();
-  return (
-    <Layout
-      title={`Prescript ${siteConfig.title}`}
-      description="ABCDEFG <head />">
-      <HomepageHeader />
-      <main>
-        <HomepageFeatures />
-      </main>
-    </Layout>
-  );
-}
-
-
+export default HomePageRedirect;
