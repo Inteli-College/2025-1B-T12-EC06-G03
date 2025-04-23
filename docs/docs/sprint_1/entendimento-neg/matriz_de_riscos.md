@@ -45,3 +45,4 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 [[1]](https://qualyteam.com/pb/blog/matriz-de-risco-pgr) SARTORI, A. Matriz de risco: saiba como aproveitar essa ferramenta no PGR. Disponível em: https://qualyteam.com/pb/blog/matriz-de-risco-pgr. Acesso em: 23 abr. 2025.
 
 [[2]](https://medium.com/@jonesroberto/matriz-de-risco-e-oportunidades-89a3d5f708ad) NUZZI, J. R. Matriz de Risco e Oportunidades - Jones Roberto Nuzzi - Medium. Disponível em: https://medium.com/@jonesroberto/matriz-de-risco-e-oportunidades-89a3d5f708ad. Acesso em: 23 abr. 2025.
+
