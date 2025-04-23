@@ -1,0 +1,8 @@
+{
+    "label": "Entendimento do negócio",
+    "position": 1,
+    "link": {
+      "type": "generated-index",
+      "description": "Nesta seção, analisamos o ambiente de negócio, identificamos riscos, mapeamos stakeholders e definimos a proposta de valor para orientar o projeto."
+    }
+  }

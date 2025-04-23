@@ -1,4 +1,8 @@
 {
     "label": "Sprint 1",
-    "position": 2
-}
+    "position": 2,
+    "link": {
+      "type": "generated-index",
+      "description": "Durante a Sprint 1, focamos no aprofundamento do problema relacionado à detecção de fissuras em edificações e estruturamos o projeto em três frentes: compreensão do perfil dos usuários finais, análise das necessidades do parceiro de negócio e definição dos requisitos técnicos iniciais da solução baseada em visão computacional e inteligência artificial."
+    }
+  }

@@ -1,4 +1,4 @@
 ---
 title: Arquitetura da Informação
-sidebar_position: 1
+sidebar_position: 3
 ---
