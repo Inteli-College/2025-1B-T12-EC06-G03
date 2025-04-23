@@ -1,0 +1,43 @@
+# name: CI
+
+# on:
+#   push:
+#     branches:
+#       - develop
+#       - main
+#   pull_request:
+#     branches:
+#       - develop
+#       - main
+
+# jobs:
+#   build-and-test:
+#     runs-on: ubuntu-latest
+#     env:
+#       SECRET_KEY: ${{ secrets.SECRET_KEY }}
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+
+#       # Frontend
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '20.11.0'
+#           cache: 'npm'
+#           cache-dependency-path: src/frontend/package-lock.json
+
+#       - name: Limpar cache e remover dependências antigas
+#         working-directory: src/frontend
+#         run:
+#           npm cache clean --force
+#           rm -rf node_modules
+#           rm -rf build
+
+#       - name: Instalar dependências do frontend
+#         working-directory: src/frontend
+#         run: npm install
+
+#       - name: Build Frontend
+#         working-directory: src/frontend
+#         run: npm run build
