@@ -15,13 +15,13 @@ const config = {
   favicon: '/logo',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://Inteli-College.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/2025-1B-T12-EC06-G03/',
 
-  organizationName: 'inteli',
-  projectName: 'Project Name', 
+  organizationName: 'Inteli-College', // Usually your GitHub org/user name.
+  projectName: '2025-1B-T12-EC06-G03', // Usually your repo name.
   deploymentBranch: 'gh-pages',
 
   onBrokenLinks: 'throw',
