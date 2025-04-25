@@ -5,7 +5,7 @@ const HomePageRedirect = () => {
   const history = useHistory();
 
   useEffect(() => {
-    history.push('/2025-1B-T12-EC05-G03/introducao');
+    history.push('/2025-1B-T12-EC06-G03/introducao');
   }, [history]);
 
   return null;
