@@ -1,15 +1,16 @@
 ---
 title: Arquitetura da Informação
 sidebar_position: 1
+
 ---
 
-&nbsp;&nbsp;&nbsp;&nbsp;Conforme detalhado na seção de Introdução, com a elaboração do projeto almeja-se realizar a coleta de imagens e processá-las de modo a retornar ao usuário algumas informações, como as imagens obtidas e o resultado da classificação. Assim, faz-se necessário estruturar e organizar a forma como essas informações serão apresentadas, a fim de garantir clareza e usabilidade para os usuários.
+&nbsp;&nbsp;&nbsp;&nbsp;Conforme detalhado na seção de [Introdução](/introducao), com a elaboração do projeto almeja-se realizar a coleta de imagens e processá-las de modo a retornar ao usuário algumas informações, como as imagens obtidas e o resultado da classificação. Assim, faz-se necessário estruturar e organizar a forma como essas informações serão apresentadas, a fim de garantir clareza e usabilidade.
 
-&nbsp;&nbsp;&nbsp;&nbsp;Desse modo, segundo o vídeo "O que é Arquitetura de Informação?" do canal UXNOW [1], a Arquitetura da Informação visa mapear como a informação ficará organizada dentro de uma aplicação. Ela representa como uma persona irá consumir os conteúdos dentro de um contexto específico de uso do sistema. Logo, esse mapeamento é essencial para garantir que os usuários consigam navegar e entender facilmente os dados apresentados.
+&nbsp;&nbsp;&nbsp;&nbsp;Desse modo, segundo o vídeo "O que é Arquitetura de Informação?" do canal UXNOW [[1]](#referências), a Arquitetura da Informação visa mapear como a informação ficará organizada dentro de uma aplicação, ou seja, ela representa como uma persona irá consumir os conteúdos dentro de um contexto específico de uso do sistema. Logo, esse mapeamento é essencial para garantir que os usuários consigam navegar e entender facilmente os dados apresentados.
 
-&nbsp;&nbsp;&nbsp;&nbsp;No caso deste projeto, foram identificadas duas personas principais: Rafael, o técnico de laboratório que busca X informações, e a Maria, Engenheira Civil que busca X informações.
+&nbsp;&nbsp;&nbsp;&nbsp;No contexto deste projeto, foram identificadas duas [Personas](/sprint_1/ux/personas) principais: Rafael, o técnico de laboratório, e a Maria, Engenheira Civil. O objetivo de Rafael com o uso da solução é inserir as imagens capturdas pelo drone para que elas sejam classificadas pelo sistema; enquanto Maria almeja cadastrar novos projetos e exportar os relatórios prontos.
 
-&nbsp;&nbsp;&nbsp;&nbsp;Dessarte, a disposição das informações deve considerar a jornada do usuário desde a coleta das imagens pelo robô até a visualização dos resultados processados. Dessa forma, na Figura 1 abaixo, é possível visualizar a hierarquia das páginas do sistema, a qual visa aprensertar todas as etapas dessa jornada.
+&nbsp;&nbsp;&nbsp;&nbsp;Dessarte, a disposição das informações deve considerar as jornadas desses dois usuários do início ao fim. Para tal, primeiramente, apresenta-se na na Figura 1 abaixo a hierarquia das páginas do sistema, cujo objetivo é apresentar todas as etapas dessas jornadas. Além desse diagrama de hierarquia foram utilizadas outras duas metologias para realizar o mapeamento da arquitetura da informação: os [Diagramas de Sequência](/sprint_1/ux/arquitetura_informacao/diagramas_de_sequencia) e os [Wireframes](/sprint_1/ux/arquitetura_informacao/wireframes), ambos disponíveis nas outras duas seções dessa pasta [Arquitetura da Informação](/category/arquitetura-da-informação).
 
 <div align="center">
 <sub>Figura 1 - Diagrama de Hierarquia das Páginas</sub>
@@ -18,6 +19,10 @@ sidebar_position: 1
 <sup>Fonte: Material produzido pelos autores (2025)</sup>
 </div>
 
-&nbsp;&nbsp;&nbsp;&nbsp;Logo, conforme pode ser observado na Figura 1, as seguintes telas estarão presentes no projeto: Login, Projetos (Visualização de todos os projetos cadastrados), Projeto (visualização de um projeto específico), Upload de Imagem (onde pode-se carregar imagens para análise dentro de um projeto), Imagens Drone (onde é possível ver as imagens do drone em tempo real e capturar a imagem), Analisar Imagem (Onde estão disponíveis as previsões do modelo para cada imagem), Relatório (conjunto dos dados de um projeto para serem exportados).
+&nbsp;&nbsp;&nbsp;&nbsp;Logo, conforme ilustrado na Figura 1, o projeto contemplará as seguintes telas: Login, Projetos (visualização de todos os projetos cadastrados), Projeto (detalhamento de um projeto específico), Upload de Imagem (para envio de imagens a serem analisadas dentro de um projeto), Imagens Drone (exibição em tempo real das imagens capturadas pelo drone, com opção de captura), Analisar Imagem (apresentação das previsões do modelo para cada imagem) e Relatório (consolidação dos dados de um projeto para exportação). Destarte, infere-se que a construção do diagrama de hierarquia permite mostrar se todas as etapas da jornada do usuário serão abrangidas pelas informações disponíveis no sistema.
 
-&nbsp;&nbsp;&nbsp;&nbsp;Ainda, duas formas de mapear essa arquitetura da informação é com a construção de diagramas de sequência e por meio de Wireframes, os quais estão disponíveis nas outras duas seções da pasta Arquitetura da Informação.
+## Referências
+
+[1] UXNOW / DANIEL FURTADO. O que é Arquitetura de Informação? //UXNOW. Disponível em: https://www.youtube.com/watch?v=vmvSMYaV4oE
+
+‌
