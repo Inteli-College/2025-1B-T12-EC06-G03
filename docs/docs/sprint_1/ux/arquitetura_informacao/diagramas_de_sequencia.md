@@ -1,6 +1,6 @@
 ---
 title: Diagramas de Sequência
-sidebar_position: 2
+sidebar_position: 3
 ---
 
 &nbsp;&nbsp;&nbsp;&nbsp;Os diagramas de sequência, conforme descrito no artigo “Sequence Diagrams – Unified Modeling Language (UML)” [[1]](#referências), são ferramentas para modelar a interação entre objetos em um sistema ao longo do tempo. Desse modo, eles demonstram como mensagens ou eventos são trocados entre diferentes partes do sistema, proporcionando uma visualização clara e detalhada dos fluxos de execução. Assim, seu uso permite demonstrar como será a interação do usuário com as informações disponíveis na solução apresentada.
@@ -30,21 +30,21 @@ sidebar_position: 2
 
 &nbsp;&nbsp;&nbsp;&nbsp;Nesse cenário, considerando as personas e os participantes descritos acima, as etapas presentes no fluxo são:
 
-   - **1.1**: Maria insere e-mail e senha na tela de **Login**.
-   - **1.2**: O sistema valida as credenciais e a redireciona para a tela **Projetos**.
-   - **1.3**: Maria cadastra um novo projeto na tela **Projetos**.
+   - **1.1**: Maria insere e-mail e senha na tela de Login.
+   - **1.2**: O sistema valida as credenciais e a redireciona para a tela Projetos.
+   - **1.3**: Maria cadastra um novo projeto na tela Projetos.
    - **1.4**: O sistema confirma a criação e exibe o projeto na lista.
-   - **1.5**: Maria acessa a tela **Projeto** para adicionar detalhes (responsáveis, edifícios, localização).
-   - **1.6**: Rafael insere suas credenciais na tela **Login**.
-   - **1.7**: O sistema autentica e o redireciona para a tela **Imagem Drone**.
-   - **1.8**: Rafael controla o **Drone** para posicioná-lo onde há fissuras para capturar.
-   - **1.9**: O drone envia as imagens para a tela **Imagem Drone**.
+   - **1.5**: Maria acessa a tela Projeto para adicionar detalhes (responsáveis, edifícios, localização).
+   - **1.6**: Rafael insere suas credenciais na tela Login.
+   - **1.7**: O sistema autentica e o redireciona para a tela Imagem Drone.
+   - **1.8**: Rafael controla o Drone para posicioná-lo onde há fissuras para capturar.
+   - **1.9**: O drone envia as imagens para a tela Imagem Drone.
    - **1.10**: Rafael visualiza as imagens em tempo real.
-   - **1.11**: Rafael realiza a captura de uma imagem específica de uma fissura ao apertar um botão da tela **Imagem Drone**.
-   - **1.12**: Rafael envia imagens de outras câmeras na tela **Upload Imagem**.
+   - **1.11**: Rafael realiza a captura de uma imagem específica de uma fissura ao apertar um botão da tela Imagem Drone.
+   - **1.12**: Rafael envia imagens de outras câmeras na tela Upload Imagem.
    - **1.13**: O sistema confirma o carregamento bem-sucedido.
-   - **1.14**: O modelo classifica as fissuras e retorna os resultados a Rafael na tela **Analisar Imagem**.
-   - **1.15**: A tela **Projeto** consolida os dados (incluindo classificações) e gera um relatório para Maria exportar.
+   - **1.14**: O modelo classifica as fissuras e retorna os resultados a Rafael na tela Analisar Imagem.
+   - **1.15**: A tela Projeto consolida os dados (incluindo classificações) e gera um relatório para Maria exportar.
 
 &nbsp;&nbsp;&nbsp;&nbsp;Portanto, à vista do apresentado, o diagrama de sequência detalha a interação de cada persona com o sistema, evidenciando tanto seus fluxos individuais quanto a interdependência de suas ações para a geração do relatório final. Dessa forma, essa representação visual facilita a compreensão do fluxo de informações dentro da aplicação e valida a cobertura das necessidades dos usuários identificados. Logo, as próximas etapas de desenvolvimento, como a criação dos wireframes, detalharão ainda mais a interface e a experiência do usuário, a fim de melhor expor como as informações serão apresentadas aos usuários.
 
