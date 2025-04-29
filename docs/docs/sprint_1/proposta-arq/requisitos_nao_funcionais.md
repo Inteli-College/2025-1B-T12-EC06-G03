@@ -168,3 +168,29 @@ O atendimento a esses requisitos é fundamental para a entrega de uma solução 
 - Máximo ≤ 3s.
 ---
 
+## RNF6 – Verificação de Imagens Duplicadas
+
+**Descrição**:  
+&emsp;O sistema back-end deve detectar e descartar imagens consideradas duplicadas, definindo como duplicatas aquelas capturadas com menos de 3 segundos de diferença no timestamp dos logs.
+
+**Justificativa**:  
+&emsp;Duplicação de imagens compromete a acurácia na análise estatística de fissuras e pode levar a interpretações incorretas dos relatórios gerados, prejudicando as decisões de manutenção predial.
+
+**Métrica**:  
+- 100% das imagens com Δtimestamp ≤ 3 segundos devem ser identificadas e submetidas à revisão manual.
+
+**Método de Teste Aprofundado**:
+- **Ambiente**:
+    - Banco de dados PostgreSQL contendo logs de imagens recebidas.
+- **Ferramentas**:
+    - Script Python com Pandas e Psycopg2.
+- **Procedimento**:
+    1. Extrair logs de timestamps de 500 imagens capturadas.
+    2. Calcular tmpdiff = timestampₙ - timestampₙ₋₁.
+    3. Identificar casos com tmpdiff ≤ 3s.
+    4. Verificar se as imagens são marcadas corretamente para revisão manual.
+- **Critério de Aceitação**:
+    - 100% das imagens com Δtimestamp ≤ 3s detectadas;
+    - Em caso de falha, revisar mecanismo de controle de fluxo de imagens.
+---
+
