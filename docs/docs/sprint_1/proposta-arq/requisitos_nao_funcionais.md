@@ -237,4 +237,5 @@ O atendimento a esses requisitos é fundamental para a entrega de uma solução 
 | RNF6  | Verificação de Imagens Duplicadas            | Δtimestamp ≥ 3s                                   | Script de análise de logs de captura               |
 | RNF7  | Tempo de Processamento por Imagem            | RT90 ≤ 10s; Média ≤ 8s; Máximo ≤ 12s              | Teste de processamento de batches de imagens       |
 
-
+&emsp;Logo, o atendimento aos requisitos não funcionais aqui definidos é essencial para garantir que o sistema de inspeção de fissuras opere com alta performance, estabilidade e precisão. Ao contemplar aspectos críticos como qualidade da transmissão, autonomia de operação, eficiência no processamento de dados e integridade das informações capturadas, o projeto assegura a entrega de uma solução tecnologicamente robusta e alinhada às necessidades do mercado de manutenção predial.
+O cumprimento sistemático dos métodos de teste propostos permitirá validar cada requisito de forma objetiva, mitigando riscos técnicos e assegurando que o sistema final atenda plenamente às expectativas de desempenho e qualidade estabelecidas no escopo do projeto.
