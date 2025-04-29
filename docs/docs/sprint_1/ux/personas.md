@@ -85,6 +85,8 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 &emsp; Ambas as personas reforçam a importância de soluções integradas, intuitivas e eficientes que otimizem processos, promovam maior segurança e agilidade na prevenção e no tratamento de fissuras em edificações. Com essas representações em mente, as próximas etapas do projeto poderão ser guiadas com mais clareza e empatia, garantindo que as soluções desenvolvidas estejam alinhadas às reais demandas dos usuários.
 
+&emsp;  A relação entre Rafael e Maria é complementar e essencial para o funcionamento do sistema proposto. Enquanto Rafael está na linha de frente da coleta de dados registrando as fissuras das fachadas e garantindo que as informações cheguem organizadas à plataforma, Maria depende diretamente dessa base de dados para realizar suas análises e tomar decisões embasadas sobre a manutenção das fachadas. A fluidez e qualidade do trabaloho de Rafael impactam diretamente na eficiência do trabalho de Maria,deixando ainda mais claro a importância de uma solução integrada que atenda às necessidades de ambos de forma sincronizada e colaborativa.
+
 
 ## Bibliografia 
 
