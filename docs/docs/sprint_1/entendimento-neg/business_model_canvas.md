@@ -114,6 +114,6 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 1. OSTERWALDER, A.; PIGNEUR, Y. Business Model Generation. Ed. Wiley John & Sons. New Jersey – Estados Unidos, 2010. Disponível em: https://vace.uky.edu/sites/vace/files/downloads/9_business_model_generation.pdf. Acesso em: 24 de abril de 2025.
 
-3. Termo de Abertura do Projeto do Inteli. Disponível em: XXX. Acesso em: 25 de abril de 2025.
+2. Termo de Abertura do Projeto do Inteli, TAPI. Acesso em: 25 de abril de 2025.
 
-2. VICELLI, B.; TOLFO, C. Um estudo sobre valor utilizando o Business Model Canvas. Bagé, Rio Grande do Sul - Brasil, 2016. Disponível em: https://www.revistaespacios.com/a17v38n03/a17v38n03p14.pdf. Acesso em: 24 de abril de 2025.
+3. VICELLI, B.; TOLFO, C. Um estudo sobre valor utilizando o Business Model Canvas. Bagé, Rio Grande do Sul - Brasil, 2016. Disponível em: https://www.revistaespacios.com/a17v38n03/a17v38n03p14.pdf. Acesso em: 24 de abril de 2025.
