@@ -132,3 +132,39 @@ O atendimento a esses requisitos é fundamental para a entrega de uma solução 
     - Se falhar, investigar condições externas (vento, temperatura) antes de reprovar.
 ---
 
+## RNF5 – Latência do Comando de Captura de Imagem
+
+**Descrição**:  
+&emsp;O intervalo de tempo entre o clique do operador no botão de captura e o recebimento da confirmação de armazenamento no servidor deve ser de no máximo 2 segundos em 95% das execuções realizadas sob rede 4G/LTE típica.
+
+**Justificativa**:  
+&emsp;Reduzir a latência de captura é crucial para alinhar o movimento do drone à tomada de imagens de alta qualidade, evitando tempo ocioso e otimizando o consumo energético durante as inspeções.
+
+**Métrica**:  
+- L95 (95º percentil de latência) ≤ 2 segundos;
+- Média de latência ≤ 1,5 segundos;
+- Latência máxima ≤ 3 segundos.
+
+**Método de Teste Aprofundado**:
+- **Ambiente**:
+    - Interface web do sistema conectada via modem 4G Cat 4.
+- **Ferramentas**:
+    - Cypress para automação de cliques;
+    - Logger de timestamps com precisão de milissegundos.
+- **Procedimento**:
+    1. Configurar script Cypress para enviar comando de captura a cada 3s.
+    2. Realizar 3 lotes de 100 capturas cada (300 capturas no total).
+    3. Registrar para cada captura:
+        - T₀ = tempo do clique;
+        - T₂ = tempo do recebimento do ack no servidor.
+    4. Calcular para cada lote:
+        - Lᵢ = T₂ - T₀
+        - L₉₅ (percentil 95);
+        - Média;
+        - Máximo.
+- **Critério de Aceitação**:
+- L95 ≤ 2s em todos os lotes;
+- Média ≤ 1,5s;
+- Máximo ≤ 3s.
+---
+
