@@ -71,3 +71,37 @@ O atendimento a esses requisitos é fundamental para a entrega de uma solução 
     - Se não atender, revisar hiperparâmetros ou conjunto de treino.
 ---
 
+## RNF3 – Precisão na Detecção de Fissuras
+
+**Descrição**:  
+&emsp;O sistema Athena deve detectar fissuras em revestimentos de argamassa com acurácia mínima de 90%, mantendo taxa de falsos positivos abaixo de 5% e falsos negativos abaixo de 7%, em condições normais de iluminação (300 a 1000 lux).
+
+**Justificativa**:  
+&emsp;Uma taxa elevada de falsos positivos comprometeria a eficiência das inspeções, enquanto falsos negativos podem permitir que danos estruturais passem despercebidos. Altos padrões de precisão são indispensáveis para aplicações de engenharia.
+
+**Métrica**:  
+- Acurácia ≥ 90%;
+- Taxa de falsos positivos < 5%;
+- Taxa de falsos negativos < 7%;
+- Desvio padrão da acurácia entre condições < 3%.
+
+**Método de Teste Aprofundado**:
+- **Ambiente**:
+    - Setup de iluminação controlada (luxímetro);
+    - Câmera de alta resolução (mín. 12MP).
+- **Ferramentas**:
+    - Python (OpenCV para detecção + Sklearn para métricas).
+- **Procedimento**:
+    1. Capturar 100 imagens nas condições:
+        - Iluminação 300 lux (baixa);
+        - 600 lux (média);
+        - 1000 lux (alta).
+    2. Processar todas no sistema Athena.
+    3. Marcar VP, FP, FN, VN manualmente (comparado com rótulo ouro).
+    4. Calcular Acurácia, FP rate, FN rate para cada condição.
+- **Critério de Aceitação**:
+- Acurácia ≥ 90% em todas condições;
+- FP < 5%, FN < 7%;
+- Desvio padrão da acurácia entre condições < 3%.
+---
+
