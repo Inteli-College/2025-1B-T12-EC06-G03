@@ -25,7 +25,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 &emsp; Portanto, no âmbito das análises de mercado, o BMC atua como um instrumento de identificação de oportunidades e riscos, facilitando o alinhamento entre proposta de valor e segmentos de clientes. Além disso, ao evidenciar fontes de receita, estrutura de custos e parcerias-chave, o modelo contribui para a sustentabilidade e escalabilidade do projeto [(VICELLU & TOLFO, 2016)](#referências-bibliográficas).
 
 
-## 2. Business Model Canvas aplicado ao projeto Athena (alterar pro nome do projeto dps)
+## 2. Business Model Canvas aplicado ao projeto Athena
 
 &emsp; Na Figura 2, expõe-se o estudo de Business Model Canvas do projeto Athena.
 
