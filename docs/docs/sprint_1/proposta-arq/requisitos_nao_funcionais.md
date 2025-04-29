@@ -194,3 +194,47 @@ O atendimento a esses requisitos é fundamental para a entrega de uma solução 
     - Em caso de falha, revisar mecanismo de controle de fluxo de imagens.
 ---
 
+## RNF7 – Tempo de Processamento por Imagem
+
+**Descrição**:  
+&emsp;Cada imagem capturada pelo drone deve ser processada (englobando pré-processamento, detecção e classificação de fissuras) em até 10 segundos, sob condições típicas de hardware (notebook padrão com CPU i5 13ª geração e GPU integrada).
+
+**Justificativa**:  
+&emsp;A rapidez no processamento das imagens garante fluidez operacional, permitindo tomadas de decisão quase em tempo real e mantendo a produtividade das inspeções de campo.
+
+**Métrica**:  
+- Percentil 90 do tempo de processamento (RT90) ≤ 10 segundos;
+- Média de tempo de processamento ≤ 8 segundos;
+- Tempo máximo isolado ≤ 12 segundos.
+
+**Método de Teste Aprofundado**:
+- **Ambiente**:
+    - Notebook padrão (Intel i5 13ª geração, GPU integrada).
+- **Ferramentas**:
+    - Script Python para medir tempos de execução (time.perf_counter()).
+- **Procedimento**:
+    1. Carregar 5 batches de 10 imagens reais (resolução padrão 5MP).
+    2. Processar cada imagem individualmente e registrar o tempo gasto.
+    3. Para cada batch:
+        - Calcular RTᵢ para cada imagem;
+        - Extrair RT₉₀, média, máximo.
+    4. Avaliar desempenho sob carga (processar 50 imagens seguidas).
+- **Critério de Aceitação**:
+    - RT90 ≤ 10s em todos os batches;
+    - Média ≤ 8s;
+    - RTmáx ≤ 12s.
+---
+
+## Tabela Resumo dos Requisitos Não Funcionais
+
+| ID    | Nome do RNF                                 | Métrica Principal                                 | Método de Verificação                              |
+|:------|:--------------------------------------------|:--------------------------------------------------|:---------------------------------------------------|
+| RNF1  | Qualidade da Transmissão de Vídeo            | FPS ≥ 10; Latência ≤ 500 ms                       | Medição com OpenCV, simulação de variações de rede |
+| RNF2  | Acurácia do Modelo de Classificação          | Acurácia ≥ 70%; variação ≤ 5%                     | Validação cruzada com subdivisões de imagens       |
+| RNF3  | Precisão na Detecção de Fissuras             | Acurácia ≥ 90%; FP < 5%; FN < 7%                  | Avaliação em condições de iluminação variadas      |
+| RNF4  | Autonomia da Bateria do Drone                | Voo contínuo ≥ 15 minutos                         | Testes de voo até 20% de carga residual             |
+| RNF5  | Latência de Captura de Imagem                | L95 ≤ 2s; Lmed ≤ 1,5s; Lmax ≤ 3s                  | Automação de capturas e análise de logs             |
+| RNF6  | Verificação de Imagens Duplicadas            | Δtimestamp ≥ 3s                                   | Script de análise de logs de captura               |
+| RNF7  | Tempo de Processamento por Imagem            | RT90 ≤ 10s; Média ≤ 8s; Máximo ≤ 12s              | Teste de processamento de batches de imagens       |
+
+
