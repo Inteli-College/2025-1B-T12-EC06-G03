@@ -42,4 +42,32 @@ O atendimento a esses requisitos é fundamental para a entrega de uma solução 
     - FPS médio ≥ 10;
     - 95% das medições de latência ≤ 500 ms;
     - Oscilação de FPS (desvio padrão / média) < 15%.
+---
+
+## RNF2 – Acurácia do Modelo de Classificação de Fissuras
+
+**Descrição**:  
+&emsp;O modelo de Machine Learning desenvolvido para classificar fissuras deve apresentar acurácia mínima de 70%, com consistência entre execuções validada por variação máxima de 5%. A avaliação será feita com base em imagens reais, não utilizadas no treinamento.
+
+**Justificativa**:  
+&emsp;Modelos instáveis comprometem a confiança no sistema de inspeção. A estabilidade da acurácia demonstra que o modelo é robusto e confiável em ambientes reais de operação, respeitando os padrões de engenharia civil.
+
+**Métrica**:  
+- Acurácia média ≥ 70% nas execuções;
+- Diferença entre a maior e menor acurácia ≤ 5%.
+
+**Método de Teste Aprofundado**:
+- **Ambiente**:
+    - Conjunto de teste com pelo menos 500 imagens reais rotuladas por especialistas.
+- **Ferramentas**:
+    - Sklearn (cross_val_score), scripts Python para validação.
+- **Procedimento**:
+    1. Dividir o dataset em 5 partes balanceadas (stratified split).
+    2. Treinar e validar o modelo 5 vezes, cada vez usando uma parte como teste.
+    3. Registrar a acurácia obtida em cada rodada.
+- **Critério de Aceitação**:
+    - Média das 5 acurácias ≥ 70%;
+    - Diferença entre a maior e a menor acurácia ≤ 5%;
+    - Se não atender, revisar hiperparâmetros ou conjunto de treino.
+---
 
