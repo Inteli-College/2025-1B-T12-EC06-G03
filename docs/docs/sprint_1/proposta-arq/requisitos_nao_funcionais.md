@@ -105,3 +105,30 @@ O atendimento a esses requisitos é fundamental para a entrega de uma solução 
 - Desvio padrão da acurácia entre condições < 3%.
 ---
 
+## RNF4 – Autonomia da Bateria do Drone
+
+**Descrição**:  
+&emsp;O drone utilizado no projeto deve operar continuamente por pelo menos 15 minutos em voo ativo, com câmera e sensores de inspeção funcionando, sob carga de trabalho padrão e sem necessidade de troca ou recarga da bateria.
+
+**Justificativa**:  
+&emsp;Em ambientes de difícil acesso, a interrupção frequente para troca de bateria pode inviabilizar inspeções eficientes. Garantir no mínimo 15 minutos permite a cobertura adequada de grandes áreas sem comprometer a logística da operação.
+
+**Métrica**:  
+- Duração mínima de voo contínuo ≥ 15 minutos, atingindo 20% de carga residual.
+
+**Método de Teste Aprofundado**:
+- **Ambiente**:
+    - Campo aberto, temperatura entre 14°C e 40°C;
+    - Sem vento forte (>15km/h).
+- **Ferramentas**:
+    - Aplicativo de monitoramento de bateria do drone (DJI GO 4 ou equivalente).
+- **Procedimento**:
+    1. Realizar voo padrão simulando inspeção (movimentação lateral e vertical).
+    2. Iniciar cronômetro no momento da decolagem.
+    3. Registrar o tempo até a bateria atingir 20% de carga.
+    4. Repetir 5 vezes em dias diferentes.
+- **Critério de Aceitação**:
+    - 5 voos com tempo ≥ 15 minutos;
+    - Se falhar, investigar condições externas (vento, temperatura) antes de reprovar.
+---
+
