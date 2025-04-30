@@ -110,7 +110,11 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 &emsp;A estrutura de custos será composta pelos investimentos em produção e manutenção da plataforma de software, desenvolvimento e hospedagem em nuvem, salários da equipe técnica, aquisição e manutenção de equipamentos de captura de imagem, licenciamento de tecnologias (se necessário), custos operacionais logísticos e aportes contínuos em pesquisa e desenvolvimento para manter a competitividade tecnológica do produto fornecido.
 
-## 3. Referências Bibliográficas
+## 3. Conclusão
+
+&emsp; O Business Model Canvas desenvolvido para o projeto Athena evidencia coerência entre as requisições levantadas nas User Stories, a proposta de valor, os segmentos de clientes e os recursos disponíveis, refletindo um alinhamento estratégico entre a plataforma desenvolvida e as demandas reais do setor da construção civil. A análise de negócios apresentada evidencia tanto a viabilidade técnica do sistema, quanto seu potencial de escalabilidade e aplicação prática em contextos variados, como manutenção predial, fiscalização de obras e gestão pública de edificações. O BMC, portanto, consolida os pilares essenciais do projeto, orientando suas próximas etapas de desenvolvimento, validação e comercialização. Sendo uma ferramenta fundamental para garantir que as decisões técnicas e estratégicas estejam alinhadas com os objetivos de impacto, inovação e relevância social do produto proposto.
+
+## 4. Referências Bibliográficas
 
 1. OSTERWALDER, A.; PIGNEUR, Y. Business Model Generation. Ed. Wiley John & Sons. New Jersey – Estados Unidos, 2010. Disponível em: https://vace.uky.edu/sites/vace/files/downloads/9_business_model_generation.pdf. Acesso em: 24 de abril de 2025.
 
