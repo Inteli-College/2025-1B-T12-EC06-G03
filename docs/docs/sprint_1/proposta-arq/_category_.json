@@ -1,0 +1,8 @@
+{
+    "label": "Proposta de Arquitetura",
+    "position": 3,
+    "link": {
+      "type": "generated-index",
+      "description": "Nesta seção, apresentamos a estrutura do sistema, os requisitos funcionais e não funcionais, detalhando como o sistema será organizado e as principais características para garantir seu bom desempenho e segurança."
+    }
+  }
