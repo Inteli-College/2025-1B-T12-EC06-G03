@@ -20,7 +20,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 ### User Story 1
 |Item|Detalhamento|
 |-|-|
-|US01|Como técnico de laboratório, quero que o drone tenha uma interface intuitiva para capturar imagens de fissuras nas fachadas, principalmente em locais de difícil acesso|
+|US01|Como técnico de laboratório, quero que a plataforma forneça uma interface simples e intuitiva para a visualização em tempo real e captura de imagens através da câmera do drone|
 |CR01|Rafael deve conseguir acionar a câmera do drone e tirar fotos das fissuras quando necessário|
 |CR02|A interface deve ser simples, com feedback visual em tempo real|
 |Feature|Controle e captura de imagens|
