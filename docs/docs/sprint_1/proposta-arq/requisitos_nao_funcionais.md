@@ -168,30 +168,54 @@ O atendimento a esses requisitos é fundamental para a entrega de uma solução 
 - Máximo ≤ 3s.
 ---
 
-## RNF6 – Verificação de Imagens Duplicadas
+## RNF6 – Acurácia em variação de luminosidade
 
 **Descrição**:  
-&emsp;O sistema back-end deve detectar e descartar imagens consideradas duplicadas, definindo como duplicatas aquelas capturadas com menos de 3 segundos de diferença no timestamp dos logs.
+&emsp;O modelo de classificação de fissuras deve manter desempenho aceitável (acurácia ≥ 80%) em condições de iluminação adversas, entre 100 lux (baixa iluminação) e 3000 lux (alta iluminação), simulando condições reais de campo.
 
 **Justificativa**:  
-&emsp;Duplicação de imagens compromete a acurácia na análise estatística de fissuras e pode levar a interpretações incorretas dos relatórios gerados, prejudicando as decisões de manutenção predial.
+&emsp;Dado o uso  dos relatórios técnicos gerados pelo sistema Athena em auditorias técnicas e, levando em consideração que inspeções em campo estão sujeitas a grandes variações de luminosidade, um modelo preditivo pode apresentar queda de desempenho, gerando falsos negativos ou falsos positivos em regiões com sombra ou iluminação intensa. 
 
 **Métrica**:  
-- 100% das imagens com Δtimestamp ≤ 3 segundos devem ser identificadas e submetidas à revisão manual.
+- Acurácia ≥ 80% em todas as faixas de iluminação testadas;
+
+- Diferença máxima entre maior e menor acurácia ≤ 7%;
+
+- Falsos negativos ≤ 10% sob qualquer condição.
 
 **Método de Teste Aprofundado**:
 - **Ambiente**:
-    - Banco de dados PostgreSQL contendo logs de imagens recebidas.
+    - Laboratório de Materiais para Produtos de Construção do IPT ou campo com controle parcial de iluminação.
 - **Ferramentas**:
-    - Script Python com Pandas e Psycopg2.
+    - Python + OpenCV para análise de imagens;
+
+    - Sklearn para métricas de classificação.
+
 - **Procedimento**:
-    1. Extrair logs de timestamps de 500 imagens capturadas.
-    2. Calcular tmpdiff = timestampₙ - timestampₙ₋₁.
-    3. Identificar casos com tmpdiff ≤ 3s.
-    4. Verificar se as imagens são marcadas corretamente para revisão manual.
+    1. Capturar 50 imagens reais em cada condição de luz:
+
+        - 100 lux (baixa);
+
+        - 300 lux (moderada interna);
+
+        - 1000 lux (moderada externa);
+
+        - 3000 lux (alta – sol direto).
+
+    2. Processar as imagens com o modelo de detecção.
+
+    3. Calcular acurácia, taxa de falsos negativos (FN) e taxa de falsos positivos (FP) para cada faixa, como apresentado abaixo:
+    &emsp;Acurácia = (quantidade de classificações corretas / total de imagens avaliadas) * 100
+
+    4. Comparar as métricas entre os diferentes níveis de luminosidade.
+
 - **Critério de Aceitação**:
-    - 100% das imagens com Δtimestamp ≤ 3s detectadas;
-    - Em caso de falha, revisar mecanismo de controle de fluxo de imagens.
+    - Acurácia ≥ 65% em todas as faixas;
+
+    - FN ≤ 10%;
+
+    - Diferença entre maior e menor acurácia ≤ 7%.
+
 ---
 
 ## RNF7 – Tempo de Processamento por Imagem
@@ -234,7 +258,7 @@ O atendimento a esses requisitos é fundamental para a entrega de uma solução 
 | RNF3  | Precisão na Detecção de Fissuras             | Acurácia ≥ 90%; FP < 5%; FN < 7%                  | Avaliação em condições de iluminação variadas      |
 | RNF4  | Autonomia da Bateria do Drone                | Voo contínuo ≥ 15 minutos                         | Testes de voo até 20% de carga residual             |
 | RNF5  | Latência de Captura de Imagem                | L95 ≤ 2s; Lmed ≤ 1,5s; Lmax ≤ 3s                  | Automação de capturas e análise de logs             |
-| RNF6  | Verificação de Imagens Duplicadas            | Δtimestamp ≥ 3s                                   | Script de análise de logs de captura               |
+| RNF6  | Acurácia em variação de luminosidade            | Acurácia ≥ 65% em todas as faixas; FN ≤ 10%   | Comparação das métricas entre diferentes níveis de luminosidade               |
 | RNF7  | Tempo de Processamento por Imagem            | RT90 ≤ 10s; Média ≤ 8s; Máximo ≤ 12s              | Teste de processamento de batches de imagens       |
 
 &emsp;Logo, o atendimento aos requisitos não funcionais aqui definidos é essencial para garantir que o sistema de inspeção de fissuras opere com alta performance, estabilidade e precisão. Ao contemplar aspectos críticos como qualidade da transmissão, autonomia de operação, eficiência no processamento de dados e integridade das informações capturadas, o projeto assegura a entrega de uma solução tecnologicamente robusta e alinhada às necessidades do mercado de manutenção predial.
