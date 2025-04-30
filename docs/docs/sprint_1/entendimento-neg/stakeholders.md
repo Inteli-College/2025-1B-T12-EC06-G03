@@ -1,5 +1,5 @@
 ---
-title: Analíse dos Stakeholders
+title: Análise dos Stakeholders
 sidebar_position: 3
 ---
 
