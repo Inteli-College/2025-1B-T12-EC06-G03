@@ -45,7 +45,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
   <p>Fonte: Elaboração própria (2025)</p>
 </div>
 
-&emsp;A comunicação inicia com o colaborador, que utiliza um tablet para interagir com o sistema de forma prática e portátil. O tablet se conecta a um microcontrolador via USB ou BLE (Bluetooth Low Energy). Esse microcontrolador atua como ponte de comunicação entre o tablet e o drone, recebendo comandos e repassando instruções de controle via Wi-Fi, como por exemplo capturar de imagem. Ao realizar a captura, o drone envia os dados brutos para o sistema. Esses dados podem ser posteriormente processados e sincronizados com o restante da infraestrutura digital via protocolo HTTP, conectando o tablet ao sistema web.
+&emsp;A comunicação inicia com o colaborador, que utiliza um tablet para interagir com o sistema de forma prática e portátil. O tablet se conecta a um microcontrolador via USB ou BLE (Bluetooth Low Energy). Esse microcontrolador atua como ponte de comunicação entre o tablet e o drone, recebendo comandos e repassando instruções de controle via Wi-Fi, como por exemplo capturar imagens. Ao realizar a captura, o drone envia os dados brutos para o sistema. Esses dados podem ser posteriormente processados e sincronizados com o restante da infraestrutura digital via protocolo HTTP, conectando o tablet ao sistema web.
 
 &emsp;No ambiente digital, os colaboradores também acessam a plataforma por meio de um front-end web que se comunica com o back-end por meio de requisições HTTP. O back-end é responsável por orquestrar as operações e regras de negócio, processar dados e interagir com o banco de dados relacional através de queries SQL. Banco esse, que garante a persistência das informações, o histórico de operações e a integridade dos projetos registrados na plataforma.
 
@@ -53,7 +53,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 ### Fluxo Principal “capturar e classificar”
 
-&emsp;Quando o pesquisador, a partir da interface react, pressiona o botão de captura, o front-end envia uma requisição ao back-end que, por sua vez, encaminha o comando ao serviço drone. O drone realiza a fotografia, devolve uma confirmação e transmite o arquivo bruto para o object storage (ou semelhante). Em seguida, o back-end publica o identificador dessa imagem na fila RabbitMQ; o serviço de processamento consome a mensagem, executa a cadeia de pré-processamento, detecção classificação e envia para o back-end. Finalmente, o back-end atualiza o status do projeto e envia via websocket a nova imagem já marcada à plataforma web, permitindo que o pesquisador acompanhe o diagnóstico das fissuras no projeto.
+&emsp;Quando o pesquisador, a partir da interface react, pressiona o botão de captura, o front-end envia uma requisição ao back-end que, por sua vez, encaminha o comando ao serviço drone. O drone realiza a fotografia, devolve uma confirmação e transmite o arquivo bruto para o object storage (ou semelhante). Em seguida, o back-end publica o identificador dessa imagem na fila RabbitMQ; o serviço de processamento consome a mensagem, executa a cadeia de pré-processamento, detecção, classificação e envia para o back-end. Finalmente, o back-end atualiza o status do projeto e envia via websocket a nova imagem já marcada à plataforma web, permitindo que o pesquisador acompanhe o diagnóstico das fissuras no projeto.
 
 ### Relatórios e Exportação
 
