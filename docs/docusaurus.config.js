@@ -4,13 +4,13 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
-import {themes as prismThemes} from 'prism-react-renderer';
+import { themes as prismThemes } from 'prism-react-renderer';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'nomedoprojeto',
+  title: 'Athena',
   tagline: '',
   favicon: '/logo',
 
@@ -42,7 +42,7 @@ const config = {
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/Inteli-College/2025-1B-T12-EC06-G03',
-            routeBasePath: '/'
+          routeBasePath: '/'
         },
         blog: false,
         theme: {
@@ -56,12 +56,12 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/image.png',
       navbar: {
-        title: 'nomedoprojeto',
+        title: 'Athena',
         logo: {
-          alt: 'My Site Logo',
-          src: '/logo',
+          alt: 'Athena',
+          src: 'img/image.png', 
         },
         items: [
           {
@@ -82,31 +82,6 @@ const config = {
             position: 'right',
           },
         ],
-      },
-      footer: {
-        style: 'dark',
-        links: [
-          {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Tutorial',
-                to: '/inicializacao',
-              },
-            ],
-          },
-          
-          {
-            title: 'More',
-            items: [
-              {
-                label: 'GitHub',
-                href: 'https://github.com/Inteli-College/2025-1B-T12-EC06-G03',
-              },
-            ],
-          },
-        ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
       },
       prism: {
         theme: prismThemes.github,
