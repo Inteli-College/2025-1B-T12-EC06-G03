@@ -1,0 +1,23 @@
+---
+title: Controle do Drone com ESP32
+sidebar_position: 1
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+# Controle do drone com ESP32
+&emsp;Como definido na primeira proposta de arquitetura da solução, seria necessário utilizar um microcontrolador como intermediário entre o drone e o dispositivo móvel (um tablet, por exemplo) a fim de que o tablet conseguisse ver e capturar imagens em tempo real do drone. Tal proposta se fez necessária uma vez que a conexão com o modelo de drone disponível (DJI TELLO) é feita a partir de uma rede WIFI que o próprio drone hospeda. Dessa forma, quando um dispositivo se conecta ao drone, ele perde acesso à internet. Assim, foi definido na sprint 1 que seria utilizado um ESP32, um microcontrolador poderoso produzido pela Espressif e que tem capaz de se conectar nativamente com redes WIFI e Bluetooth, para se conectar com o drone, colher as imagens e as enviar via comunicação serial para o computador/tablet. No computador ou tablet, deveria haver um sistema para receber a imagem serializada e então reconstruir o frame. Ademais, é interessante destacar logo de início que este processo de controle do drone com um ESP32 falhou e teve que ser substituído por outro processo. Entretanto, essa seção como um todo serve para documentar o que foi feito na tentativa e quais as prováveis causas da falha.
+
+## Biblioteca TelloESP32
+&emsp;Para realizar um controle do drone DJI Tello de maneira simplificada com o microcontrolador ESP32, foi utilizada uma biblioteca que realiza, por baixo dos panos, o processo de se comunicar com o drone e enviar as chamadas "command messages", que dizem ao drone o que fazer. Assim, a biblioteca disponibiliza uma API simplificada onde, ao invés de mandar uma mensagem de comando complexa para que o drone levante voo, podemos enviar um comando "drone.takeoff()". Tal biblioteca pode ser acessada em https://github.com/sagar-koirala/TelloESP32. 
+
+&emsp;Além de comandos básicos de movimentação como levantar voo, pousar, ir para frente, para trás e rotacionar o drone, a biblioteca também nos permite ler o vídeo que é capturado pelo drone. Entretanto, esse dado do vídeo vem em formato hexadecimal. Assim, foi necessário o serializar, ou seja, transformar um objeto ou estrutura de dados em um fluxo de bytes (um formato de dados sequencial) e enviar isso pela porta USB (conexão serial). Por conta disso, o computador conectado ao ESP32 poderia receber em sua porta serial os dados de vídeo. 
+
+## Processamento dos dados serializados
+&emsp;Com o computador recebendo os dados serializados em sua porta USB, o próximo passo consistiu em fazer um programa em Python para ler esses dados e então reconstruir a imagem, bem como mostrar o vídeo na tela do computador. Entretanto, foi este componente do sistema que não funcionou como esperado. Uma vez que o ESP32 estava rodando o seu código, corretamente conectado no drone, recebendo os dados de vídeo e os enviando via porta serial, o código em Python era executado. Foi notado que o software em Python conseguia ver alguns dados chegando pela porta serial, porém não foi possível reconstruir nenhuma imagem a partir deles. Um outro teste foi realizado, salvando os dados em um arquivo de vídeo, algo que também se mostrou infrutífero. Dessa forma, algumas prováveis causas de tal falha surgem como:
+* Baixa taxa de bitrate do ESP32: O ESP32 consegue transmitir dados via porta serial, em teoria, a no máximo 2.000.000 de bits por segundo (ou 2Mbps). Entretanto, foi notado empiricamente que a transmissão de dados começa a falhar após os 900.000 bits por segundo (ou 900Kbps). Além disso, o bitrate de transmissão ideal para o vídeo captado pelo drone é de, segundo fabricante, cerca de 4Mbps. Ou seja, o valor de transferência do ESP é muito abaixo do mínimo, algo que pode ter causado problemas na transmissão.
+* Erro no algoritmo para reconstruir imagens: Outra causa provável para o problema é simplesmente algum erro de lógica no código-fonte para reconstruir as imagens e que não foi percebido pelos desenvolvedores
+
+## Conclusão
+&emsp;Um projeto ágil é aquele que se adapta a mudanças de maneira eficiente. Dessa forma, a equipe de desenvolvedores percebeu que utilizar o ESP32, que havia sido previsto na proposta de arquitetura anterior, seria um erro. Assim, e concluindo a seção, os testes realizados com o ESP32 e o drone serviram para mostrar que a proposta de arquitetura anterior estava errada e precisava ser corrigida e que uma nova solução deveria ser pensada. Nas próximas seções será detalhada a utilização de uma outra alternativa: o Raspberry Pi.
+
