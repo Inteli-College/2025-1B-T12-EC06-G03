@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import logo from "../assets/logo.svg"; // Caminho para o logo
-
+import logo from "../assets/logo.svg";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aqui você pode adicionar o comportamento para o login
     console.log("Email:", email);
     console.log("Senha:", senha);
   };
