@@ -3,7 +3,7 @@ import ProjectCard from '../components/ProjectCard';
 
 const ProjectPage = () => {
     const handleButtonClick = () => {
-        alert('Button clicked!');
+        alert('OK!');
     };
 
     return (
