@@ -2,7 +2,7 @@ name: Test Docusaurus Build
 
 on:
   pull_request:
-    branches: [ "develop", "main" ]
+    branches: [ develop, main ]
     
 jobs:
   build-test:
