@@ -3,7 +3,7 @@ title: Wireframes
 sidebar_position: 3
 ---
 
-&nbsp;&nbsp;&nbsp;&nbsp;Wireframe, segundo o artigo "Wireframe: O Que É e Como Criar Um Para Seus Projetos De UX Design?" [[1]](#referências), é um esboço simples - sem cores, fontes, e imagens - de telas de uma aplicação. Dessa forma, consegue-se demonstrar a arquitetura de uma interface com a posição dos elementos; logo, o objetivo é estruturar e validar a disposição dos elementos na tela com o cliente. Nesse cenário, o wireframe do projeto foi elaborado com o objetivo de cumprir os requisitos do projeto, além de abranger todas as etapas das jornadas do usuário. Ademais, a construção da [Arquitetura da Informação](/sprint_1/ux/arquitetura_informacao/arquitetura_da_informacao) e do [Diagrama de Sequência](/sprint_1/ux/arquitetura_informacao/diagramas_de_sequencia) auxiliou na construção das telas, com o objetivo de garantir que todas as informações necessárias aos usuários estivessem presentes.
+&nbsp;&nbsp;&nbsp;&nbsp;Wireframe, segundo o artigo "Wireframe: O Que É e Como Criar Um Para Seus Projetos De UX Design?" [(AELA, s.d.)](#referências-bibliográficas), é um esboço simples - sem cores, fontes, e imagens - de telas de uma aplicação. Dessa forma, consegue-se demonstrar a arquitetura de uma interface com a posição dos elementos; logo, o objetivo é estruturar e validar a disposição dos elementos na tela com o cliente. Nesse cenário, o wireframe do projeto foi elaborado com o objetivo de cumprir os requisitos do projeto, além de abranger todas as etapas das jornadas do usuário. Ademais, a construção da [Arquitetura da Informação](/sprint_1/ux/arquitetura_informacao/arquitetura_da_informacao) e do [Diagrama de Sequência](/sprint_1/ux/arquitetura_informacao/diagramas_de_sequencia) auxiliou na construção das telas, com o objetivo de garantir que todas as informações necessárias aos usuários estivessem presentes.
 
 &nbsp;&nbsp;&nbsp;&nbsp;Assim, conforme o mostrado na Arquitetura da Informação, a entrada do usuário no sistema será pela tela de Login, a qual será responsável por sua autenticação. Nesse cenário, Wireframe dessa tela está visível na Figura 1 abaixo.
 
@@ -72,6 +72,6 @@ sidebar_position: 3
 
 &nbsp;&nbsp;&nbsp;&nbsp;Em suma, os wireframes representam uma etapa de extrema importância na validação da arquitetura da informação, garantindo que a estrutura proposta, em conjunto com os diagramas de sequência e requisitos do projeto, assegurem o desenvolvimento de um sistema centrado na experiência do usuário, funcional e de fácil compreensão. 
 
-## Referências
+## Referências Bibliográficas
 
-[1] Wireframe: O Que É e Como Criar Um Para Seus Projetos De UX Design? - Aela School. Disponível em: https://aelaschool.com/pt/designdeinteracao/wireframe-o-que-e-como-desenhar/. 
+1. Wireframe: O Que É e Como Criar Um Para Seus Projetos De UX Design? - Aela School. Disponível em: https://aelaschool.com/pt/designdeinteracao/wireframe-o-que-e-como-desenhar/. 

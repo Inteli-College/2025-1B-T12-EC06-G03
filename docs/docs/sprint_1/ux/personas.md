@@ -7,7 +7,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 # Personas 
 
-&emsp; Personas são representações fictícias e realistas dos usuários finais de um produto ou serviço. Elas ajudam a orientar o design centrado no usuário, tornando características, necessidades e comportamentos mais concretos para a equipe de desenvolvimento. Assim, ao invés de trabalhar com grupos genéricos, as personas transformam informações em personagens específicos, facilitando a priorização de atributos relevantes para o produto final. [[1]](https://www.nngroup.com/articles/persona/)
+&emsp; Personas são representações fictícias e realistas dos usuários finais de um produto ou serviço. Elas ajudam a orientar o design centrado no usuário, tornando características, necessidades e comportamentos mais concretos para a equipe de desenvolvimento. Assim, ao invés de trabalhar com grupos genéricos, as personas transformam informações em personagens específicos, facilitando a priorização de atributos relevantes para o produto final [(HARLEY, 2015)](https://www.nngroup.com/articles/persona/).
 
 &emsp; Para este projeto, foram desenvolvidas duas personas: Rafael, um técnico de laboratório do IPT, responsável pela pilotagem do drone e captura das imagens que serão analisadas, e Maria, uma engenheira civil responsável pela análise das fissuras e desenvolvimento do relatório .
 
@@ -90,4 +90,4 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 ## Bibliografia 
 
-[1] HARLEY, Aurora. Personas Make Users Memorable for Product Team Members. Nielsen Norman Group, 16 fev. 2015. Disponível em: https://www.nngroup.com/articles/persona/. Acesso em: 26 abr. 2025.
+1. HARLEY, Aurora. Personas Make Users Memorable for Product Team Members. Nielsen Norman Group, 16 fev. 2015. Disponível em: https://www.nngroup.com/articles/persona/. Acesso em: 26 abr. 2025.
