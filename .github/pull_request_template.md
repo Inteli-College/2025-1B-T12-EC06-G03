@@ -21,3 +21,5 @@
 - [ ] Realizei testes locais e estão funcionando conforme o esperado.
 - [ ] ***Este pull request está direcionado para a branch correta?***
 
+## *Screenshot (se necessário)*
+<!-- vá na tela que criou ou alterou e tire uma print e cole abaixo, o github fará upload automático quando colar a imagem -->
