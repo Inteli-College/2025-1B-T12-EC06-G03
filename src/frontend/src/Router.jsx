@@ -4,6 +4,7 @@ import NotFound from "./pages/NotFound.jsx";
 import LoginPage from "./pages/Login.jsx";
 import ProjectPage from "./pages/Projects.jsx";
 
+import RecoverPassword from "./pages/RecoverPassword.jsx";
 
 const Router = () => {
   return (
@@ -14,6 +15,7 @@ const Router = () => {
 
         {/* Rotas sem sidebar */}
         <Route path="/" element={<LoginPage />} />
+        <Route path="/recover-password" element={<RecoverPassword />} />
 
         {/* Rotas sem sidebar */}
         <Route path="/projects" element={<ProjectPage />} />
