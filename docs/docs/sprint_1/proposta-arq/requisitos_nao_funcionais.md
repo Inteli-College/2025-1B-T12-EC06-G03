@@ -264,10 +264,8 @@ O atendimento a esses requisitos é fundamental para a entrega de uma solução 
 &emsp;Logo, o atendimento aos requisitos não funcionais aqui definidos é essencial para garantir que o sistema de inspeção de fissuras opere com alta performance, estabilidade e precisão. Ao contemplar aspectos críticos como qualidade da transmissão, autonomia de operação, eficiência no processamento de dados e integridade das informações capturadas, o projeto assegura a entrega de uma solução tecnologicamente robusta e alinhada às necessidades do mercado de manutenção predial.
 O cumprimento sistemático dos métodos de teste propostos permitirá validar cada requisito de forma objetiva, mitigando riscos técnicos e assegurando que o sistema final atenda plenamente às expectativas de desempenho e qualidade estabelecidas no escopo do projeto.
 
-## Bibliografia
-CYSNEIROS, Luiz Marcio; DO PRADO LEITE, Julio Cesar Sampaio. Definindo requisitos não funcionais. In: Anais do XI Simpósio Brasileiro de Engenharia de Software. SBC, 1997. p. 49-64. Acesso em: 10 de fevereiro de 2025
+## Referências Bibliográficas
 
-FIGUEIREDO, Eduardo. Requisitos funcionais e requisitos não funcionais. Icex, Dcc/Ufmg, 2011. Acesso em: 10 de fevereiro de 2025
+1. CYSNEIROS, Luiz Marcio; DO PRADO LEITE, Julio Cesar Sampaio. Definindo requisitos não funcionais. In: Anais do XI Simpósio Brasileiro de Engenharia de Software. SBC, 1997. p. 49-64. Acesso em: 10 de fevereiro de 2025
 
-
-Logo, o atendimento aos requisitos não funcionais aqui definidos é essencial para garantir que o sistema de inspeção de fissuras opere com alta performance, estabilidade e precisão. Ao contemplar aspectos críticos como qualidade da transmissão, autonomia de operação, eficiência no processamento de dados e integridade das informações capturadas, o projeto assegura a entrega de uma solução tecnologicamente robusta e alinhada às necessidades do mercado de manutenção predial. O cumprimento sistemático dos métodos de teste propostos permitirá validar cada requisito de forma objetiva, mitigando riscos técnicos e assegurando que o sistema final atenda plenamente às expectativas de desempenho e qualidade estabelecidas no escopo do projeto.​
+2. FIGUEIREDO, Eduardo. Requisitos funcionais e requisitos não funcionais. Icex, Dcc/Ufmg, 2011. Acesso em: 10 de fevereiro de 2025
