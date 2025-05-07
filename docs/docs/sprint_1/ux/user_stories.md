@@ -7,7 +7,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 # User Stories
 
-&emsp; As user stories são descrições breves e objetivas que demonstram uma necessidade de um usuário em relação ao sistema, formuladas do ponto de vista das personas desenvolvidas. Elas ajudam no processo de desenvolvimento do sistema para melhor entender quem é o usuário, as necessidades dele e o que ele busca alcançar com a solução.[[1]](https://www.agilealliance.org/glossary/user-stories/)
+&emsp; As user stories são descrições breves e objetivas que demonstram uma necessidade de um usuário em relação ao sistema, formuladas do ponto de vista das personas desenvolvidas. Elas ajudam no processo de desenvolvimento do sistema para melhor entender quem é o usuário, as necessidades dele e o que ele busca alcançar com a solução [(AGILE ALIANCE, s.d.)](https://www.agilealliance.org/glossary/user-stories/).
 
 &emsp; Além disso, por serem centradas no usuário, as user stories orientam o desenvolvimento de funcionalidades que realmente atendam aos problemas e objetivos dos usuários finais, promovendo uma construção mais assertiva do produto final. 
 
@@ -58,4 +58,4 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 ## Bibliografia 
 
-[1] AGILE ALLIANCE. User Stories. Disponível em: https://www.agilealliance.org/glossary/user-stories/. Acesso em: 28 abr. 2025.
+1. AGILE ALLIANCE. User Stories. Disponível em: https://www.agilealliance.org/glossary/user-stories/. Acesso em: 28 abr. 2025.

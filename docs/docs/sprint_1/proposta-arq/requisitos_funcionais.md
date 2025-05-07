@@ -33,8 +33,8 @@ sidebar_position: 2
 
 ---
 
-### Bibliografia
+## Referências Bibliográficas
 
-FIGUEIREDO, Eduardo. Requisitos funcionais e requisitos não funcionais. Icex, Dcc/Ufmg, 2011. Acesso em: 10 de fevereiro de 2025
+1. FIGUEIREDO, Eduardo. Requisitos funcionais e requisitos não funcionais. Icex, Dcc/Ufmg, 2011. Acesso em: 10 de fevereiro de 2025
 
-GASTALDO, Denise Lazzeri; MIDORIKAWA, Edson Toshimi. Processo de Engenharia de Requisitos Aplicado a Requisitos Não-Funcionais de Desempenho–Um Estudo de Caso. In: Workshop em Engenharia de Requisitos. Piracicaba. 2003. p. 302-316.
+2. GASTALDO, Denise Lazzeri; MIDORIKAWA, Edson Toshimi. Processo de Engenharia de Requisitos Aplicado a Requisitos Não-Funcionais de Desempenho–Um Estudo de Caso. In: Workshop em Engenharia de Requisitos. Piracicaba. 2003. p. 302-316.
