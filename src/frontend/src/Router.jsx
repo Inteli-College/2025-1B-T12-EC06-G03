@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Layout.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import LoginPage from "./pages/Login.jsx";
+import ProjectPage from "./pages/Projects.jsx";
 
 
 const Router = () => {
@@ -13,6 +14,9 @@ const Router = () => {
 
         {/* Rotas sem sidebar */}
         <Route path="/" element={<LoginPage />} />
+
+        {/* Rotas sem sidebar */}
+        <Route path="/projects" element={<ProjectPage />} />
 
         {/* Rotas que terão o layout com sidebar */}
         <Route element={<Layout />}>
