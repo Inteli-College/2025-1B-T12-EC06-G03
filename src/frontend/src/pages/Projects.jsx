@@ -10,7 +10,7 @@ const ProjectPage = () => {
         <div className="flex justify-center mt-5">
             <ProjectCard
                 title="teste"
-                photo="das"
+                photo=""
                 onButtonClick={handleButtonClick}
             />
         </div>

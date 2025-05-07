@@ -18,8 +18,6 @@ const Router = () => {
         {/* Rotas sem sidebar */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/recover-password" element={<RecoverPassword />} />
-
-        {/* Rotas sem sidebar */}
         <Route path="/projects" element={<ProjectPage />} />
 
         {/* Rotas que terão o layout com sidebar */}
