@@ -12,7 +12,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 const config = {
   title: 'Athena',
   tagline: '',
-  favicon: '/logo',
+  favicon: './img/logo.svg',
 
   // Set the production url of your site here
   url: 'https://Inteli-College.github.io',
@@ -52,12 +52,12 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/image.png',
+      image: 'img/logo.png',
       navbar: {
         title: 'Athena',
         logo: {
           alt: 'Athena',
-          src: 'img/image.png', 
+          src: 'img/logo.png', 
         },
         items: [
           {
