@@ -1,20 +1,36 @@
-import React from 'react';
-import ProjectCard from '../components/ProjectCard';
+"use client";
 
-const ProjectPage = () => {
-    const handleButtonClick = () => {
-        alert('OK!');
+import { useState } from "react";
+import ProjectRecent from './components/ProjectRecent'
+import ProjectAll from './components/ProjectAll'
+
+export default function ProjectPage() {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [projects, setProjects] = useState([
+        { id: 1, name: "USP" },
+        { id: 2, name: "IBM" },
+        { id: 3, name: "Meta" },
+        { id: 4, name: "Apontar" },
+    ]);
+
+    const recentProjects = projects.slice(0, 4);
+    const filteredProjects = projects.filter((project) =>
+        project.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const handleCreateProject = () => {
+        alert("Criar novo projeto");
     };
 
     return (
-        <div className="flex justify-center mt-5">
-            <ProjectCard
-                title="teste"
-                photo=""
-                onButtonClick={handleButtonClick}
-            />
-        </div>
-    );
-};
+        <main className="container mx-auto p-6 max-w-6xl">
+            <ProjectRecent projects={recentProjects} onCreateProject={handleCreateProject} />
 
-export default ProjectPage;
+            <ProjectAll
+                projects={filteredProjects}
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+            />
+        </main>
+    );
+}

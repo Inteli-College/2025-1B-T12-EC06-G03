@@ -1,29 +1,14 @@
-import React from 'react';
-
-const ProjectCard = ({ title, photo, onButtonClick }) => {
+const ProjectCard = ({ name }) => {
     return (
-        <div className='flex flex-col gap-4 bg-blue-dark rounded-2xl p-6 text-center shadow-md' style={{ width: '350px', height: '300px' }}>
-            <div className='border-2 rounded-lg bg-white border-black w-full h-2/3'>
-                <img
-                    src={photo}
-                    alt={title}
-                    className="w-full h-auto rounded-md mb-4"
-                />
-            </div>
-            <div className='grid grid-cols-2 content-around gap-2'>
-                <div>
-                    <h3 className="my-4 text-4xl text-left font-semibold text-gray-800">{title}</h3>
-                </div>
-                <div className='flex contend-end py-4'>
-                    <button
-                        className="flex items-center justify-center text-lg text-white text-center bg-blue-darker w-full h-full rounded-xl hover:bg-dark-blue"
-                        onClick={onButtonClick}
-                    > Relatório
-                    </button>
-                </div>
-            </div>
+      <div className="bg-blue-300 rounded-md overflow-hidden">
+        <div className="bg-white m-3 h-24 rounded-md"></div>
+        <div className="p-3 flex justify-between items-center">
+          <span className="font-medium">{name}</span>
+          <button className="bg-[#050538] text-white text-sm px-3 py-1 rounded-md">Relatório</button>
         </div>
-    );
-};
-
-export default ProjectCard;
+      </div>
+    )
+  }
+  
+  export default ProjectCard
+  
