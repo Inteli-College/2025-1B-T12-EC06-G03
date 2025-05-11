@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import ProjectRecent from './components/ProjectRecent'
-import ProjectAll from './components/ProjectAll'
+import ProjectRecent from '../components/ProjectRecent'
+import ProjectAll from '../components/ProjectAll'
 
 export default function ProjectPage() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [projects, setProjects] = useState([
+    const [projects] = useState([
         { id: 1, name: "USP" },
         { id: 2, name: "IBM" },
         { id: 3, name: "Meta" },
@@ -23,7 +23,7 @@ export default function ProjectPage() {
     };
 
     return (
-        <main className="container mx-auto p-6 max-w-6xl">
+        <main className="container mx-auto p-6 max-w-">
             <ProjectRecent projects={recentProjects} onCreateProject={handleCreateProject} />
 
             <ProjectAll
