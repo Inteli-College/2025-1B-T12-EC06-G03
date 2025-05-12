@@ -5,7 +5,6 @@ import LoginPage from "./pages/Login.jsx";
 import ProjectPage from "./pages/Projects.jsx";
 import RecoverPassword from "./pages/RecoverPassword.jsx";
 
-
 const Router = () => {
   return (
     <BrowserRouter>
