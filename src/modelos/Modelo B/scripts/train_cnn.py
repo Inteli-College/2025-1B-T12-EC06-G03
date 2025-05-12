@@ -105,3 +105,46 @@ for epoch in range(EPOCHS):
             print("Early stopping.")
             break
 
+# TESTE
+print("\n🔍 Avaliação no conjunto de teste:")
+model.load_state_dict(torch.load('../models/cnn_model.pt'))
+model.eval()
+
+y_true, y_pred = [], []
+file_names = []
+
+# Caminho para pegar os nomes reais das imagens
+test_root = test_dataset.root
+class_to_idx = test_dataset.class_to_idx
+idx_to_class = {v: k for k, v in class_to_idx.items()}
+
+with torch.no_grad():
+    for i, (images, labels) in enumerate(test_loader):
+        images = images.to(DEVICE)
+        outputs = model(images)
+        pred = torch.argmax(outputs, 1).cpu().item()
+        true = labels.item()
+        y_pred.append(pred)
+        y_true.append(true)
+
+        # Recuperar caminho real da imagem
+        path, _ = test_dataset.samples[i]
+        filename = os.path.basename(path)
+        file_names.append(filename)
+
+        pred_label = idx_to_class[pred]
+        true_label = idx_to_class[true]
+
+        print(f"{filename} → Predito: {pred_label} | Real: {true_label}")
+
+# Relatório geral
+from sklearn.metrics import classification_report
+from collections import Counter
+
+print("\n📊 Relatório geral:")
+print(classification_report(y_true, y_pred, target_names=["thermal", "retraction"]))
+print("\n📈 Contagem de predições feitas pelo modelo:", Counter(y_pred))
+
+from torchvision.datasets import ImageFolder
+
+
