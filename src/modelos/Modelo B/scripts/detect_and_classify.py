@@ -105,3 +105,56 @@ def analisar_imagem(img_path):
 
     return resultado_final, output_path
 
+
+# TESTE LOCAL DO SCRIPT
+if __name__ == "__main__":
+    print("🔍 Testando análise de imagem...\n")
+    imagem_teste = "../exemplot.png"  # <- substitua pela sua imagem real
+
+    resultado = analisar_imagem(imagem_teste)
+
+    if isinstance(resultado, tuple):
+        mensagem, caminho_img = resultado
+        print(mensagem)
+        print(f"📁 Imagem anotada salva em: {caminho_img}")
+
+        # === Extra: salvar imagem apenas com a predição do YOLO e texto de confiança ===
+        from ultralytics import YOLO
+        import cv2
+
+        # Recarrega imagem original
+        img_original = cv2.imread(imagem_teste)
+
+        # Pré-processa para o YOLO
+        gray = cv2.cvtColor(img_original, cv2.COLOR_BGR2GRAY)
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        eq = clahe.apply(gray)
+        blur = cv2.GaussianBlur(eq, (0, 0), 3)
+        sharpened = cv2.addWeighted(eq, 1.2, blur, -0.2, 0)
+        img_yolo = cv2.cvtColor(sharpened, cv2.COLOR_GRAY2BGR)
+
+        # Executa novamente YOLO para obter coordenadas e confiança
+        yolo_model = YOLO('../yolo/runs/detect/fissura-detector/weights/best.pt')
+        results = yolo_model(img_yolo, conf=0.05)[0]
+
+        if results.boxes and len(results.boxes) > 0:
+            confs = results.boxes.conf
+            idx_max = torch.argmax(confs).item()
+            box = results.boxes.xyxy[idx_max]
+            x1, y1, x2, y2 = map(int, box)
+            conf = float(confs[idx_max]) * 100
+
+            texto = f"fissura: {conf:.1f}%"
+            cv2.rectangle(img_original, (x1, y1), (x2, y2), (0, 128, 255), 2)
+            cv2.putText(img_original, texto, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.6, (0, 128, 255), 2)
+
+            path_saida = "outputs/resultado_yolo_bruto.png"
+            cv2.imwrite(path_saida, img_original)
+            print(f"📌 Imagem com box do YOLO salva em: {path_saida}")
+        else:
+            print("⚠️ YOLO não detectou nenhuma fissura para o salvamento adicional.")
+
+    else:
+        print(f"⚠️ Resultado: {resultado}")
+
