@@ -25,3 +25,12 @@ transform = transforms.Compose([
     transforms.Normalize([0.5], [0.5])
 ])
 
+# DATASETS
+train_dataset = datasets.ImageFolder('../data/train', transform=transform)
+val_dataset = datasets.ImageFolder('../data/val', transform=transform)
+test_dataset = datasets.ImageFolder('../data/test', transform=transform)
+
+train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE)
+test_loader = DataLoader(test_dataset, batch_size=1)
+
