@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import '../styles/SideBar.css'
-import { Upload, Camera, History, FileCheck, LogOut, Images } from 'lucide-react'
+import { Upload, Camera, History, FileCheck, LogOut, Images, FileText } from 'lucide-react'
 import logoImage from '../assets/logo-fundo-branco.svg'
 
 const logoutUser = async () => {
@@ -16,6 +16,12 @@ const Sidebar = () => {
     <aside className="sidebar">
       <img id="logo" src={logoImage} alt="Logo Athena" />
       <ul>
+        <li className={location.pathname === '/projects' ? 'active' : ''}>
+          <Link to="/projects">
+            <FileText id="historyIcon" />
+            <span className="linkText">Projects</span>
+          </Link>
+        </li>
         <li className={location.pathname === '/upload-imagem' ? 'active' : ''}>
           <Link to="/upload-imagem">
             <Upload id="uploadIcon" />

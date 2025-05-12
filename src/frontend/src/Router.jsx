@@ -10,6 +10,7 @@ const Router = () => (
       {/* Rotas públicas sem sidebar */}
       <Route path="/" element={<LoginPage />} />
       <Route path="/recover-password" element={<RecoverPassword />} />
+      <Route path="*" element={<NotFound />} />
 
       {/* Rotas que terão o layout com sidebar */}
       <Route element={<Layout />}>
@@ -17,7 +18,6 @@ const Router = () => (
         <Route path="imagens-drone" element={<ImagensDrone />} />
         <Route path="analisar-imagens" element={<AnalisarImagens />} />
         <Route path="relatorio" element={<Relatorio />} /> */}
-        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   </BrowserRouter>
