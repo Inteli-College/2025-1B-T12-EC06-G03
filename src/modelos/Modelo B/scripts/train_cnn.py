@@ -145,6 +145,6 @@ print("\n📊 Relatório geral:")
 print(classification_report(y_true, y_pred, target_names=["thermal", "retraction"]))
 print("\n📈 Contagem de predições feitas pelo modelo:", Counter(y_pred))
 
-from torchvision.datasets import ImageFolder
+
 
 
