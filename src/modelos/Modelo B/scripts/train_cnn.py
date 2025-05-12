@@ -1,0 +1,19 @@
+import os
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+from sklearn.metrics import classification_report
+from tqdm import tqdm
+from collections import Counter
+import json
+from torchvision.datasets import ImageFolder
+
+# CONFIGURAÇÕES
+IMG_SIZE = 128
+BATCH_SIZE = 16
+EPOCHS = 10
+PATIENCE = 3
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
