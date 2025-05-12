@@ -17,3 +17,11 @@ EPOCHS = 10
 PATIENCE = 3
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+# TRANSFORMAÇÃO DE IMAGEM
+transform = transforms.Compose([
+    transforms.Grayscale(num_output_channels=1),
+    transforms.Resize((IMG_SIZE, IMG_SIZE)),
+    transforms.ToTensor(),
+    transforms.Normalize([0.5], [0.5])
+])
+
