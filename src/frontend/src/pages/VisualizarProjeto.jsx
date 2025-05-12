@@ -53,7 +53,7 @@ const VisualizarProjeto = () => {
   if (!data) return <div className="text-center mt-10">No data available</div>;
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white font-lato">
       <div className=''>
         <h1>{data.message.projeto}</h1>
         <button
@@ -88,7 +88,7 @@ const VisualizarProjeto = () => {
           </div>
         </div>
       ) : (
-        <div className="space-y-4 font-lato text-[#010131]">
+        <div className="space-y-4 text-[#010131]">
           <div>
             <h3>Responsáveis:</h3>
             {data.message.responsaveis.map((responsavel, index) => (
