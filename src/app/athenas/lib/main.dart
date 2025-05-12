@@ -106,14 +106,15 @@ class _DroneControlScreenState extends State<DroneControlScreen> {
     );
   }
 
-  Widget _buildResponsiveLayout(BuildContext context, String videoUrl, DroneState state, Size screenSize) {
+  Widget _buildResponsiveLayout(BuildContext context, String videoUrl,
+      DroneState state, Size screenSize) {
     final joystickSize = _getResponsiveJoystickSize(screenSize);
     final padding = _getResponsivePadding(screenSize);
     final isSmallScreen = screenSize.width < 600;
 
     final isConnected = state.connectionStatus == ConnectionStatus.connected;
     final isExecuting = state.isExecutingCommand;
-    final isDisabled = !isConnected || isExecuting;
+    final isDisabled = !isConnected;
 
     return Stack(
       fit: StackFit.expand,
@@ -131,16 +132,16 @@ class _DroneControlScreenState extends State<DroneControlScreen> {
         Positioned(
           left: padding,
           bottom: padding,
-          child: DroneJoystickControl(
+          child: AltitudeJoystickControl(
             size: joystickSize,
-            label: 'Movimento',
           ),
         ),
         Positioned(
           right: padding,
           bottom: padding,
-          child: AltitudeJoystickControl(
+          child: DroneJoystickControl(
             size: joystickSize,
+            label: 'Movimento',
           ),
         ),
         Positioned(
@@ -223,7 +224,8 @@ class _DroneControlScreenState extends State<DroneControlScreen> {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, bool isDisabled, Size screenSize) {
+  Widget _buildActionButtons(
+      BuildContext context, bool isDisabled, Size screenSize) {
     final isSmallScreen = screenSize.width < 600;
     final buttonPadding = EdgeInsets.symmetric(
       horizontal: isSmallScreen ? 12 : 16,
@@ -241,11 +243,13 @@ class _DroneControlScreenState extends State<DroneControlScreen> {
           icon: Icons.flight_takeoff,
           label: 'Decolar',
           color: Colors.blue,
-          onPressed: isDisabled ? null : () {
-            context.read<DroneBloc>().add(
-              const SendCommandEvent(TakeoffCommand())
-            );
-          },
+          onPressed: isDisabled
+              ? null
+              : () {
+                  context
+                      .read<DroneBloc>()
+                      .add(const SendCommandEvent(TakeoffCommand()));
+                },
           padding: buttonPadding,
           iconSize: iconSize,
           fontSize: fontSize,
@@ -256,11 +260,13 @@ class _DroneControlScreenState extends State<DroneControlScreen> {
           icon: Icons.flight_land,
           label: 'Pousar',
           color: Colors.red,
-          onPressed: isDisabled ? null : () {
-            context.read<DroneBloc>().add(
-              const SendCommandEvent(LandCommand())
-            );
-          },
+          onPressed: isDisabled
+              ? null
+              : () {
+                  context
+                      .read<DroneBloc>()
+                      .add(const SendCommandEvent(LandCommand()));
+                },
           padding: buttonPadding,
           iconSize: iconSize,
           fontSize: fontSize,
@@ -271,9 +277,11 @@ class _DroneControlScreenState extends State<DroneControlScreen> {
           icon: Icons.autorenew,
           label: 'Flip',
           color: Colors.purple,
-          onPressed: isDisabled ? null : () {
-            _showFlipDirectionDialog(context, screenSize);
-          },
+          onPressed: isDisabled
+              ? null
+              : () {
+                  _showFlipDirectionDialog(context, screenSize);
+                },
           padding: buttonPadding,
           iconSize: iconSize,
           fontSize: fontSize,
@@ -329,16 +337,20 @@ class _DroneControlScreenState extends State<DroneControlScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildFlipButton(context, 'l', Icons.arrow_back, 'Esquerda', iconSize, fontSize),
-                _buildFlipButton(context, 'r', Icons.arrow_forward, 'Direita', iconSize, fontSize),
+                _buildFlipButton(context, 'l', Icons.arrow_back, 'Esquerda',
+                    iconSize, fontSize),
+                _buildFlipButton(context, 'r', Icons.arrow_forward, 'Direita',
+                    iconSize, fontSize),
               ],
             ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildFlipButton(context, 'f', Icons.arrow_upward, 'Frente', iconSize, fontSize),
-                _buildFlipButton(context, 'b', Icons.arrow_downward, 'Trás', iconSize, fontSize),
+                _buildFlipButton(context, 'f', Icons.arrow_upward, 'Frente',
+                    iconSize, fontSize),
+                _buildFlipButton(context, 'b', Icons.arrow_downward, 'Trás',
+                    iconSize, fontSize),
               ],
             ),
           ],
@@ -359,9 +371,9 @@ class _DroneControlScreenState extends State<DroneControlScreen> {
       children: [
         IconButton(
           onPressed: () {
-            context.read<DroneBloc>().add(
-              SendCommandEvent(FlipCommand(direction))
-            );
+            context
+                .read<DroneBloc>()
+                .add(SendCommandEvent(FlipCommand(direction)));
             Navigator.of(context).pop();
           },
           icon: Icon(icon, color: Colors.white, size: iconSize),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import '../bloc/drone_bloc.dart';
 import '../bloc/drone_event.dart';
 import '../bloc/drone_state.dart';
@@ -17,7 +19,8 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _hostController;
   late TextEditingController _portController;
-
+  late TextEditingController _savePathController;
+  
   @override
   void initState() {
     super.initState();
@@ -26,12 +29,50 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
     final currentConfig = context.read<DroneBloc>().state.serverConfig;
     _hostController = TextEditingController(text: currentConfig.host);
     _portController = TextEditingController(text: currentConfig.port.toString());
+    _savePathController = TextEditingController(text: currentConfig.savePath ?? '');
+    
+    // Se não houver caminho configurado, obtenha o diretório padrão de documentos
+    if (_savePathController.text.isEmpty) {
+      _getDefaultDocumentsPath();
+    }
+  }
+  
+  Future<void> _getDefaultDocumentsPath() async {
+    try {
+      final documentsDir = await getApplicationDocumentsDirectory();
+      setState(() {
+        _savePathController.text = documentsDir.path;
+      });
+    } catch (e) {
+      // Se não conseguir obter o diretório padrão, deixe vazio
+      print('Erro ao obter diretório de documentos: $e');
+    }
+  }
+  
+  Future<void> _pickDirectory() async {
+    try {
+      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+      
+      if (selectedDirectory != null) {
+        setState(() {
+          _savePathController.text = selectedDirectory;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao selecionar diretório: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
   void dispose() {
     _hostController.dispose();
     _portController.dispose();
+    _savePathController.dispose();
     super.dispose();
   }
 
@@ -158,6 +199,14 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
             _buildConfigInfoRow(Icons.router, 'Porta: ${config.port}', fontSize - 2),
             const SizedBox(height: 4),
             _buildConfigInfoRow(Icons.link, 'URL: ${config.serverUrl}', fontSize - 2),
+            const SizedBox(height: 8),
+            Divider(),
+            const SizedBox(height: 4),
+            _buildConfigInfoRow(
+              Icons.save, 
+              'Diretório de Salvamento: ${config.savePath ?? "Não configurado"}',
+              fontSize - 2,
+            ),
           ],
         ),
       ),
@@ -239,6 +288,47 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
             return null;
           },
         ),
+        SizedBox(height: spacing),
+        Text(
+          'Configuração de Salvamento',
+          style: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: spacing * 0.5),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: _savePathController,
+                decoration: const InputDecoration(
+                  labelText: 'Diretório para Salvar Fotos e Vídeos',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.folder),
+                ),
+                style: TextStyle(fontSize: fontSize - 2),
+                readOnly: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, selecione um diretório para salvamento';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            SizedBox(width: spacing * 0.5),
+            ElevatedButton(
+              onPressed: _pickDirectory,
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(spacing * 0.8),
+                minimumSize: Size(spacing * 4, 56),
+              ),
+              child: const Icon(Icons.folder_open),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -284,8 +374,13 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
         if (_formKey.currentState!.validate()) {
           final host = _hostController.text.trim();
           final port = int.parse(_portController.text.trim());
+          final savePath = _savePathController.text.trim();
           
-          final newConfig = ServerConfig(host: host, port: port);
+          final newConfig = ServerConfig(
+            host: host, 
+            port: port, 
+            savePath: savePath,
+          );
           
           // Update configuration via BLoC
           context.read<DroneBloc>().add(UpdateServerConfigEvent(newConfig));
@@ -293,8 +388,17 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
           // Show a snackbar to indicate the change
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Configuração atualizada para ${newConfig.serverUrl}'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Configuração atualizada:'),
+                  Text('Servidor: ${newConfig.serverUrl}'),
+                  Text('Diretório de salvamento: ${savePath}'),
+                ],
+              ),
               backgroundColor: Colors.green,
+              duration: const Duration(seconds: 3),
             ),
           );
           

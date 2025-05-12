@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
+import '../bloc/drone_bloc.dart';
+import '../bloc/drone_state.dart';
 
 class VideoStreamWidget extends StatefulWidget {
   final String? streamUrl;
@@ -24,7 +27,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   bool _isConnecting = false;
   String? _errorMessage;
   StreamSubscription<List<int>>? _streamSubscription;
-  final _imageStreamController = StreamController<Uint8List>();
+  StreamController<Uint8List>? _imageStreamController;
   
   // Buffer para acumular bytes do stream
   List<int> _buffer = [];
@@ -62,7 +65,8 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   @override
   void dispose() {
     _disconnectStream();
-    _imageStreamController.close();
+    _imageStreamController?.close();
+    _imageStreamController = null;
     _qualityMonitorTimer?.cancel();
     _connectionTimeoutTimer?.cancel();
     _recordedFrames.clear();
@@ -75,6 +79,9 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
     _buffer.clear();
     _qualityMonitorTimer?.cancel();
     _connectionTimeoutTimer?.cancel();
+    // Fechar o controller antigo, mas não o defina como nulo aqui
+    // para evitar erros se alguma parte do código ainda estiver usando
+    _imageStreamController?.close();
   }
 
   Future<void> _connectToStream() async {
@@ -92,6 +99,10 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       _errorMessage = null;
       _buffer.clear();
     });
+    
+    // Criar um novo StreamController com broadcast para permitir múltiplos ouvintes
+    _imageStreamController?.close();
+    _imageStreamController = StreamController<Uint8List>.broadcast();
 
     try {
       // Configurar cliente HTTP para processar o stream MJPEG
@@ -137,7 +148,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       );
 
       // Escutar novos frames e atualizar UI
-      _imageStreamController.stream.listen((frameData) {
+      _imageStreamController?.stream.listen((frameData) {
         if (mounted) {
           setState(() {
             _currentFrame = frameData;
@@ -236,9 +247,9 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       try {
         final frameBytes = Uint8List.fromList(_buffer.sublist(0, frameEndIndex));
         
-        // Adicionar o frame ao stream se o controlador ainda estiver ativo
-        if (!_imageStreamController.isClosed) {
-          _imageStreamController.add(frameBytes);
+        // Adicionar o frame ao stream se o controlador ainda estiver ativo e não nulo
+        if (_imageStreamController != null && !_imageStreamController!.isClosed) {
+          _imageStreamController!.add(frameBytes);
           _framesReceived++;
           _lastFrameTime = DateTime.now();
           _lastFrame = frameBytes;
@@ -308,21 +319,34 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   // Método para salvar os frames gravados
   Future<void> _saveRecordedFrames() async {
     if (_recordedFrames.isEmpty) return;
-    
+
     try {
-      final directory = await getApplicationDocumentsDirectory();
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final path = '${directory.path}/drone_capture_$timestamp';
+      // Usar caminho configurado ou o diretório de documentos como padrão
+      final droneState = context.read<DroneBloc>().state;
+      final configuredPath = droneState.serverConfig.savePath;
       
+      String savePath;
+      if (configuredPath != null && configuredPath.isNotEmpty) {
+        savePath = configuredPath;
+      } else {
+        // Fallback para diretório de documentos se não houver configuração
+        final directory = await getApplicationDocumentsDirectory();
+        savePath = '${directory.path}/Documentos';
+      }
+      
+      // Criar pasta com timestamp para este conjunto de frames
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final path = '$savePath/drone_capture_$timestamp';
+
       // Criar diretório se não existir
       await Directory(path).create(recursive: true);
-      
+
       // Salvar cada frame como um arquivo JPEG
       for (int i = 0; i < _recordedFrames.length; i++) {
         final file = File('$path/frame_$i.jpg');
         await file.writeAsBytes(_recordedFrames[i]);
       }
-      
+
       // Notificar usuário
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -332,7 +356,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
           ),
         );
       }
-      
+
       _recordedFrames.clear();
     } catch (e) {
       if (mounted) {
@@ -354,10 +378,28 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
     }
     
     try {
-      // Obtém o diretório de documentos
-      final directory = await getApplicationDocumentsDirectory();
+      // Usar caminho configurado ou o diretório de documentos como padrão
+      final droneState = context.read<DroneBloc>().state;
+      final configuredPath = droneState.serverConfig.savePath;
+      
+      String savePath;
+      if (configuredPath != null && configuredPath.isNotEmpty) {
+        savePath = configuredPath;
+      } else {
+        // Fallback para diretório de documentos se não houver configuração
+        final directory = await getApplicationDocumentsDirectory();
+        savePath = directory.path;
+      }
+      
+      // Criar pasta para fotos se não existir
+      final photosDir = Directory('$savePath/drone_photos');
+      if (!await photosDir.exists()) {
+        await photosDir.create(recursive: true);
+      }
+      
       final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-      final path = '${directory.path}/drone_capture_$timestamp.jpg';
+      final fileName = 'drone_capture_$timestamp.jpg';
+      final path = '${photosDir.path}/$fileName';
       
       // Salva a imagem
       final file = File(path);
@@ -366,8 +408,17 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       // Notifica o usuário
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Imagem salva em: $path'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Imagem salva com sucesso!'),
+              Text('Local: $path', style: TextStyle(fontSize: 12)),
+              Text('Nome: $fileName', style: TextStyle(fontSize: 12)),
+            ],
+          ),
           backgroundColor: Colors.green,
+          duration: const Duration(seconds: 3),
         ),
       );
     } catch (e) {
@@ -375,6 +426,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
         SnackBar(
           content: Text('Erro ao salvar imagem: $e'),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
         ),
       );
     }
@@ -494,28 +546,33 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
                   gaplessPlayback: true,
                 ),
               ),
-              Positioned(
-                bottom: 16,
-                right: 16,
-                child: FloatingActionButton(
-                  backgroundColor: _isRecording ? Colors.red : Colors.blue,
-                  onPressed: toggleRecording,
-                  child: Icon(_isRecording ? Icons.stop : Icons.fiber_manual_record),
-                ),
-              ),
-              Positioned(
-                bottom: 16,
-                left: 16,
-                child: ElevatedButton.icon(
-                  onPressed: _lastFrame != null ? _saveCurrentFrame : null,
-                  icon: const Icon(Icons.camera_alt),
-                  label: const Text('Capturar Frame'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    foregroundColor: Colors.white,
+                Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 100, left: 16),
+                  child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ElevatedButton.icon(
+                    onPressed: _lastFrame != null ? _saveCurrentFrame : null,
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text('Capturar Frame'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      foregroundColor: Colors.white,
+                    ),
+                    ),
+                    const SizedBox(height: 16),
+                    FloatingActionButton(
+                    backgroundColor: _isRecording ? Colors.red : Colors.blue,
+                    onPressed: toggleRecording,
+                    child: Icon(_isRecording ? Icons.stop : Icons.fiber_manual_record),
+                    ),
+                  ],
                   ),
                 ),
-              ),
+                ),
             ],
           )
         : Center(

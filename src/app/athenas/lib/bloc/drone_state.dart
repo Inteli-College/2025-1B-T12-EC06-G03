@@ -18,7 +18,7 @@ class DroneState extends Equatable {
     this.lastCommandStatus,
     this.lastCommandMessage,
     this.isExecutingCommand = false,
-    this.serverConfig = const ServerConfig(host: 'localhost', port: 3000),
+    this.serverConfig = const ServerConfig(host: '10.32.0.11', port: 5000),
   });
 
   DroneState copyWith({
