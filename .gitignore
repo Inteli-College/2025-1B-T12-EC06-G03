@@ -1,1 +1,7 @@
 venv
+*.PNG
+*.jpg
+fissuras_de_retracao/
+fissuras_termicas
+*.pt
+YOLOv8-crack-seg
