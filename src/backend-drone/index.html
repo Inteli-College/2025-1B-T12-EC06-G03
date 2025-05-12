@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle DJI Tello</title>
+  <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+    #video { border: 2px solid #333; width: 640px; height: 480px; background: #000; }
+    .controls { margin-top: 15px; }
+    .controls button { margin: 5px; padding: 10px 20px; font-size: 16px; }
+    #log { text-align: left; height: 150px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Controle do DJI Tello</h1>
+  <!-- Usando MJPEG stream para vídeo -->
+  <img id="video" src="/video" alt="Vídeo Tello" />
+
+  <div class="controls">
+    <button onclick="sendCommand('takeoff')">Decolar</button>
+    <button onclick="sendCommand('land')">Pousar</button>
+    <button onclick="sendCommand('palm_land')">Pouso na mão</button>
+    <button onclick="sendCommand('battery')">Bateria</button>
+    <br />
+    <button onclick="move('forward', 50)">Frente</button>
+    <button onclick="move('back', 50)">Trás</button>
+    <button onclick="move('left', 50)">Esquerda</button>
+    <button onclick="move('right', 50)">Direita</button>
+    <br />
+    <button onclick="rotate('cw', 90)">Girar CW</button>
+    <button onclick="rotate('ccw', 90)">Girar CCW</button>
+    <br />
+    <button onclick="flip('l')">Flip L</button>
+    <button onclick="flip('r')">Flip R</button>
+    <button onclick="flip('f')">Flip F</button>
+    <button onclick="flip('b')">Flip B</button>
+    <br />
+    <button onclick="sendCommand('piruleta_8d')" style="background-color: #ff9900; color: white;">Piruletas 8D</button>
+  </div>
+
+  <h2>Log de respostas</h2>
+  <pre id="log"></pre>
+
+  <script>
+    // Conectar Socket.IO
+    const socket = io('http://' + window.location.hostname + ':5000');
+
+    socket.on('connect', () => {
+      appendLog('Conectado ao servidor Tello.');
+    });
+
+    socket.on('response', res => {
+      appendLog(JSON.stringify(res));
+    });
+
+    socket.on('connect_error', (err) => {
+      appendLog('Erro de conexão: ' + err.message);
+    });
+
+    function sendCommand(event) {
+      socket.emit(event);
+      appendLog(`Comando enviado: ${event}`);
+    }
+
+    function move(direction, distance) {
+      socket.emit('move', { direction, distance });
+      appendLog(`Comando enviado: move ${direction} ${distance}cm`);
+    }
+
+    function rotate(direction, degree) {
+      socket.emit('rotate', { direction, degree });
+      appendLog(`Comando enviado: rotate ${direction} ${degree}°`);
+    }
+
+    function flip(direction) {
+      socket.emit('flip', { direction });
+      appendLog(`Comando enviado: flip ${direction}`);
+    }
+
+    function appendLog(message) {
+      const logEl = document.getElementById('log');
+      logEl.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+  </script>
+</body>
+</html>
