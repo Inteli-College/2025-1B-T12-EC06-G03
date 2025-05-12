@@ -64,3 +64,44 @@ def classificar_fissura(crop_bgr):
         classe_bruta = idx_to_class[pred]
         return classe_bruta.split("_")[-1]  # remove prefixo, se houver
 
+# FUNÇÃO PRINCIPAL: ANÁLISE COMPLETA DE UMA IMAGEM
+def analisar_imagem(img_path):
+    img = cv2.imread(img_path)
+    if img is None:
+        return "Erro: imagem não encontrada."
+
+    # Pré-processamento para YOLO
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    eq = clahe.apply(gray)
+    blur = cv2.GaussianBlur(eq, (0, 0), 3)
+    sharpened = cv2.addWeighted(eq, 1.2, blur, -0.2, 0)
+    img_yolo = cv2.cvtColor(sharpened, cv2.COLOR_GRAY2BGR)
+
+    # Detecção com YOLO
+    results = yolo_model(img_yolo, conf=0.05)[0]
+
+    if not results.boxes or len(results.boxes) == 0:
+        return "Nenhuma fissura detectada pelo YOLO."
+
+    # Recorte com maior confiança
+    confs = results.boxes.conf
+    idx_max = torch.argmax(confs).item()
+    x1, y1, x2, y2 = map(int, results.boxes.xyxy[idx_max])
+    crop = img[y1:y2, x1:x2]
+
+    if crop.shape[0] < 10 or crop.shape[1] < 10:
+        return "Fissura detectada, mas muito pequena para ser analisada."
+
+    # Classificação
+    label_cnn = classificar_fissura(crop)
+    resultado_final = f"✅ Fissura detectada → Tipo: {label_cnn}"
+
+    # Anotação e salvamento
+    cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    cv2.putText(img, f"{label_cnn}", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+    output_path = os.path.join(OUTPUT_DIR, "resultado_final.png")
+    cv2.imwrite(output_path, img)
+
+    return resultado_final, output_path
+
