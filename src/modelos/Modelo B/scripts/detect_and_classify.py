@@ -54,3 +54,13 @@ cnn_transform = transforms.Compose([
     transforms.Normalize([0.5], [0.5])
 ])
 
+# CLASSIFICAÇÃO DE IMAGEM RECORTADA
+def classificar_fissura(crop_bgr):
+    resized = cv2.resize(crop_bgr, (IMG_SIZE, IMG_SIZE))
+    tensor = cnn_transform(resized).unsqueeze(0).to(DEVICE)
+    with torch.no_grad():
+        output = cnn_model(tensor)
+        pred = torch.argmax(output, dim=1).item()
+        classe_bruta = idx_to_class[pred]
+        return classe_bruta.split("_")[-1]  # remove prefixo, se houver
+
