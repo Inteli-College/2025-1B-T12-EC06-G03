@@ -7,7 +7,7 @@ on:
     branches: [ develop, main ]
 
 jobs:
-  build-and-test (frontend):
+  build-and-test-frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
