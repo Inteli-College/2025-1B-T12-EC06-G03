@@ -75,3 +75,10 @@ class BatteryCommand extends DroneCommand {
   @override
   Map<String, dynamic> toJson() => {};
 }
+
+class PalmLandCommand extends DroneCommand {
+  const PalmLandCommand() : super('palm_land');
+  
+  @override
+  Map<String, dynamic> toJson() => {};
+}

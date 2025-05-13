@@ -53,18 +53,15 @@ class _StatusNotificationState extends State<StatusNotification> {
     // Verifica se a mensagem é nova e atualiza a visibilidade
     if (_lastStatusKey != statusKey) {
       _lastStatusKey = statusKey;
-      // Garante que a notificação esteja visível
-      if (!_showNotification) {
-        setState(() {
-          _showNotification = true;
-        });
-      }
+      // Atualiza o estado de visibilidade sem chamar setState durante o build
+      _showNotification = true;
     }
     
     // Configura um novo timer para esconder a notificação após 5 segundos
     _timer = Timer(const Duration(seconds: 5), () {
       // Verifica se o widget ainda está montado antes de atualizar o estado
       if (mounted) {
+        // Usa setState de forma segura após o build estar completo
         setState(() {
           _showNotification = false;
         });
@@ -110,10 +107,15 @@ class _StatusNotificationState extends State<StatusNotification> {
         
         // Gera uma chave única para esta notificação
         // Usa uma combinação estável de status e mensagem
-        final statusKey = "${state.lastCommandStatus}-${state.lastCommandMessage ?? 'no-message'}";
+        final statusKey = "${state.lastCommandStatus}-${state.lastCommand ?? 'no-command'}-${state.lastCommandMessage ?? 'no-message'}";
         
-        // Inicia o timer para esconder a notificação após 5 segundos
-        _startTimer(statusKey);
+        // Usando um post-frame callback para evitar chamar setState durante o build
+        // Usando um bool para evitar chamadas repetidas ao mesmo status
+        if (_lastStatusKey != statusKey) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _startTimer(statusKey);
+          });
+        }
         
         // Se a notificação deve estar oculta, retorna widget vazio
         if (!_showNotification) {

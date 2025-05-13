@@ -42,3 +42,12 @@ class ResponseReceivedEvent extends DroneEvent {
 }
 
 class RequestBatteryLevelEvent extends DroneEvent {}
+
+class SendRCControlEvent extends DroneEvent {
+  final Map<String, int> params;
+
+  const SendRCControlEvent(this.params);
+
+  @override
+  List<Object?> get props => [params];
+}

@@ -4,200 +4,251 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_joystick/flutter_joystick.dart';
 import '../bloc/drone_bloc.dart';
 import '../bloc/drone_event.dart';
-import '../models/drone_command.dart';
-
-// Definição de direção do joystick
-enum JoystickDirectionEnum { up, down, left, right, upLeft, upRight, downLeft, downRight, idle }
 
 class DroneJoystickControl extends StatefulWidget {
-  final Color baseColor;
-  final Color stickColor;
   final double size;
-  final String label;
 
   const DroneJoystickControl({
     Key? key,
-    this.baseColor = const Color(0x99FFFFFF),
-    this.stickColor = Colors.white,
-    this.size = 150,
-    required this.label,
+    required this.size,
   }) : super(key: key);
 
   @override
-  State<DroneJoystickControl> createState() => _DroneJoystickControlState();
+  DroneJoystickControlState createState() => DroneJoystickControlState();
 }
 
-class _DroneJoystickControlState extends State<DroneJoystickControl> {
-  Timer? _movementTimer;
-  JoystickDirectionEnum _lastDirection = JoystickDirectionEnum.idle;
-  int _movementDistance = 30; // Default distance in cm for each movement
-  
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Ajusta a distância de movimento com base no tamanho da tela
-    final screenSize = MediaQuery.of(context).size;
-    final smallestDimension = screenSize.shortestSide;
-    
-    // Ajusta a distância conforme o tamanho da tela
-    if (smallestDimension < 400) {
-      _movementDistance = 20; // Para telas menores, movimentos mais curtos
-    } else if (smallestDimension > 800) {
-      _movementDistance = 40; // Para telas maiores, movimentos mais longos
-    }
-  }
+// State class made public so it can be referenced from other files
+class DroneJoystickControlState extends State<DroneJoystickControl> {
+  // Valores do joystick
+  double _lr = 0; // left/right
+  double _fb = 0; // forward/backward
+  double _ud = 0; // up/down (controlado pelo altitude_joystick_control.dart)
+  double _yw = 0; // yaw rotation
+
+  Timer? _rcControlTimer;
+  bool _isJoystickActive = false;
+
+  // Método público para verificar se o joystick está ativo
+  bool get isJoystickActive => _isJoystickActive;
 
   @override
-  void dispose() {
-    _movementTimer?.cancel();
-    super.dispose();
-  }
+  void initState() {
+    super.initState();
 
-  // Convertendo valores X e Y do joystick para direção
-  JoystickDirectionEnum _getDirectionFromOffset(double x, double y) {
-    // Definir um limiar para detectar movimento
-    const double threshold = 0.5;
-    const double diagonalThreshold = 0.3;
-    
-    if (x.abs() < threshold && y.abs() < threshold) {
-      return JoystickDirectionEnum.idle;
-    }
-    
-    // Detectar movimentos diagonais quando ambos x e y são significativos
-    if (x.abs() > diagonalThreshold && y.abs() > diagonalThreshold) {
-      // Movimentos diagonais
-      if (x > 0 && y < 0) return JoystickDirectionEnum.upRight;
-      if (x < 0 && y < 0) return JoystickDirectionEnum.upLeft;
-      if (x > 0 && y > 0) return JoystickDirectionEnum.downRight;
-      if (x < 0 && y > 0) return JoystickDirectionEnum.downLeft;
-    }
-    
-    // Caso não seja diagonal, continua com a lógica anterior
-    if (x.abs() > y.abs()) {
-      // Movimento horizontal predominante
-      return x > 0 
-          ? JoystickDirectionEnum.right 
-          : JoystickDirectionEnum.left;
-    } else {
-      // Movimento vertical predominante
-      return y > 0 
-          ? JoystickDirectionEnum.down 
-          : JoystickDirectionEnum.up;
-    }
-  }
-
-  void _processJoystickInput(JoystickDirectionEnum direction) {
-    // Prevent unnecessary updates if direction hasn't changed
-    if (direction == _lastDirection) {
-      return;
-    }
-
-    // Cancel any existing timer
-    _movementTimer?.cancel();
-
-    // If joystick is idle, don't start a new timer
-    if (direction == JoystickDirectionEnum.idle) {
-      _lastDirection = direction;
-      return;
-    }
-
-    // Update the last direction
-    _lastDirection = direction;
-    
-    // Convert joystick direction to drone command
-    _sendDroneCommand(direction);
-
-    // Start a timer to continuously send commands while joystick is held
-    _movementTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
-      if (_lastDirection != JoystickDirectionEnum.idle) {
-        _sendDroneCommand(_lastDirection);
-      } else {
-        timer.cancel();
+    // Iniciar um timer que envia os comandos RC a cada 50ms
+    // Uma taxa de atualização mais consistente para melhor resposta
+    _rcControlTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+      if (_isJoystickActive) {
+        _sendRCControl();
       }
     });
   }
 
-  void _sendDroneCommand(JoystickDirectionEnum direction) {
-    // Skip if in idle position
-    if (direction == JoystickDirectionEnum.idle) {
-      return;
-    }
+  @override
+  void dispose() {
+    _rcControlTimer?.cancel();
+    super.dispose();
+  }
 
-    // Map joystick direction to drone command
-    DroneCommand command;
+  // Converte os valores do joystick (-1 a 1) para a escala correta (-100 a 100)
+  // com uma curva de resposta quadrática para melhor controle em velocidades mais baixas
+  int _scaleJoystickValue(double value) {
+    // Aplicar uma curva quadrática para melhorar a precisão em baixas velocidades
+    // Preservando o sinal do valor original
+    double sign = value >= 0 ? 1 : -1;
+    double absValue = value.abs();
     
-    switch (direction) {
-      case JoystickDirectionEnum.up:
-        command = MoveCommand('forward', _movementDistance);
-        break;
-      case JoystickDirectionEnum.right:
-        command = MoveCommand('right', _movementDistance);
-        break;
-      case JoystickDirectionEnum.down:
-        command = MoveCommand('back', _movementDistance);
-        break;
-      case JoystickDirectionEnum.left:
-        command = MoveCommand('left', _movementDistance);
-        break;
-      case JoystickDirectionEnum.upRight:
-        command = RotateCommand('cw', 45);
-        break;
-      case JoystickDirectionEnum.downRight:
-        command = RotateCommand('cw', 45);
-        break;
-      case JoystickDirectionEnum.downLeft:
-        command = RotateCommand('ccw', 45);
-        break;
-      case JoystickDirectionEnum.upLeft:
-        command = RotateCommand('ccw', 45);
-        break;
-      case JoystickDirectionEnum.idle:
-        return; // No command for idle
-    }
+    // Curva quadrática suave: valor^2 para melhor controle em baixas velocidades
+    double scaled = sign * (absValue * absValue) * 100;
+    
+    // Arredondar para o inteiro mais próximo
+    return scaled.round();
+  }
 
-    context.read<DroneBloc>().add(SendCommandEvent(command));
+  // Envia os valores de controle ao drone
+  void _sendRCControl() {
+    // Se o joystick não está ativo, não enviamos comando
+    if (!_isJoystickActive) return;
+
+    // Valores lr, fb são definidos pelo joystick principal
+    // Valor ud (up/down) e yw (yaw) serão recebidos do outro joystick
+    final params = {
+      'lr': _scaleJoystickValue(_lr),
+      'fb': _scaleJoystickValue(
+          -_fb), // Invertido para corresponder à convenção do backend
+      'ud': _scaleJoystickValue(_ud),
+      'yw': _scaleJoystickValue(_yw),
+    };
+
+    context.read<DroneBloc>().add(SendRCControlEvent(params));
+  }
+
+  // Para o drone enviando zeros para todos os controles
+  void _stopDrone() {
+    final params = {
+      'lr': 0,
+      'fb': 0,
+      'ud': 0,
+      'yw': 0,
+    };
+
+    context.read<DroneBloc>().add(SendRCControlEvent(params));
+
+    // Resetar os valores internos
+    _lr = 0;
+    _fb = 0;
+    // Não resetamos ud e yw pois são controlados pelo outro joystick
+  }
+
+  // Método público para receber os valores de altitude e rotação
+  void updateAltitudeAndYaw(double ud, double yw) {
+    setState(() {
+      // Validar os valores antes de usar
+      _ud = ud.isNaN ? 0.0 : ud;
+      _yw = yw.isNaN ? 0.0 : yw;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Ajustar tamanho da fonte baseado no tamanho do joystick
-    final fontSize = widget.size < 120 ? 10.0 : 12.0;
-    
-    return Container(
-      width: widget.size,
-      height: widget.size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.black45,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            widget.label,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Joystick background with visual indicators
+        Container(
+          width: widget.size,
+          height: widget.size,
+          decoration: BoxDecoration(
+            color: Colors.black54,
+            shape: BoxShape.circle,
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Vertical arrows (forward/backward)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: widget.size * 0.15),
+                    child: Icon(
+                      Icons.arrow_upward,
+                      color: Colors.white38,
+                      size: widget.size * 0.15,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: widget.size * 0.15),
+                    child: Icon(
+                      Icons.arrow_downward,
+                      color: Colors.white38,
+                      size: widget.size * 0.15,
+                    ),
+                  ),
+                ],
+              ),
+              // Horizontal arrows (left/right)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: widget.size * 0.15),
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: Colors.white38,
+                      size: widget.size * 0.15,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: widget.size * 0.15),
+                    child: Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white38,
+                      size: widget.size * 0.15,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // Actual joystick control
+        Container(
+          width: widget.size,
+          height: widget.size,
+          child: JoystickArea(
+            listener: (details) {
+              setState(() {
+                // Define deadzone to prevent small unintentional movements (5% of range)
+                const double DEADZONE = 0.05;
+                
+                // Apply deadzone to X (left-right)
+                double rawX = details.x.isNaN ? 0 : details.x;
+                _lr = rawX.abs() < DEADZONE ? 0 : rawX;
+                
+                // Apply deadzone to Y (forward-backward)
+                double rawY = details.y.isNaN ? 0 : details.y;
+                _fb = rawY.abs() < DEADZONE ? 0 : rawY;
+
+                // Ativar o joystick quando em uso (verifica se valores são válidos)
+                _isJoystickActive = (_lr != 0 || _fb != 0);
+
+                // Se o joystick foi "solto" (voltou ao centro)
+                if (!_isJoystickActive) {
+                  _stopDrone();
+                }
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.2),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: _isJoystickActive 
+                      ? Colors.lightBlueAccent.withOpacity(0.8) 
+                      : Colors.white24,
+                  width: 2.0,
+                ),
+                boxShadow: _isJoystickActive
+                    ? [
+                        BoxShadow(
+                          color: Colors.lightBlueAccent.withOpacity(0.5),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        )
+                      ]
+                    : [],
+              ),
+              child: Center(
+                child: Container(
+                  width: widget.size * 0.3,
+                  height: widget.size * 0.3,
+                  decoration: BoxDecoration(
+                    color: _isJoystickActive 
+                        ? Colors.blue.withOpacity(0.7) 
+                        : Colors.black.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black38,
+                        blurRadius: 5,
+                        spreadRadius: 1,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.flight,
+                    color: Colors.white,
+                    size: widget.size * 0.15,
+                  ),
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 5),
-          Expanded(
-            child: Joystick(
-              base: JoystickBase(
-                size: widget.size * 0.8,
-              ),
-              stick: JoystickStick(
-                size: widget.size * 0.3,
-              ),
-              listener: (details) {
-                final direction = _getDirectionFromOffset(details.x, details.y);
-                _processJoystickInput(direction);
-              },
-            ),
-          ),
-        ],
-      ),
+        )
+      ],
     );
   }
 }

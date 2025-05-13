@@ -38,8 +38,8 @@ class DroneControlApp extends StatelessWidget {
           scaffoldBackgroundColor: const Color(0xFF121212),
           useMaterial3: true,
         ),
-        home: SplashScreen(
-          nextScreen: const DroneControlScreen(),
+        home: const SplashScreen(
+          nextScreen: DroneControlScreen(),
         ),
       ),
     );
@@ -54,19 +54,21 @@ class DroneControlScreen extends StatefulWidget {
 }
 
 class _DroneControlScreenState extends State<DroneControlScreen> with SingleTickerProviderStateMixin {
-  // Control panel visibility state
-  bool _isControlPanelVisible = true;
+  // Global key for accessing the main joystick state from the altitude joystick
+  final GlobalKey<DroneJoystickControlState> _mainJoystickKey = GlobalKey<DroneJoystickControlState>();
+  
+  // For action buttons animation
   late AnimationController _animationController;
+  bool _showActionButtons = true;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 300),
     );
-    // Initialize animation to open state
-    _animationController.value = 1.0;
+    _animationController.value = 1.0; // Start with buttons visible
   }
 
   @override
@@ -74,11 +76,12 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
     _animationController.dispose();
     super.dispose();
   }
-
-  void _toggleControlPanel() {
+  
+  // Toggle the action buttons sidebar visibility
+  void _toggleActionButtons() {
     setState(() {
-      _isControlPanelVisible = !_isControlPanelVisible;
-      if (_isControlPanelVisible) {
+      _showActionButtons = !_showActionButtons;
+      if (_showActionButtons) {
         _animationController.forward();
       } else {
         _animationController.reverse();
@@ -93,6 +96,8 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
     final state = droneBloc.state;
 
     final screenSize = MediaQuery.of(context).size;
+    // ignore: unused_local_variable
+    final isSmallScreen = screenSize.width < 600; // Used for responsive layouts - preserved for future use
 
     return Scaffold(
       body: _buildResponsiveLayout(context, videoUrl, state, screenSize),
@@ -103,6 +108,7 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
       DroneState state, Size screenSize) {
     final joystickSize = _getResponsiveJoystickSize(screenSize);
     final padding = _getResponsivePadding(screenSize);
+    // Used for responsive layout adjustments
     final isSmallScreen = screenSize.width < 600;
 
     final isConnected = state.connectionStatus == ConnectionStatus.connected;
@@ -189,31 +195,61 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
           bottom: padding,
           child: AltitudeJoystickControl(
             size: joystickSize,
+            mainJoystickKey: _mainJoystickKey,
           ),
         ),
         Positioned(
           right: padding,
           bottom: padding,
           child: DroneJoystickControl(
+            key: _mainJoystickKey,
             size: joystickSize,
-            label: 'Movimento',
           ),
         ),
         
-        // Animated Control Panel Sidebar
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeInOut,
-          top: isSmallScreen ? 80 : 100,
-          right: _isControlPanelVisible ? padding : -180, // Hide off-screen when not visible
-          child: _buildActionButtons(context, isDisabled, screenSize),
-        ),
-        
-        // Control Panel Toggle Button
+        // Compact action buttons tray
         Positioned(
+          right: padding,
           top: isSmallScreen ? 80 : 100,
-          right: _isControlPanelVisible ? padding + 165 : padding, // Position next to or in place of sidebar
-          child: _buildSidebarToggle(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Toggle button
+              InkWell(
+                onTap: _toggleActionButtons,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                      color: Colors.deepPurple.shade300.withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Icon(
+                    _showActionButtons ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    color: Colors.deepPurple.shade200,
+                    size: 24,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Action buttons tray
+              AnimatedOpacity(
+                duration: const Duration(milliseconds: 300),
+                opacity: _showActionButtons ? 1.0 : 0.0,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  height: _showActionButtons ? null : 0,
+                  width: _showActionButtons ? null : 0,
+                  child: _showActionButtons
+                      ? _buildActionButtons(context, isDisabled, screenSize)
+                      : const SizedBox.shrink(),
+                ),
+              ),
+            ],
+          ),
         ),
         
         // Status notification
@@ -221,7 +257,7 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
           bottom: joystickSize + padding * 2,
           left: 0,
           right: 0,
-          child: StatusNotification(),
+          child: const StatusNotification(),
         ),
       ],
     );
@@ -306,58 +342,32 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
   Widget _buildActionButtons(
       BuildContext context, bool isDisabled, Size screenSize) {
     final isSmallScreen = screenSize.width < 600;
-    final buttonPadding = EdgeInsets.symmetric(
-      horizontal: isSmallScreen ? 12 : 16,
-      vertical: isSmallScreen ? 6 : 8,
-    );
-    final spacingHeight = isSmallScreen ? 6.0 : 10.0;
-    final iconSize = isSmallScreen ? 18.0 : 24.0;
-    final fontSize = isSmallScreen ? 12.0 : 14.0;
+    final iconSize = isSmallScreen ? 20.0 : 24.0;
+    final containerSize = isSmallScreen ? 44.0 : 50.0;
 
     return Container(
-      width: 160,
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E).withOpacity(0.85),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
+        color: Colors.black54,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: const [
           BoxShadow(
             color: Colors.black26,
             blurRadius: 10.0,
-            offset: const Offset(-2, 2),
           ),
         ],
         border: Border.all(
           color: Colors.deepPurple.shade300.withOpacity(0.3),
-          width: 1.0,
+          width: 1,
         ),
       ),
-      padding: EdgeInsets.symmetric(
-        vertical: 15,
-        horizontal: isSmallScreen ? 8 : 12,
-      ),
+      padding: const EdgeInsets.all(6),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12.0),
-            child: Text(
-              "CONTROLES",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.deepPurple.shade200,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ),
-          const Divider(color: Colors.white24, height: 1),
-          const SizedBox(height: 10),
-          _buildActionButton(
+          // Takeoff button
+          _buildCompactActionButton(
             context,
             icon: Icons.flight_takeoff,
-            label: 'Decolar',
             color: Colors.blue.shade700,
             onPressed: isDisabled
                 ? null
@@ -366,15 +376,15 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
                         .read<DroneBloc>()
                         .add(const SendCommandEvent(TakeoffCommand()));
                   },
-            padding: buttonPadding,
             iconSize: iconSize,
-            fontSize: fontSize,
+            size: containerSize,
+            tooltip: 'Decolar',
           ),
-          SizedBox(height: spacingHeight),
-          _buildActionButton(
+          const SizedBox(height: 6),
+          // Land button
+          _buildCompactActionButton(
             context,
             icon: Icons.flight_land,
-            label: 'Pousar',
             color: Colors.red.shade700,
             onPressed: isDisabled
                 ? null
@@ -383,61 +393,72 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
                         .read<DroneBloc>()
                         .add(const SendCommandEvent(LandCommand()));
                   },
-            padding: buttonPadding,
             iconSize: iconSize,
-            fontSize: fontSize,
+            size: containerSize,
+            tooltip: 'Pousar',
           ),
-
-          SizedBox(height: spacingHeight),
-          _buildActionButton(
+          const SizedBox(height: 6),
+          // Flip button
+          _buildCompactActionButton(
             context,
             icon: Icons.autorenew,
-            label: 'Flip',
             color: Colors.deepPurple,
             onPressed: isDisabled
                 ? null
                 : () {
                     _showFlipDirectionDialog(context, screenSize);
                   },
-            padding: buttonPadding,
             iconSize: iconSize,
-            fontSize: fontSize,
+            size: containerSize,
+            tooltip: 'Flip',
           ),
         ],
       ),
     );
   }
 
-  Widget _buildActionButton(
+  Widget _buildCompactActionButton(
     BuildContext context, {
     required IconData icon,
-    required String label,
     required Color color,
     required VoidCallback? onPressed,
-    required EdgeInsets padding,
     required double iconSize,
-    required double fontSize,
+    required double size,
+    required String tooltip,
   }) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon, size: iconSize),
-      label: Text(
-        label,
-        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color.withOpacity(onPressed == null ? 0.3 : 0.7),
-        foregroundColor: Colors.white,
-        padding: padding,
-        elevation: onPressed == null ? 0 : 4,
-        shadowColor: color.withOpacity(0.5),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-          side: BorderSide(
-            color: onPressed == null 
-                ? Colors.transparent 
-                : color.withOpacity(0.2),
-            width: 1,
+    return SizedBox(
+      width: size,
+      child: Tooltip(
+        message: tooltip,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: color.withAlpha(((onPressed == null ? 0.3 : 0.7) * 255).toInt()),
+            foregroundColor: Colors.white,
+            elevation: onPressed == null ? 0 : 4,
+            shadowColor: color.withAlpha((0.5 * 255).toInt()),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(
+                color: onPressed == null
+                    ? Colors.transparent
+                    : color.withAlpha((0.2 * 255).toInt()),
+                width: 1,
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: iconSize),
+              const SizedBox(height: 4),
+              Text(
+                tooltip,
+                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),
@@ -537,49 +558,6 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
           style: TextStyle(color: Colors.white70, fontSize: fontSize),
         ),
       ],
-    );
-  }
-
-  Widget _buildSidebarToggle() {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E).withOpacity(0.85),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.deepPurple.shade300.withOpacity(0.3),
-          width: 1.0,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 6.0,
-            offset: const Offset(-2, 2),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(10),
-          onTap: _toggleControlPanel,
-          child: Tooltip(
-            message: _isControlPanelVisible ? 'Ocultar Controles' : 'Mostrar Controles',
-            child: Center(
-              child: AnimatedRotation(
-                turns: _isControlPanelVisible ? 0 : 0.5,
-                duration: const Duration(milliseconds: 250),
-                child: Icon(
-                  Icons.chevron_right,
-                  color: Colors.deepPurple.shade200,
-                  size: 28,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
