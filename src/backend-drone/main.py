@@ -219,6 +219,26 @@ def battery(data=None):
     logger.info("Comando recebido: battery")
     return stream_manager.tello.get_battery()
 
+@socketio.on('rc_control')
+def rc_control(data):
+    if stream_manager.tello is None:
+        emit('response', {'command': 'rc_control', 'status': 'error', 'message': 'Tello não conectado'})
+        return
+    
+    try:
+        lr = int(data.get('lr', 0))   # left/right
+        fb = int(data.get('fb', 0))   # forward/backward
+        ud = int(data.get('ud', 0))   # up/down
+        yw = int(data.get('yw', 0))   # yaw (giro)
+        
+        logger.debug(f"rc_control recebido: lr={lr}, fb={fb}, ud={ud}, yw={yw}")
+        stream_manager.tello.send_rc_control(lr, fb, ud, yw)
+
+    except Exception as e:
+        logger.error(f"Erro em rc_control: {e}")
+        emit('response', {'command': 'rc_control', 'status': 'error', 'message': str(e)})
+
+
 @socketio.on('palm_land')
 @tello_command
 def palm_land(data=None):
