@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'services/drone_service.dart';
 import 'bloc/drone_bloc.dart';
@@ -13,7 +14,17 @@ import 'widgets/altitude_joystick_control.dart';
 import 'widgets/splash_screen.dart';
 import 'dart:math' as math;
 
-void main() {
+void main() async {
+  // Inicializa os widgets do Flutter
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Configura a aplicação para modo tela cheia e orientação paisagem
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
+  
   runApp(const DroneControlApp());
 }
 
@@ -37,6 +48,14 @@ class DroneControlApp extends StatelessWidget {
           ),
           scaffoldBackgroundColor: const Color(0xFF121212),
           useMaterial3: true,
+          appBarTheme: const AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.light,
+              systemNavigationBarColor: Colors.transparent,
+              systemNavigationBarIconBrightness: Brightness.light,
+            ),
+          ),
         ),
         home: const SplashScreen(
           nextScreen: DroneControlScreen(),
@@ -53,7 +72,8 @@ class DroneControlScreen extends StatefulWidget {
   State<DroneControlScreen> createState() => _DroneControlScreenState();
 }
 
-class _DroneControlScreenState extends State<DroneControlScreen> with SingleTickerProviderStateMixin {
+class _DroneControlScreenState extends State<DroneControlScreen> 
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   // Global key for accessing the main joystick state from the altitude joystick
   final GlobalKey<DroneJoystickControlState> _mainJoystickKey = GlobalKey<DroneJoystickControlState>();
   
@@ -69,11 +89,49 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
       duration: const Duration(milliseconds: 300),
     );
     _animationController.value = 1.0; // Start with buttons visible
+    
+    // Adiciona o observer para monitorar alterações no ciclo de vida da aplicação
+    WidgetsBinding.instance.addObserver(this);
+    
+    // Garantir que estamos em modo tela cheia
+    _setFullScreen();
+  }
+  
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        // Quando a aplicação volta a ficar visível, reativamos o modo tela cheia
+        _setFullScreen();
+        break;
+      case AppLifecycleState.inactive:
+        // Quando a aplicação está em transição, garantimos que as orientações estão corretas
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+        break;
+      default:
+        // Nenhuma ação necessária em outros estados
+        break;
+    }
+  }
+  
+  void _setFullScreen() {
+    // Modo imersivo completo (oculta barra de status, barra de navegação e permanece oculto mesmo com toques na tela)
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    
+    // Garante que a tela está na orientação horizontal
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
   
@@ -91,6 +149,9 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    // Certifique-se de que estamos em modo de tela cheia sempre que a tela for reconstruída
+    _setFullScreen();
+    
     final droneBloc = context.watch<DroneBloc>();
     final videoUrl = droneBloc.getVideoStreamUrl();
     final state = droneBloc.state;
@@ -119,11 +180,14 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
       children: [
         // Black background under video for more minimalist look
         Container(color: const Color(0xFF121212)),
-        VideoStreamWidget(streamUrl: videoUrl),
+        // Video stream expandido para ocupar toda a tela
+        Positioned.fill(
+          child: VideoStreamWidget(streamUrl: videoUrl),
+        ),
         
         // Top menu bar with connection status, battery level, and settings
         Positioned(
-          top: isSmallScreen ? 10 : 20,
+          top: isSmallScreen ? 5 : 15,
           left: padding,
           right: padding,
           child: Row(
@@ -143,7 +207,7 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
                     children: [
                       Icon(
                         Icons.battery_full, 
-                        color: Colors.deepPurple.shade200, 
+                        color: Colors.blue.shade200, 
                         size: 16
                       ),
                       const SizedBox(width: 4),
@@ -160,7 +224,7 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
                 ),
               const SizedBox(width: 8),
               IconButton(
-                icon: Icon(Icons.settings, color: Colors.deepPurple.shade200),
+                icon: const Icon(Icons.settings, color: Colors.white),
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -266,7 +330,7 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
   double _getResponsiveJoystickSize(Size screenSize) {
     final smallestDimension = math.min(screenSize.width, screenSize.height);
     final joystickSize = smallestDimension * 0.22;
-    return joystickSize.clamp(100.0, 150.0);
+    return joystickSize.clamp(150.0, 200.0);
   }
 
   double _getResponsivePadding(Size screenSize) {
@@ -451,7 +515,7 @@ class _DroneControlScreenState extends State<DroneControlScreen> with SingleTick
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: iconSize),
+              Icon(icon, size: iconSize, color: Colors.black),
               const SizedBox(height: 4),
               Text(
                 tooltip,

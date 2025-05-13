@@ -412,9 +412,9 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Imagem salva com sucesso!'),
-              Text('Local: $path', style: TextStyle(fontSize: 12)),
-              Text('Nome: $fileName', style: TextStyle(fontSize: 12)),
+              const Text('Imagem salva com sucesso!'),
+              Text('Local: $path', style: const TextStyle(fontSize: 12)),
+              Text('Nome: $fileName', style: const TextStyle(fontSize: 12)),
             ],
           ),
           backgroundColor: Colors.green,
@@ -436,8 +436,8 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black,
-      width: double.infinity,
-      height: double.infinity,
+      width: MediaQuery.of(context).size.width, // Força a largura total
+      height: MediaQuery.of(context).size.height, // Força a altura total
       child: widget.streamUrl == null
           ? _buildNoStreamPlaceholder()
           : _buildVideoStream(),
@@ -540,7 +540,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
               Center(
                 child: Image.memory(
                   _currentFrame!,
-                  fit: BoxFit.contain,
+                  fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,
                   gaplessPlayback: true,
@@ -549,25 +549,23 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
                 Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 100, left: 16),
+                  padding: const EdgeInsets.only(top: 80, left: 16),
                   child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ElevatedButton.icon(
+                    FloatingActionButton(
+                    heroTag: 'camera_button',
+                    backgroundColor: Colors.blue,
                     onPressed: _lastFrame != null ? _saveCurrentFrame : null,
-                    icon: const Icon(Icons.camera_alt),
-                    label: const Text('Capturar Frame'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                    ),
+                    child: const Icon(Icons.camera_alt, color: Colors.black),
                     ),
                     const SizedBox(height: 16),
                     FloatingActionButton(
+                    heroTag: 'record_button',
                     backgroundColor: _isRecording ? Colors.red : Colors.blue,
                     onPressed: toggleRecording,
-                    child: Icon(_isRecording ? Icons.stop : Icons.fiber_manual_record),
+                    child: Icon(_isRecording ? Icons.stop : Icons.fiber_manual_record, color: Colors.black),
                     ),
                   ],
                   ),
