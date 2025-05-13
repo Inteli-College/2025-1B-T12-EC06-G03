@@ -1,13 +1,36 @@
 import React, { useEffect, useState } from 'react';
 
 const VisualizarProjeto = () => {
-  const [data, setData] = useState(null);
-  const [formData, setFormData] = useState({});
+
+  const initialData = {
+    message: {
+      projeto: "USP",
+      responsaveis: ["Maria Lima", "Rafael Silva"],
+      empresa: "USP",
+      edificios: [{
+        nome: "Prédio do LMPC Escola Politécnica da USP",
+        localizacao: "Av. Professor Luciano Gualberto, travessa 3, n.º 158, São Paulo – SP",
+        tipo: "Pesquisa e Ensino",
+        pavimentos: 2,
+        ano_construcao: "Estimado em 1980",
+      }],
+      descricao: "Este projeto tem como objetivo identificar fissuras na estrutura do prédio do LMPC, localizado na Escola Politécnica da USP. Utilizando imagens capturadas por drone, o sistema analisa as fachadas do edifício para detectar possíveis falhas estruturais.",
+      logs_alteracoes: [
+        "06/05/2025 - Upload da Imagem Captura01.png",
+        "05/05/2025 - Análise da Imagem Upload03.png feita"
+      ]
+  }};
+
+  const [data, setData] = useState(initialData);
+  const [formData, setFormData] = useState(initialData.message);
+  // const [data, setData] = useState(null);
+  // const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    
     async function fetchData() {
       try {
         const response = await fetch('http://127.0.0.1:5000/teste');
@@ -107,9 +130,9 @@ const VisualizarProjeto = () => {
     }
   };
 
-  if (isLoading) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">Carregando...</div>;
-  if (error) return <div className="text-center mt-10 text-red-500 font-lato text-2xl">Error: {error}</div>;
-  if (!data) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">No data available</div>;
+  // if (isLoading) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">Carregando...</div>;
+  // if (error) return <div className="text-center mt-10 text-red-500 font-lato text-2xl">Error: {error}</div>;
+  // if (!data) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">No data available</div>;
 
   return (
     <div className="max-w-3xl ml-14 mt-14 p-6 bg-white font-lato text-dark-blue">
