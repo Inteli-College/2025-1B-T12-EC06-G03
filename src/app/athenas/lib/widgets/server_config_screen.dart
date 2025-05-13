@@ -325,7 +325,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
                 padding: EdgeInsets.all(spacing * 0.8),
                 minimumSize: Size(spacing * 4, 56),
               ),
-              child: const Icon(Icons.folder_open),
+              child: const Icon(Icons.folder_open, size: 36),
             ),
           ],
         ),

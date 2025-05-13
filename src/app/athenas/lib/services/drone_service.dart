@@ -98,7 +98,30 @@ class DroneService {
       return;
     }
 
-    _socket!.emit(command.command, command.toJson());
+    // Special handling for flip command to ensure it matches backend format
+    if (command.command == 'flip') {
+      final flipData = command.toJson();
+      // Log for debugging
+      print('Sending flip command with direction: ${flipData['direction']}');
+      
+      try {
+        // Ensure we're sending the flip command exactly as the backend expects it
+        _socket!.emit('flip', {'direction': flipData['direction']});
+        print('Emitted flip event with data: ${{'direction': flipData['direction']}}');
+      } catch (e) {
+        print('Error sending flip command: $e');
+        _responseStreamController.add(
+          DroneResponse(
+            command: command.command,
+            status: 'error',
+            message: 'Error sending flip command: $e',
+          ),
+        );
+      }
+    } else {
+      // Standard handling for other commands
+      _socket!.emit(command.command, command.toJson());
+    }
   }
 
   String getVideoStreamUrl() {

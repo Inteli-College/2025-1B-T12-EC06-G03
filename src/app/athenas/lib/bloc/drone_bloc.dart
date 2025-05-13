@@ -59,6 +59,14 @@ class DroneBloc extends Bloc<DroneEvent, DroneState> {
   }
 
   FutureOr<void> _onSendCommand(SendCommandEvent event, Emitter<DroneState> emit) async {
+    // Debug logging to track commands
+    print('DroneBloc: Processing ${event.command.command} command...');
+    
+    if (event.command is FlipCommand) {
+      final flipCmd = event.command as FlipCommand;
+      print('DroneBloc: It\'s a flip command with direction=${flipCmd.direction}');
+    }
+    
     emit(state.copyWith(
       isExecutingCommand: true,
       lastCommandStatus: null,

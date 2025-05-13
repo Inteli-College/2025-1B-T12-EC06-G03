@@ -39,11 +39,14 @@ class _AltitudeJoystickControlState extends State<AltitudeJoystickControl> {
   JoystickDirectionEnum _getDirectionFromOffset(double x, double y) {
     // Definir um limiar para detectar movimento
     const double threshold = 0.3;
+    const double diagonalThreshold = 0.2;
     
     if (x.abs() < threshold && y.abs() < threshold) {
       return JoystickDirectionEnum.idle;
     }
     
+    // Para o controle de altitude, não precisamos realmente de diagonais,
+    // mas mantemos a lógica aqui para consistência
     // Se o movimento horizontal for mais significativo que o vertical
     if (x.abs() > y.abs()) {
       return x > 0 ? JoystickDirectionEnum.right : JoystickDirectionEnum.left;

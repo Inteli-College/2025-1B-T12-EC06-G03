@@ -57,11 +57,22 @@ class _DroneJoystickControlState extends State<DroneJoystickControl> {
   JoystickDirectionEnum _getDirectionFromOffset(double x, double y) {
     // Definir um limiar para detectar movimento
     const double threshold = 0.5;
+    const double diagonalThreshold = 0.3;
     
     if (x.abs() < threshold && y.abs() < threshold) {
       return JoystickDirectionEnum.idle;
     }
     
+    // Detectar movimentos diagonais quando ambos x e y são significativos
+    if (x.abs() > diagonalThreshold && y.abs() > diagonalThreshold) {
+      // Movimentos diagonais
+      if (x > 0 && y < 0) return JoystickDirectionEnum.upRight;
+      if (x < 0 && y < 0) return JoystickDirectionEnum.upLeft;
+      if (x > 0 && y > 0) return JoystickDirectionEnum.downRight;
+      if (x < 0 && y > 0) return JoystickDirectionEnum.downLeft;
+    }
+    
+    // Caso não seja diagonal, continua com a lógica anterior
     if (x.abs() > y.abs()) {
       // Movimento horizontal predominante
       return x > 0 
