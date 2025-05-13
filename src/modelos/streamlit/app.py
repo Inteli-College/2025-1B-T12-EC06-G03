@@ -18,7 +18,6 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 st.set_page_config(layout="wide", page_title="Classificação de Fissuras Estruturais", page_icon="👷🏽‍♂️")
 
 # Custom CSS
-# Custom CSS
 st.markdown("""
     <style>
     /* Aumento geral da fonte */
