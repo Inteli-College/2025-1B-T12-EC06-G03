@@ -25,7 +25,8 @@
   #fileTextIcon,
   #fileCheckIcon,
   #historyIcon,
-  #logoutIcon {
+  #logoutIcon,
+  #gamepadIcon {
     width: 20px;
     height: auto;
     margin-right: 1rem;
@@ -37,7 +38,8 @@
   .sidebar:hover #fileTextIcon,
   .sidebar:hover #fileCheckIcon,
   .sidebar:hover #historyIcon,
-  .sidebar:hover #logoutIcon {
+  .sidebar:hover #logoutIcon,
+  .sidebar:hover #gamepadIcon {
     margin-left: 1rem;
   }
   
