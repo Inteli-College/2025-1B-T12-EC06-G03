@@ -19,12 +19,8 @@ const Router = () => (
         <Route path="/recover-password" element={<RecoverPassword />} />
       {/* Rotas que terão o layout com sidebar */}
       <Route element={<Layout />}>
-        { <Route path="/projeto" element={<VisualizarProjeto />} />
-          <Route path="/projects" element={<ProjectPage />} />
-        /* <Route path="upload-imagem" element={<UploadImagem />} />
-        <Route path="imagens-drone" element={<ImagensDrone />} />
-        <Route path="analisar-imagens" element={<AnalisarImagens />} />
-        <Route path="relatorio" element={<Relatorio />} /> */}
+        <Route path="/projeto" element={<VisualizarProjeto />} />
+        <Route path="/projects" element={<ProjectPage />} />
       </Route>
     </Routes>
   </BrowserRouter>
