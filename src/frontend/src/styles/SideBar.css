@@ -6,7 +6,7 @@
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     transition: width 0.3s ease;
     overflow: hidden;
-    position: relative;
+    position: fixed;
   }
   
   .sidebar:hover {
@@ -123,5 +123,14 @@
   .sidebar li.active {
     background-color: #0F7f8f;
     border-radius: 8px;
+  }
+  
+.flex-1 {
+    margin-left: 7.6vw;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .sidebar:hover ~ .flex-1 {
+    margin-left: 19vw;
   }
   

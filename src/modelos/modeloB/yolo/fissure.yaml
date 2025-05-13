@@ -1,0 +1,6 @@
+train: images/train/processadas
+val: images/val/processadas
+test: images/test/processadas
+
+nc: 1
+names: ['fissura']
