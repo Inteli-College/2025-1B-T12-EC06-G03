@@ -5,6 +5,7 @@ import LoginPage from "./pages/Login.jsx";
 import ProjectPage from "./pages/Projects.jsx";
 import RecoverPassword from "./pages/RecoverPassword.jsx";
 import DroneImages from "./pages/DroneImages.jsx";
+import ControleDrone from "./pages/ControleDrone.jsx";
 
 const Router = () => (
   <BrowserRouter>
@@ -21,6 +22,8 @@ const Router = () => (
       <Route element={<Layout />}>
         <Route path="/projetos" element={<ProjectPage />} />
         <Route path="/imagens-drone" element={<DroneImages />} />
+        <Route path="/controle-drone" element={<ControleDrone />} />
+
       </Route>
     </Routes>
   </BrowserRouter>
