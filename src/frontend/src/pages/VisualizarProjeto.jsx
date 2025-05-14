@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+// import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const VisualizarProjeto = () => {
 
@@ -26,32 +27,32 @@ const VisualizarProjeto = () => {
   // const [data, setData] = useState(null);
   // const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [error, setError] = useState(null);
+  // const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  // useEffect(() => {
     
-    async function fetchData() {
-      try {
-        const response = await fetch('http://127.0.0.1:5000/teste');
+  //   async function fetchData() {
+  //     try {
+  //       const response = await fetch('http://127.0.0.1:5000/teste');
         
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
         
-        const result = await response.json();
-        setData(result);
-        setFormData(result.message);
-        setError(null);
-      } catch (err) {
-        setError(err.message || 'Failed to fetch data');
-      } finally {
-        setIsLoading(false);
-      }
-    }
+  //       const result = await response.json();
+  //       setData(result);
+  //       setFormData(result.message);
+  //       setError(null);
+  //     } catch (err) {
+  //       setError(err.message || 'Failed to fetch data');
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -126,7 +127,7 @@ const VisualizarProjeto = () => {
       setData({ ...data, message: formData });
       setIsEditing(false);
     } catch (err) {
-      setError(err.message || 'Failed to save data');
+      // setError(err.message || 'Failed to save data');
     }
   };
 
