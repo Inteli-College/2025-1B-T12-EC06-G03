@@ -141,3 +141,27 @@ Essa conexão entre os modelos foi validada por meio de um script integrado cham
 
 Esse fluxo permite reaproveitamento modular, validação visual e explicabilidade.
 
+---
+
+## Resultados Finais
+
+* **YOLO**
+
+  * mAP\@0.5: 0.709
+  * mAP\@0.5:0.95: 0.400
+  * Precisão média: 0.724
+  * Revocação média: 0.789
+
+* **CNN**
+
+  * Acurácia: 95%
+  * F1-score médio: 0.95
+
+* **Sistema Integrado**
+
+  * Capacidade de localizar e identificar o tipo de fissura em tempo real com precisão
+  * Pipeline modular, fácil de escalar e adaptar
+
+---
+
+
