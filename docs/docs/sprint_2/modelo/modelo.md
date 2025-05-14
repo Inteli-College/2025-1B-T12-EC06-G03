@@ -124,3 +124,20 @@ Essa abordagem modular representa uma boa prática de engenharia de sistemas de 
 
 ---
 
+## Integração dos Modelos
+
+Essa conexão entre os modelos foi validada por meio de um script integrado chamado `detect_and_classify.py`, que permite realizar a inferência completa a partir de uma única imagem de entrada. Ele executa o pipeline completo:
+
+1. Recebe uma imagem original.
+2. Aplica o pré-processamento para o YOLO.
+3. O YOLO retorna as coordenadas da fissura com maior confiança.
+4. A área detectada é recortada da imagem original (sem filtros do YOLO).
+5. O recorte é transformado e passado ao modelo CNN.
+6. O resultado é impresso na imagem original com texto e caixa.
+7. As saídas são salvas como:
+
+* `resultado_final.png`: imagem com bounding box e rótulo da classificação da fissura
+* `resultado_yolo_bruto.png`: imagem com apenas o box do YOLO e nível de confiança da fissura selecionada
+
+Esse fluxo permite reaproveitamento modular, validação visual e explicabilidade.
+
