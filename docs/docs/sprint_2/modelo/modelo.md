@@ -172,3 +172,11 @@ A abordagem combinada YOLO + CNN oferece um sistema robusto e modular para inspe
 * A CNN oferece classificação precisa com base em análise de textura e forma
 
 Essa divisão foi uma escolha técnica estratégica, permitindo maior controle, especialização e refinamento independente de cada componente. O sistema será futuramente integrado à **interface Athena**, permitindo uso direto por engenheiros e técnicos em campo, com foco em agilidade, precisão e aplicabilidade real.
+
+---
+
+## Bibliografia
+
+- LEI, Xinyu; PAN, Hongguang; HUANG, Xiangdong. A dilated CNN model for image classification. Ieee access, v. 7, p. 124087-124095, 2019.
+- MARENGONI, Maurício; STRINGHINI, Stringhini. Tutorial: Introdução à visão computacional usando opencv. Revista de Informática Teórica e Aplicada, v. 16, n. 1, p. 125-160, 2009.
+- VASCONCELOS, M. J.; DA SILVA TAVARES, João Manuel Ribeiro. Modelos pontuais de distribuiçao em visao computacional. In: 6o Congresso Nacional Mecânica Experimental. 2005.
