@@ -16,8 +16,8 @@ const Sidebar = () => {
     <aside className="sidebar">
       <img id="logo" src={logoImage} alt="Logo Athena" />
       <ul>
-        <li className={location.pathname === '/projects' ? 'active' : ''}>
-          <Link to="/projects">
+        <li className={location.pathname === '/projetos' ? 'active' : ''}>
+          <Link to="/projetos">
             <FileText id="historyIcon" />
             <span className="linkText">Projetos</span>
           </Link>
