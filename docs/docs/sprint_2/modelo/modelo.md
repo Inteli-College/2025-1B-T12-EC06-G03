@@ -164,4 +164,11 @@ Esse fluxo permite reaproveitamento modular, validação visual e explicabilidad
 
 ---
 
+## Conclusão
 
+A abordagem combinada YOLO + CNN oferece um sistema robusto e modular para inspeção automatizada de fissuras em imagens. Ao dividir as tarefas entre detecção e classificação, o sistema consegue aproveitar o melhor de cada modelo:
+
+* O YOLO foca na localização rápida e eficiente
+* A CNN oferece classificação precisa com base em análise de textura e forma
+
+Essa divisão foi uma escolha técnica estratégica, permitindo maior controle, especialização e refinamento independente de cada componente. O sistema será futuramente integrado à **interface Athena**, permitindo uso direto por engenheiros e técnicos em campo, com foco em agilidade, precisão e aplicabilidade real.
