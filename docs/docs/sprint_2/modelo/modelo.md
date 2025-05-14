@@ -49,3 +49,18 @@ Esses resultados indicam uma boa capacidade do modelo em detectar fissuras com a
 
 ---
 
+## Modelo CNN - Classificação da Fissura
+
+A CNN é responsável por **analisar visualmente o recorte da fissura** e classificá-la como:
+
+* **Térmica:** geralmente mais grossa, retilínea
+* **Retração:** fina, ramificada ou com bordas irregulares
+
+### Estrutura do modelo:
+
+* 2 camadas convolucionais com ReLU e MaxPooling
+* Camadas densas com dropout para evitar overfitting
+* Camada final com duas saídas para classificação binária
+* Função de perda: `CrossEntropyLoss`
+* Otimizador: `Adam`
+
