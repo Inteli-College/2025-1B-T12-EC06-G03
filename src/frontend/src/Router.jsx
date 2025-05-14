@@ -4,6 +4,7 @@ import NotFound from "./pages/NotFound.jsx";
 import LoginPage from "./pages/Login.jsx";
 import ProjectPage from "./pages/Projects.jsx";
 import RecoverPassword from "./pages/RecoverPassword.jsx";
+import VisualizarProjeto from "./pages/VisualizarProjeto.jsx";
 import ControleDrone from "./pages/ControleDrone.jsx";
 
 const Router = () => (
@@ -19,12 +20,9 @@ const Router = () => (
         <Route path="/recover-password" element={<RecoverPassword />} />
       {/* Rotas que terão o layout com sidebar */}
       <Route element={<Layout />}>
+        <Route path="/projeto" element={<VisualizarProjeto />} />
         <Route path="/projects" element={<ProjectPage />} />
-        {/* <Route path="upload-imagem" element={<UploadImagem />} /> */}
         <Route path="/controle-drone" element={<ControleDrone />} />
-        {/* <Route path="/imagens-drone" element={<ImagensDrone />} /> */}
-        {/* <Route path="analisar-imagens" element={<AnalisarImagens />} />
-        <Route path="relatorio" element={<Relatorio />} /> */}
       </Route>
     </Routes>
   </BrowserRouter>
