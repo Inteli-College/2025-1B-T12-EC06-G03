@@ -70,3 +70,14 @@ O modelo foi treinado com **180 imagens rotuladas** divididas em duas subpastas:
 
 O modelo foi salvo com seu respectivo `class_to_idx.json`, garantindo correspondência correta entre índices e nomes das classes na inferência.
 
+### Desempenho:
+
+* **Acurácia:** 95%
+* **Precision (thermal):** 0.91 | **Recall:** 1.00 | **F1-score:** 0.95
+* **Precision (retraction):** 1.00 | **Recall:** 0.90 | **F1-score:** 0.95
+* **Macro avg / Weighted avg F1-score:** 0.95
+
+Esses números indicam que o modelo consegue generalizar bem para ambas as classes, mesmo com base de teste pequena.
+
+---
+
