@@ -31,3 +31,10 @@ O conjunto de dados utilizado para o treino do YOLO continha **aproximadamente 1
 
 O treinamento foi realizado com a versão YOLOv8n por 30 épocas, utilizando tamanho de imagem 640x640 e batch size de 8. O script de treinamento usou o comando `.train(data='fissure.yaml', ...)`, com os resultados sendo salvos na pasta `runs/detect/fissura-detector`.
 
+### Funcionamento:
+
+1. A imagem é processada (CLAHE, equalização e realce) e passada ao modelo YOLO.
+2. O modelo retorna uma ou mais detecções com coordenadas (x1, y1, x2, y2) e uma **pontuação de confiança**.
+3. A **detecção com maior confiança** é selecionada - já que o objetivo é selecionar uma fissura por imagem.
+4. A região correspondente é recortada da imagem original.
+
