@@ -81,3 +81,46 @@ Esses números indicam que o modelo consegue generalizar bem para ambas as class
 
 ---
 
+## Por que dois modelos? 
+
+A escolha por utilizar **dois modelos distintos e especializados** em vez de um único modelo multitarefa se baseia em princípios técnicos de separação de responsabilidades, complexidade de tarefa e especialização de arquitetura:
+
+1. **Tarefas distintas exigem capacidades diferentes:**
+
+   * A detecção de objetos (YOLO) requer identificar com precisão *onde* algo está na imagem.
+   * A classificação (CNN) requer avaliar *o que é* aquilo, com foco em características mais finas de forma e textura.
+
+2. **YOLO como detector binário:**
+
+   * O YOLO foi treinado como um detector binário: detecta se há uma fissura, sem se preocupar com o tipo.
+   * Treiná-lo para detecção + classificação multiclasse exigiria um dataset muito maior, com anotações de bounding boxes por tipo de fissura — o que aumentaria significativamente a complexidade da curadoria.
+
+3. **CNN como classificador especializado:**
+
+   * A CNN é alimentada apenas com a área recortada da imagem (a fissura detectada) e foca apenas na diferenciação entre *térmica* e *retração*.
+   * Isso reduz o ruído da imagem original e permite que o classificador aprenda padrões visuais com mais precisão.
+
+4. **Vantagens do desacoplamento:**
+
+   * Permite reusar o YOLO com outros classificadores ou adaptar a CNN para novas classes de fissura.
+   * Otimizações podem ser feitas separadamente: o YOLO pode ser treinado com imagens em diversos contextos, enquanto a CNN pode ser refinada apenas com melhorias de recorte e balanceamento de classes.
+
+5. **Evita sobrecarga no YOLO e viés por contexto:**
+
+   * O YOLO pode sofrer com viés se tentar classificar tipos de fissura baseando-se em informações contextuais da imagem (ex: iluminação, fundo).
+   * Ao separar as tarefas, a CNN foca exclusivamente na análise visual da fissura em si, evitando interferência do cenário.
+
+6. **Facilidade de anotação:**
+
+   * Anotar apenas a presença de fissura (como no YOLO binário) é mais simples e rápido.
+   * Classificar recortes já feitos (como no caso da CNN) é mais intuitivo e exige menos esforço de curadoria do que rotular bounding boxes multiclasse.
+
+7. **Resultados comprovam a eficácia:**
+
+   * O YOLO obteve mAP\@0.5 de 0.709, suficiente para recortar com precisão a fissura.
+   * A CNN, com recortes já centrados na fissura, alcançou 95% de acurácia na classificação entre os dois tipos.
+
+Essa abordagem modular representa uma boa prática de engenharia de sistemas de visão computacional, pois equilibra desempenho, flexibilidade e interpretabilidade.
+
+---
+
