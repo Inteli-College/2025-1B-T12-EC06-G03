@@ -38,3 +38,14 @@ O treinamento foi realizado com a versão YOLOv8n por 30 épocas, utilizando tam
 3. A **detecção com maior confiança** é selecionada - já que o objetivo é selecionar uma fissura por imagem.
 4. A região correspondente é recortada da imagem original.
 
+### Desempenho:
+
+* **Precisão média (mAP\@0.5):** 0.709
+* **Revocação média:** 0.789
+* **mAP\@0.5:0.95:** 0.400
+* **Velocidade de inferência:** \~95ms por imagem
+
+Esses resultados indicam uma boa capacidade do modelo em detectar fissuras com alta confiança, mesmo em cenários variados.
+
+---
+
