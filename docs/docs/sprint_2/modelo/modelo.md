@@ -64,3 +64,9 @@ A CNN é responsável por **analisar visualmente o recorte da fissura** e classi
 * Função de perda: `CrossEntropyLoss`
 * Otimizador: `Adam`
 
+### Desenvolvimento:
+
+O modelo foi treinado com **180 imagens rotuladas** divididas em duas subpastas: `thermal` e `retraction`. As imagens foram recortes manuais da região da fissura (obtidas após anotação do YOLO), organizadas em `train`, `val` e `test`, com 10 imagens para validação e 10 para teste. As imagens foram transformadas para tons de cinza, redimensionadas para 128x128 pixels e normalizadas.
+
+O modelo foi salvo com seu respectivo `class_to_idx.json`, garantindo correspondência correta entre índices e nomes das classes na inferência.
+
