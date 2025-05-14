@@ -15,7 +15,7 @@ const UploadImagens = () => {
 
             <div className='grid grid-cols-3 gap-x-8 gap-y-8'>
                 {Array.from({ length: 6 }).map((_, index) => (
-                    <ImagensCarregadas key={index} name={`Imagem ${index + 1}`} />
+                    <ImagensCarregadas key={index} />
                 ))}
             </div>
         </div>
