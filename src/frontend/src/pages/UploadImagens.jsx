@@ -7,19 +7,19 @@ const UploadImagens = () => {
         { id: 1, src: placeholder, name: 'Placeholder 1' },
         { id: 2, src: placeholder, name: 'Placeholder 2' },
         { id: 3, src: placeholder, name: 'Placeholder 3' },
-    ]); // Estado inicial com imagens de placeholder
+    ]);
 
     const handleImageUpload = (event) => {
-        const file = event.target.files[0]; // Obtém o arquivo selecionado
+        const file = event.target.files[0]; 
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 setImagens((prevImagens) => [
                     ...prevImagens,
-                    { id: prevImagens.length + 1, src: e.target.result, name: file.name }, // Adiciona a nova imagem
+                    { id: prevImagens.length + 1, src: e.target.result, name: file.name },
                 ]);
             };
-            reader.readAsDataURL(file); // Converte o arquivo em uma URL base64
+            reader.readAsDataURL(file); 
         }
     };
 
@@ -32,8 +32,8 @@ const UploadImagens = () => {
                     <input
                         type="file"
                         accept="image/*"
-                        className="hidden" // Esconde o input de arquivo
-                        onChange={handleImageUpload} // Chama a função ao selecionar uma imagem
+                        className="hidden" 
+                        onChange={handleImageUpload} 
                     />
                 </label>
             </div>
