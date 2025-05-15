@@ -32,6 +32,7 @@ const Router = () => (
         <Route path="/projetos" element={<ProjectPage />} />
         <Route path="/imagens-drone" element={<DroneImages />} />
         <Route path="/controle-drone" element={<ControleDrone />} />
+        </Route>
     </Routes>
   </BrowserRouter>
 )
