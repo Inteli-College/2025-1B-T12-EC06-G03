@@ -22,8 +22,8 @@ const Sidebar = () => {
             <span className="linkText">Projetos</span>
           </Link>
         </li>
-        <li className={location.pathname === '/upload-imagem' ? 'active' : ''}>
-          <Link to="/upload-imagem">
+        <li className={location.pathname === '/upload-imagens' ? 'active' : ''}>
+          <Link to="/upload-imagens">
             <Upload id="uploadIcon" />
             <span className="linkText">Upload de Imagem</span>
           </Link>
