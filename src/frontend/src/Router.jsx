@@ -24,7 +24,7 @@ const Router = () => (
         <Route path="/projeto" element={<VisualizarProjeto />} />
         <Route path="/projects" element={<ProjectPage />} />
         <Route path="/controle-drone" element={<ControleDrone />} />
-        <Route path="/upload" element={<UploadImagens />} />
+        <Route path="/upload-imagens" element={<UploadImagens />} />
       </Route>
     </Routes>
   </BrowserRouter>
