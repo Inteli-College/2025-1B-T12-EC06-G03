@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import { Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts';
 import html2pdf from 'html2pdf.js';
-
-// Registrar os componentes do Chart.js
-ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Relatorios = () => {
   const initialData = {
@@ -49,16 +45,12 @@ const Relatorios = () => {
     html2pdf().set(options).from(element).save();
   };
 
-  const graficoData = {
-    labels: ['Fissuras Detectadas', 'Fissuras Não Detectadas'],
-    datasets: [
-      {
-        data: [data.message.porcentagemFissuras.termica, data.message.porcentagemFissuras.retracao],
-        backgroundColor: ['#010131', '#75A1C0'],
-        hoverBackgroundColor: ['#010131', '#75A1C0'],
-      },
-    ],
-  };
+  // Dados para o gráfico de pizza do recharts
+  const pieData = [
+    { name: 'Fissuras Térmicas', value: data.message.porcentagemFissuras.termica },
+    { name: 'Fissuras de Retração', value: data.message.porcentagemFissuras.retracao },
+  ];
+  const COLORS = ['#010131', '#75A1C0'];
 
   return (
     <div id="relatorio" className="max-w-3xl ml-14 mt-14 p-6 bg-white font-lato text-dark-blue">
@@ -120,7 +112,25 @@ const Relatorios = () => {
       <div className="mt-8">
         <h3 className="text-2xl font-lato text-[#010131]">Porcentagem de Fissuras:</h3>
         <div className="w-64 h-64 mx-auto">
-          <Pie data={graficoData} />
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={80}
+                label
+              >
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
