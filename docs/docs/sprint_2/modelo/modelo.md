@@ -1,6 +1,6 @@
 ---
 title: Modelo de Detecção e Classificação de Fissuras
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 # Modelo de Detecção e Classificação de Fissuras
