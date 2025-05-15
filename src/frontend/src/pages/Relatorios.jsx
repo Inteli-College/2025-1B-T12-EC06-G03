@@ -54,8 +54,8 @@ const Relatorios = () => {
     datasets: [
       {
         data: [data.message.porcentagemFissuras.termica, data.message.porcentagemFissuras.retracao],
-        backgroundColor: ['#4CAF50', '#F44336'],
-        hoverBackgroundColor: ['#45A049', '#E53935'],
+        backgroundColor: ['#010131', '#75A1C0'],
+        hoverBackgroundColor: ['#010131', '#75A1C0'],
       },
     ],
   };
