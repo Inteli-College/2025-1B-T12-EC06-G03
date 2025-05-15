@@ -5,6 +5,9 @@ import LoginPage from "./pages/Login.jsx";
 import ProjectPage from "./pages/Projects.jsx";
 import RecoverPassword from "./pages/RecoverPassword.jsx";
 import Relatorios from "./pages/Relatorios.jsx";
+import DroneImages from "./pages/DroneImages.jsx";
+import VisualizarProjeto from "./pages/VisualizarProjeto.jsx";
+import ControleDrone from "./pages/ControleDrone.jsx";
 
 const Router = () => (
   <BrowserRouter>
@@ -25,7 +28,10 @@ const Router = () => (
         <Route path="imagens-drone" element={<ImagensDrone />} />
         <Route path="analisar-imagens" element={<AnalisarImagens />} />
         <Route path="relatorio" element={<Relatorio />} /> */}
-      </Route>
+        <Route path="/projeto" element={<VisualizarProjeto />} />
+        <Route path="/projetos" element={<ProjectPage />} />
+        <Route path="/imagens-drone" element={<DroneImages />} />
+        <Route path="/controle-drone" element={<ControleDrone />} />
     </Routes>
   </BrowserRouter>
 )
