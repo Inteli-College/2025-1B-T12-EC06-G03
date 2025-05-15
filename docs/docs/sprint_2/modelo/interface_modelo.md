@@ -1,5 +1,5 @@
 ---
-title: Interface do modedlo
+title: Interface do modelo
 sidebar_position: 2
 ---
 
