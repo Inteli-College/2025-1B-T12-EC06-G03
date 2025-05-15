@@ -29,8 +29,8 @@ const Relatorios = () => {
         { id: 2, imagem: 'https://via.placeholder.com/150', descricao: 'Fissura na base da coluna principal.' },
       ],
       porcentagemFissuras: {
-        detectadas: 60,
-        naoDetectadas: 40,
+        termica: 60,
+        retracao: 40,
       },
     },
   };
@@ -53,7 +53,7 @@ const Relatorios = () => {
     labels: ['Fissuras Detectadas', 'Fissuras Não Detectadas'],
     datasets: [
       {
-        data: [data.message.porcentagemFissuras.detectadas, data.message.porcentagemFissuras.naoDetectadas],
+        data: [data.message.porcentagemFissuras.termica, data.message.porcentagemFissuras.retracao],
         backgroundColor: ['#4CAF50', '#F44336'],
         hoverBackgroundColor: ['#45A049', '#E53935'],
       },
