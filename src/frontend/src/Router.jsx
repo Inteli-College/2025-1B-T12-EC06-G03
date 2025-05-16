@@ -23,8 +23,7 @@ const Router = () => (
         <Route path="/recover-password" element={<RecoverPassword />} />
       {/* Rotas que terão o layout com sidebar */}
       <Route element={<Layout />}>
-        <Route path="/projects" element={<ProjectPage />} />
-        <Route path="/image-analysis" element={<ImageAnalysis />} />
+        <Route path="/analisar-imagens" element={<ImageAnalysis />} />
         {/* <Route path="upload-imagem" element={<UploadImagem />} />
         <Route path="imagens-drone" element={<ImagensDrone />} />
         <Route path="analisar-imagens" element={<AnalisarImagens />} />
