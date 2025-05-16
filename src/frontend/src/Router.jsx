@@ -4,6 +4,7 @@ import NotFound from "./pages/NotFound.jsx";
 import LoginPage from "./pages/Login.jsx";
 import ProjectPage from "./pages/Projects.jsx";
 import RecoverPassword from "./pages/RecoverPassword.jsx";
+import Relatorios from "./pages/Report.jsx";
 import ImageAnalysis from "./pages/ImageAnalysis.jsx";
 import DroneImages from "./pages/DroneImages.jsx";
 import VisualizarProjeto from "./pages/VisualizarProjeto.jsx";
@@ -23,6 +24,8 @@ const Router = () => (
         <Route path="/recover-password" element={<RecoverPassword />} />
       {/* Rotas que terão o layout com sidebar */}
       <Route element={<Layout />}>
+        <Route path="/projects" element={<ProjectPage />} />
+        <Route path="/relatorio" element={<Relatorios />} />
         <Route path="/analisar-imagens" element={<ImageAnalysis />} />
         {/* <Route path="upload-imagem" element={<UploadImagem />} />
         <Route path="imagens-drone" element={<ImagensDrone />} />
