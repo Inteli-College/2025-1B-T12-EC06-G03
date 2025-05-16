@@ -9,7 +9,7 @@ const ProjectRecent = ({ projects, onCreateProject }) => {
         <h1 className="text-4xl font-bold text-[#050538]">Projetos Recentes</h1>
         <button
           onClick={onCreateProject}
-          className="bg-[#050538] text-white px-6 py-3 text-lg rounded-md hover:bg-[#0a0a4a] transition-colors"
+          className="bg-dark-blue text-white px-6 py-3 text-lg rounded-md hover:bg-blue-darker transition-colors"
         >
           Criar Projeto
         </button>

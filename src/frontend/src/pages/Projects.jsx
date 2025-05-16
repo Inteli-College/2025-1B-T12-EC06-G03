@@ -23,7 +23,7 @@ export default function ProjectPage() {
     };
 
     return (
-        <main className="container mx-auto p-6 max-w-">
+        <main className="container mx-auto p-6">
             <ProjectRecent projects={recentProjects} onCreateProject={handleCreateProject} />
 
             <ProjectAll
