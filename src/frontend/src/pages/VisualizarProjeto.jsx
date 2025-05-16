@@ -173,7 +173,7 @@ const VisualizarProjeto = () => {
             ))}
             <button 
               onClick={addResponsavel}
-              className="flex items-center px-2 py-1 bg-dark-blue text-white rounded text-sm font-lato"
+              className="flex items-center px-2 py-1 bg-dark-blue text-white rounded text-sm font-lato hover:bg-blue-darker"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-1">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -250,7 +250,7 @@ const VisualizarProjeto = () => {
             ))}
             <button 
                 onClick={addEdificio}
-                className="flex items-center px-2 py-1 bg-dark-blue text-white rounded text-sm font-lato"
+                className="flex items-center px-2 py-1 bg-dark-blue text-white rounded text-sm font-lato hover:bg-blue-darker"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-1">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -290,7 +290,7 @@ const VisualizarProjeto = () => {
             </button>
             <button
               onClick={handleSave}
-              className="px-3 py-1 bg-dark-blue text-white rounded text-lg font-lato"
+              className="px-3 py-1 bg-dark-blue text-white rounded text-lg font-lato hover:bg-blue-darker"
             >
               Salvar
             </button>
