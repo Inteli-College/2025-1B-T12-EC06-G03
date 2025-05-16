@@ -1,0 +1,8 @@
+{
+    "label": "Plataforma Web",
+    "position": 3,
+    "link": {
+      "type": "generated-index",
+      "description": "Nesta seção, iremos explorar a plataforma web desenvolvida para o projeto. A plataforma é uma interface intuitiva que permite aos usuários interagir com o modelo de classificação de fissura, visualizar resultados e realizar análises. A seguir, apresentaremos os detalhes técnicos da plataforma, incluindo sua arquitetura, funcionalidades e como utilizá-la."
+    }
+  }
