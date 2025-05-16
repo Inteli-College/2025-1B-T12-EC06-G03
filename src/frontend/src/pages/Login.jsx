@@ -6,8 +6,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Senha:", senha);
+      window.location.href = '/projetos';
   };
 
   return (

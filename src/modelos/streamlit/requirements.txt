@@ -1,0 +1,4 @@
+streamlit           # Front-end 
+torch               # PyTorch para carregar .pt
+torchvision         # Caso necessário transformações
+pillow              # Manipulação de imagens
