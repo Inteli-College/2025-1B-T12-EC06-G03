@@ -25,7 +25,7 @@ const Router = () => (
       {/* Rotas que terão o layout com sidebar */}
       <Route element={<Layout />}>
         <Route path="/projects" element={<ProjectPage />} />
-        <Route path="/relatorios" element={<Relatorios />} />
+        <Route path="/relatorio" element={<Relatorios />} />
         <Route path="/analisar-imagens" element={<ImageAnalysis />} />
         {/* <Route path="upload-imagem" element={<UploadImagem />} />
         <Route path="imagens-drone" element={<ImagensDrone />} />
