@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts';
 import html2pdf from 'html2pdf.js';
+import placeholder from '../assets/placeholder-icon.svg';
 
 const Relatorios = () => {
   const initialData = {
@@ -21,8 +22,8 @@ const Relatorios = () => {
         "05/05/2025 - Análise da Imagem Upload03.png feita"
       ],
       fissuras: [
-        { id: 1, imagem: 'https://via.placeholder.com/150', descricao: 'Fissura na fachada leste, próximo à janela.' },
-        { id: 2, imagem: 'https://via.placeholder.com/150', descricao: 'Fissura na base da coluna principal.' },
+        { id: 1, imagem: placeholder, descricao: 'Fissura na fachada leste, próximo à janela.' },
+        { id: 2, imagem: placeholder, descricao: 'Fissura na base da coluna principal.' },
       ],
       porcentagemFissuras: {
         termica: 60,
@@ -139,7 +140,12 @@ const Relatorios = () => {
         <div className="grid grid-cols-2 gap-4 mt-4">
           {data.message.fissuras.map((fissura) => (
             <div key={fissura.id} className="border rounded p-4">
-              <img src={fissura.imagem} alt={`Fissura ${fissura.id}`} className="w-full h-32 object-cover rounded mb-2" />
+              <img
+                src={fissura.imagem}
+                alt={`Fissura ${fissura.id}`}
+                className="w-32 h-32 object-contain mx-auto rounded mb-2"
+                onError={e => { e.target.onerror = null; e.target.src = placeholder; }}
+              />
               <p className="text-1xl font-lato text-[#010131]">{fissura.descricao}</p>
             </div>
           ))}
