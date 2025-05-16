@@ -4,7 +4,7 @@ import NotFound from "./pages/NotFound.jsx";
 import LoginPage from "./pages/Login.jsx";
 import ProjectPage from "./pages/Projects.jsx";
 import RecoverPassword from "./pages/RecoverPassword.jsx";
-import Relatorios from "./pages/Relatorios.jsx";
+import Relatorios from "./pages/Report.jsx";
 import ImageAnalysis from "./pages/ImageAnalysis.jsx";
 import DroneImages from "./pages/DroneImages.jsx";
 import VisualizarProjeto from "./pages/VisualizarProjeto.jsx";
