@@ -12,6 +12,12 @@ export default function ImageAnalysis() {
     { id: 4, type: "Térmica", imageUrl: {placeholder} },
     { id: 5, type: "Retração", imageUrl: {placeholder} },
     { id: 6, type: "Retração", imageUrl: {placeholder} },
+    { id: 7, type: "Retração", imageUrl: {placeholder} },
+    { id: 8, type: "Térmica", imageUrl: {placeholder} },
+    { id: 9, type: "Térmica", imageUrl: {placeholder} },
+    { id: 10, type: "Térmica", imageUrl: {placeholder} },
+    { id: 11, type: "Retração", imageUrl: {placeholder} },
+    { id: 12, type: "Retração", imageUrl: {placeholder} },
   ])
 
   const handleViewImage = (id) => {
