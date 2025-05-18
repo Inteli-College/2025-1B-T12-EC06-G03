@@ -76,10 +76,10 @@ O backend implementa os seguintes comandos para controle do drone:
 | `takeoff` | Decolar o drone | Nenhum |
 | `land` | Pousar o drone | Nenhum |
 | `flip` | Realizar um flip | `direction`: 'l' (esquerda), 'r' (direita), 'f' (frente), 'b' (traseira) |
-| `move` | Mover em uma direção | `direction`: 'forward', 'back', 'left', 'right', 'up', 'down'<br>`distance`: distância em cm |
-| `rotate` | Girar o drone | `direction`: 'cw' (horário), 'ccw' (anti-horário)<br>`degree`: ângulo em graus |
+| `move` | Mover em uma direção | `direction`: 'forward', 'back', 'left', 'right', 'up', 'down'  <br/>`distance`: distância em cm |
+| `rotate` | Girar o drone | `direction`: 'cw' (horário), 'ccw' (anti-horário)  <br/>`degree`: ângulo em graus |
 | `battery` | Verificar nível da bateria | Nenhum |
-| `rc_control` | Controle remoto contínuo | `lr`: esquerda/direita (-100 a 100)<br>`fb`: frente/trás (-100 a 100)<br>`ud`: cima/baixo (-100 a 100)<br>`yw`: giro (-100 a 100) |
+| `rc_control` | Controle remoto contínuo | `lr`: esquerda/direita (-100 a 100)  <br/>`fb`: frente/trás (-100 a 100)  <br/>`ud`: cima/baixo (-100 a 100)  <br/>`yw`: giro (-100 a 100) |
 | `palm_land` | Pousar na palma da mão | Nenhum |
 
 ## Streaming de Vídeo
