@@ -1,0 +1,8 @@
+{
+    "label": "Modelo de Classificação de Fissura",
+    "position": 2,
+    "link": {
+      "type": "generated-index",
+      "description": "Nesta seção, iremos explorar o modelo de classificação de fissura, que é uma parte fundamental do nosso projeto. O modelo é responsável por identificar e classificar fissuras em imagens, utilizando técnicas avançadas de aprendizado de máquina e visão computacional. A seguir, apresentaremos os detalhes técnicos do modelo, incluindo sua arquitetura, treinamento e avaliação."
+    }
+  }

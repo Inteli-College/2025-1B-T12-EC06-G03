@@ -7,9 +7,9 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 ### Definição
 
-&emsp;Arquitetura de software é o desenho estruturado que define como os diferentes componentes de um sistema interagem, quais responsabilidades cada parte assume e de que forma os dados circulam entre elas. Ela descreve padrões de comunicação, tecnologias empregadas, princípios de organização de código e regras que orientam decisões futuras de desenvolvimento. Bass, Clements e Kazman a descrevem como “a estrutura ou estruturas do sistema, que compreende elementos de software, propriedades externamente visíveis desses elementos e os relacionamentos entre eles” [(BASS; CLEMENTS; KAZMAN, 2003)](#ref1). Esta visão enfatiza que a arquitetura vai além de simples diagramas, constituindo um bloco de decisões fundamentais sobre a organização do sistema. Pensar nesse conjunto de fatores desde o início permite alinhar objetivos de negócio, requisitos técnicos e experiência do usuário em uma mesma visão compartilhada pela equipe.
+&emsp;Arquitetura de software é o desenho estruturado que define como os diferentes componentes de um sistema interagem, quais responsabilidades cada parte assume e de que forma os dados circulam entre elas. Ela descreve padrões de comunicação, tecnologias empregadas, princípios de organização de código e regras que orientam decisões futuras de desenvolvimento. Bass, Clements e Kazman a descrevem como “a estrutura ou estruturas do sistema, que compreende elementos de software, propriedades externamente visíveis desses elementos e os relacionamentos entre eles” [(BASS; CLEMENTS; KAZMAN, 2003)](#referências-bibliográficas). Esta visão enfatiza que a arquitetura vai além de simples diagramas, constituindo um bloco de decisões fundamentais sobre a organização do sistema. Pensar nesse conjunto de fatores desde o início permite alinhar objetivos de negócio, requisitos técnicos e experiência do usuário em uma mesma visão compartilhada pela equipe.
 
-&emsp;Ao documentar camadas, interfaces, protocolos e políticas de segurança, a arquitetura fornece um mapa claro que facilita a colaboração entre desenvolvedores, reduz riscos de retrabalho e favorece a evolução contínua do produto. Shaw e Garlan, pioneiros no estudo formal da arquitetura de software, destacam que a arquitetura proporciona uma visão holística do sistema, facilitando a compreensão de seus componentes e interações [(SHAW; GARLAN, 1996)](#ref2). Esta perspectiva reforça o papel da arquitetura como um meio de comunicação entre todos os envolvidos no desenvolvimento do software.
+&emsp;Ao documentar camadas, interfaces, protocolos e políticas de segurança, a arquitetura fornece um mapa claro que facilita a colaboração entre desenvolvedores, reduz riscos de retrabalho e favorece a evolução contínua do produto. Shaw e Garlan, pioneiros no estudo formal da arquitetura de software, destacam que a arquitetura proporciona uma visão holística do sistema, facilitando a compreensão de seus componentes e interações [(SHAW; GARLAN, 1996)](#referências-bibliográficas). Esta perspectiva reforça o papel da arquitetura como um meio de comunicação entre todos os envolvidos no desenvolvimento do software.
 
 &emsp;Além disso, uma boa arquitetura suporta escalabilidade, desempenho consistente e manutenção previsível, pois antecipa pontos de acoplamento e distribui responsabilidades de maneira coerente com os requisitos não funcionais. Deste modo, ela serve como fundação para o sistema crescer de forma saudável, acompanhando demandas de usuários e mudanças tecnológicas sem comprometer qualidade ou prazos.
 
@@ -69,10 +69,10 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 ### Referências Bibliográficas
 
-1. <span id="ref1">BASS, L.; CLEMENTS, P.; KAZMAN, R.</span> *Software Architecture in Practice*. Boston: Addison Wesley, 2003.
+1. BASS, L.; CLEMENTS, P.; KAZMAN, R. *Software Architecture in Practice*. Boston: Addison Wesley, 2003.
 
-2. <span id="ref2">SHAW, M.; GARLAN, D.</span> *Software architecture: perspectives on an emerging discipline*. Prentice-Hall, 1996.  
+2. SHAW, M.; GARLAN, D. *Software architecture: perspectives on an emerging discipline*. Prentice-Hall, 1996.  
 
-3. <span id="ref3">GONÇALVES, Marcelo.</span> *Arquitetura e engenharia de software*. Medium, 2021. Disponível em: [https://medium.com/@marcelomg21/arquitetura-e-engenharia-de-software-3390030f22d3](https://medium.com/@marcelomg21/arquitetura-e-engenharia-de-software-3390030f22d3). Acesso em: 29 abr. 2025.
+3. GONÇALVES, Marcelo. *Arquitetura e engenharia de software*. Medium, 2021. Disponível em: [https://medium.com/@marcelomg21/arquitetura-e-engenharia-de-software-3390030f22d3](https://medium.com/@marcelomg21/arquitetura-e-engenharia-de-software-3390030f22d3). Acesso em: 29 abr. 2025.
 
 4. Termo de Abertura do Projeto do Inteli, TAPI. Acesso em: 25 de abril de 2025.

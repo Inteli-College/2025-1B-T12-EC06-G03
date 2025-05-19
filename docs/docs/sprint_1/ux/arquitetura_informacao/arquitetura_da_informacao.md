@@ -6,7 +6,7 @@ sidebar_position: 1
 
 &nbsp;&nbsp;&nbsp;&nbsp;Conforme detalhado na seção de [Introdução](/introducao), com a elaboração do projeto almeja-se realizar a coleta de imagens e processá-las de modo a retornar ao usuário algumas informações, como as imagens obtidas e o resultado da classificação. Assim, faz-se necessário estruturar e organizar a forma como essas informações serão apresentadas, a fim de garantir clareza e usabilidade.
 
-&nbsp;&nbsp;&nbsp;&nbsp;Desse modo, segundo o vídeo "O que é Arquitetura de Informação?" do canal UXNOW [[1]](#referências), a Arquitetura da Informação visa mapear como a informação ficará organizada dentro de uma aplicação, ou seja, ela representa como uma persona irá consumir os conteúdos dentro de um contexto específico de uso do sistema. Logo, esse mapeamento é essencial para garantir que os usuários consigam navegar e entender facilmente os dados apresentados.
+&nbsp;&nbsp;&nbsp;&nbsp;Desse modo, segundo o vídeo "O que é Arquitetura de Informação?" do canal UXNOW [(UXNOW, 2016)](#referências-bibliograficas), a Arquitetura da Informação visa mapear como a informação ficará organizada dentro de uma aplicação, ou seja, ela representa como uma persona irá consumir os conteúdos dentro de um contexto específico de uso do sistema. Logo, esse mapeamento é essencial para garantir que os usuários consigam navegar e entender facilmente os dados apresentados.
 
 &nbsp;&nbsp;&nbsp;&nbsp;No contexto deste projeto, foram identificadas duas [Personas](/sprint_1/ux/personas) principais: Rafael, o técnico de laboratório, e a Maria, Engenheira Civil. O objetivo de Rafael com o uso da solução é inserir as imagens capturadas pelo drone para que elas sejam classificadas pelo sistema; enquanto Maria almeja cadastrar novos projetos e exportar os relatórios prontos.
 
@@ -34,6 +34,6 @@ sidebar_position: 1
 
 &nbsp;&nbsp;&nbsp;&nbsp;Portanto, o diagrama permite a visualização do fluxo de navegação entre as telas da aplicação, facilitando a compreensão da estrutura geral do sistema e das interações disponíveis para o usuário. Dado que mostra o caminho lógico entre as telas e destaca quais informações estarão disponíveis para o usuário.
 
-## Referências
+## Referências Bibliográficas
 
-[1] UXNOW / DANIEL FURTADO. O que é Arquitetura de Informação? //UXNOW. Disponível em: https://www.youtube.com/watch?v=vmvSMYaV4oE
+1. UXNOW / DANIEL FURTADO. O que é Arquitetura de Informação? //UXNOW. Disponível em: https://www.youtube.com/watch?v=vmvSMYaV4oE

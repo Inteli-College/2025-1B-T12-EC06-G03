@@ -1,0 +1,8 @@
+{
+    "label": "Controle do Drone",
+    "position": 1,
+    "link": {
+      "type": "generated-index",
+      "description": "Nesta seção, iremos explorar diferentes maneiras de realizar o controle de movimento e captura de imagens do drone presente na solução."
+    }
+  }
