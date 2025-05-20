@@ -14,9 +14,9 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Carregamento dos modelos e mapeamentos
 class Classifier:
     def __init__(self,
-                 cnn_model_path: str = "inference_models/cnn_model.pt",
-                 yolo_model_path: str = "inference_models/yolo.pt",
-                 class_map_path: str = "inference_models/class_to_idx.json"):
+                 cnn_model_path: str = "../inference_models/cnn_model.pt",
+                 yolo_model_path: str = "../inference_models/yolo.pt",
+                 class_map_path: str = "../inference_models/class_to_idx.json"):
         # CNN
         self.cnn = self._load_cnn(cnn_model_path)
         # YOLO
@@ -85,6 +85,8 @@ class Classifier:
         x1, y1, x2, y2 = map(int, results.boxes.xyxy[idx_max])
         confidence = float(confs[idx_max])
 
+        box = {'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2}
+
         # Crop para CNN
         crop = image[y1:y2, x1:x2]
         h, w = crop.shape[:2]
@@ -102,7 +104,7 @@ class Classifier:
             label = label_key.split("_")[-1]
             conf_cnn = float(probs[pred])
 
-        return label, conf_cnn
+        return label, conf_cnn, box
 
 # API simplicada de uso
 
@@ -116,5 +118,10 @@ def classify_image_from_path(image_path: str) -> dict:
         raise FileNotFoundError(f"Imagem não encontrada em {image_path}")
 
     classifier = Classifier()
-    label, confidence = classifier.classify(img)
-    return { 'label': label, 'confidence': confidence }
+    label, confidence, coords = classifier.classify(img)
+    return { 'label': label, 'confidence': confidence, 'coords': coords }
+
+if __name__ == "__main__":
+    image_path = "../../images/FT80.png"  
+    result = classify_image_from_path(image_path)
+    print(f"Resultado: {result}")
