@@ -65,6 +65,7 @@ def get_images():
             "metadados": img.metadados,
             "processada": img.processada
         })
+    db.session.close()
     return jsonify(result), 200
 
 @images_bp.route('/get-image/<int:image_id>', methods=['GET'])
@@ -74,6 +75,7 @@ def get_image(image_id):
     """
     image = Imagem.query.get(image_id)
     if not image:
+        db.session.close()
         return jsonify({'error': 'Image not found'}), 404
 
     result = {
@@ -86,6 +88,7 @@ def get_image(image_id):
         "metadados": image.metadados,
         "processada": image.processada
     }
+    db.session.close()
     return jsonify(result), 200
 
 @images_bp.route('/delete-image/<int:image_id>', methods=['DELETE'])
@@ -96,15 +99,38 @@ def delete_image(image_id):
     try:
         image = Imagem.query.get(image_id)
         if not image:
+            db.session.close()
             return jsonify({'error': 'Image not found'}), 404
 
         db.session.delete(image)
         db.session.commit()
+        db.session.close()
         return jsonify({'message': 'Image deleted successfully'}), 200
 
+    except FileNotFoundError as e:
+        db.session.rollback()
+        db.session.close()
+        return jsonify({'error': f'File not found: {str(e)}'}), 404
+    except PermissionError as e:
+        db.session.rollback()
+        db.session.close()
+        return jsonify({'error': f'Permission denied: {str(e)}'}), 403
+    except ValueError as e:
+        db.session.rollback()
+        db.session.close()
+        return jsonify({'error': f'Value error: {str(e)}'}), 400
+    except TypeError as e:
+        db.session.rollback()
+        db.session.close()
+        return jsonify({'error': f'Type error: {str(e)}'}), 400
+    except RuntimeError as e:
+        db.session.rollback()
+        db.session.close()
+        return jsonify({'error': f'Runtime error: {str(e)}'}), 500
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+        db.session.close()
+        return jsonify({'error': f'An unexpected error occurred: {str(e)}'}), 500
 
 @images_bp.route('/update-image/<int:image_id>', methods=['PUT'])
 def update_image(image_id):
@@ -127,9 +153,30 @@ def update_image(image_id):
         db.session.commit()
         return jsonify({'message': 'Image updated successfully'}), 200
 
+    except FileNotFoundError as e:
+        db.session.rollback()
+        db.session.close()
+        return jsonify({'error': f'File not found: {str(e)}'}), 404
+    except PermissionError as e:
+        db.session.rollback()
+        db.session.close()
+        return jsonify({'error': f'Permission denied: {str(e)}'}), 403
+    except ValueError as e:
+        db.session.rollback()
+        db.session.close()
+        return jsonify({'error': f'Value error: {str(e)}'}), 400
+    except TypeError as e:
+        db.session.rollback()
+        db.session.close()
+        return jsonify({'error': f'Type error: {str(e)}'}), 400
+    except RuntimeError as e:
+        db.session.rollback()
+        db.session.close()
+        return jsonify({'error': f'Runtime error: {str(e)}'}), 500
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+        db.session.close()
+        return jsonify({'error': f'An unexpected error occurred: {str(e)}'}), 500
 
 @images_bp.route('/upload-image', methods=['POST'])
 def upload_image():
@@ -152,5 +199,15 @@ def upload_image():
 
         return jsonify({'message': 'File uploaded successfully', 'path': file_path}), 200
 
+    except FileNotFoundError as e:
+        return jsonify({'error': f'File not found: {str(e)}'}), 404
+    except PermissionError as e:
+        return jsonify({'error': f'Permission denied: {str(e)}'}), 403
+    except ValueError as e:
+        return jsonify({'error': f'Value error: {str(e)}'}), 400
+    except TypeError as e:
+        return jsonify({'error': f'Type error: {str(e)}'}), 400
+    except RuntimeError as e:
+        return jsonify({'error': f'Runtime error: {str(e)}'}), 500
     except Exception as e:
-        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+        return jsonify({'error': f'An unexpected error occurred: {str(e)}'}), 500
