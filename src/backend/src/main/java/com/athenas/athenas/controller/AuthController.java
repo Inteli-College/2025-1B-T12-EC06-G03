@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.athenas.athenas.model.Usuario;
 import com.athenas.athenas.service.AuthService;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @RestController
@@ -44,4 +45,11 @@ public class AuthController {
         private String email;
         private String senha;
     }
+    @Data
+    @AllArgsConstructor
+    public static class ErrorResponse {
+        private String message;
+        private String code;
+    }
+
 }
