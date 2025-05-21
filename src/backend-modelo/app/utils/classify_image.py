@@ -64,7 +64,7 @@ class Classifier:
     def classify(self, image: np.ndarray) -> (str, float):
         """
         Executa detecção com YOLO e classificação com CNN.
-        Retorna: (label, confidence)
+        Retorna: (label, confidence, coords)
         """
         # Pré-processamento de imagem
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
