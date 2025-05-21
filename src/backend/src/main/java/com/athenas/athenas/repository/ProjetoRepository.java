@@ -1,14 +1,17 @@
 package com.athenas.athenas.repository;
 
-import com.athenas.athenas.model.Empresa;
-import com.athenas.athenas.model.Projeto;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.athenas.athenas.model.Empresa;
+import com.athenas.athenas.model.Projeto;
 
 @Repository
 public interface ProjetoRepository extends JpaRepository<Projeto, Long> {
     List<Projeto> findByEmpresa(Empresa empresa);
     List<Projeto> findByStatus(String status);
+    Optional<Projeto> findById(int idProjeto);
 }
