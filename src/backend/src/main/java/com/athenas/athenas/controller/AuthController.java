@@ -25,7 +25,7 @@ public class AuthController {
             Usuario usuario = authService.autenticar(request.getEmail(), request.getSenha());
             return ResponseEntity.ok(usuario);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorResponse("An error occurred during login", "LOGIN_ERROR"));
         }
     }
 
