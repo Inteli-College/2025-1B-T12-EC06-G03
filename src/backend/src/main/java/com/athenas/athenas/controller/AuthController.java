@@ -20,7 +20,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Object> login(@RequestBody LoginRequest request) {
         try {
             Usuario usuario = authService.autenticar(request.getEmail(), request.getSenha());
             return ResponseEntity.ok(usuario);
@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Usuario usuario) {
+    public ResponseEntity<Object> register(@RequestBody Usuario usuario) {
         try {
             Usuario novoUsuario = authService.registrar(usuario);
             return ResponseEntity.ok(novoUsuario);
