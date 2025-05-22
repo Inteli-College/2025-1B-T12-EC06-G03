@@ -110,43 +110,37 @@ public class ViewProjetoService {
             projeto.setEmpresa(novaEmpresa);
         }
 
-        // Ver com a cecilia como ta o front pra criar edificio
-        // List<Edificio> edificiosAtuais = edificioRepository.findByProjeto(projeto);
-        // List<EdificioDTO> novosEdificios = viewProjetoResponseDTO.getEdificios();
-        // if (novosEdificios != null && !novosEdificios.isEmpty()) {
-        //     for (Edificio edificio : edificiosAtuais) {
-        //         edificioRepository.delete(edificio);
-        //     }
-        //     for (EdificioDTO edificioDTO : novosEdificios) {
-        //         Edificio novo = new Edificio();
-        //         novo.setNome(edificioDTO.getNome());
-        //         novo.setLocalizacao(edificioDTO.getLocalizacao());
-        //         novo.setTipo(edificioDTO.getTipo());
-        //         novo.setPavimentos(edificioDTO.getPavimentos());
-        //         novo.setProjeto(projeto);
-        //         edificioRepository.save(novo);
-        //     }
-            
-        // }
+        List<String> novosResponsaveis = viewProjetoResponseDTO.getResponsaveisNomes();
 
-        // Lógica de trocar incorreta
-        // List<String> novosResponsaveis = viewProjetoResponseDTO.getResponsaveisNomes();
-        // if (novosResponsaveis != null && !novosResponsaveis.isEmpty()) {
-        //     List<ResponsavelProjeto> antigosResponsaveis = responsavelProjetoRepository.findByProjeto(projeto);
-        //     for (ResponsavelProjeto responsavelProjeto : antigosResponsaveis) {
-        //         responsavelProjetoRepository.delete(responsavelProjeto);
-        //         String descricao = "'" + responsavelProjeto.getUsuario().getNome() + "' removido dos responsáveis pelo projeto.";
-        //         createLog(descricao, projeto);
-        //     }
-        //     for (String nomeUsuario : novosResponsaveis) {
-        //         Usuario usuario = usuarioRepository.findByNome(nomeUsuario)
-        //             .orElseThrow(() -> new RuntimeException("Usuário não encontrado. Cadastre-o primeiro."));
-        //         ResponsavelProjeto responsavelProjeto = new ResponsavelProjeto();
-        //         responsavelProjeto.setProjeto(projeto);
-        //         responsavelProjeto.setUsuario(usuario);
-        //         responsavelProjetoRepository.save(responsavelProjeto);
-        //     }
-        // }
+        List<ResponsavelProjeto> antigosResponsaveis = responsavelProjetoRepository.findByProjeto(projeto);
+
+        List<String> antigosNomes = antigosResponsaveis.stream()
+            .map(rp -> rp.getUsuario().getNome())
+            .toList();
+
+        List<String> novosNomes = novosResponsaveis;
+
+        for (ResponsavelProjeto responsavelProjeto : antigosResponsaveis) {
+            String nomeAntigo = responsavelProjeto.getUsuario().getNome();
+            if (!novosNomes.contains(nomeAntigo)) {
+                responsavelProjetoRepository.delete(responsavelProjeto);
+                String descricao = "'" + nomeAntigo + "' removido dos responsáveis pelo projeto.";
+                createLog(descricao, projeto);
+            }
+        }
+
+        for (String nomeNovo : novosNomes) {
+            if (!antigosNomes.contains(nomeNovo)) {
+                Usuario usuario = usuarioRepository.findByNome(nomeNovo)
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado. Cadastre-o primeiro."));
+                ResponsavelProjeto responsavelProjeto = new ResponsavelProjeto();
+                responsavelProjeto.setProjeto(projeto);
+                responsavelProjeto.setUsuario(usuario);
+                responsavelProjetoRepository.save(responsavelProjeto);
+                String descricao = "'" + nomeNovo + "' adicionado aos responsáveis pelo projeto.";
+                createLog(descricao, projeto);
+            }
+        }
     
         projetoRepository.save(projeto);
 
@@ -158,7 +152,6 @@ public class ViewProjetoService {
         log.setProjeto(projeto);
         log.setDescricao(descricao);
         log.setDataAlteracao(java.time.LocalDateTime.now());
-        // log.setUsuario(usuario);
         logAlteracaoRepository.save(log);
     }
 }
