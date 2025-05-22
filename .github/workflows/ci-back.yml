@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DB_URL: jdbc:postgresql://localhost:5432/testdb
+      DB_URL: localhost:5432/testdb
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
 
