@@ -46,12 +46,17 @@ jobs:
         run: ./mvnw clean package -DskipTests
         working-directory: src/backend
 
-      - name: Run Spring Boot (background)
+      - name: Run Spring Boot and wait for server
         run: |
           export $(grep -v '^#' .env | xargs)
-          nohup ./mvnw spring-boot:run &
-          sleep 20
+          ./mvnw spring-boot:run &
+          for i in {1..30}; do
+            sleep 2
+            if curl --fail http://localhost:8080; then
+              echo "Server is up"
+              exit 0
+            fi
+          done
+          echo "Server failed to start"
+          exit 1
         working-directory: src/backend
-
-      - name: Ping server
-        run: curl --fail http://localhost:8080 || exit 1
