@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import logo from "../assets/logo.svg";
+
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-      window.location.href = '/projetos';
+    window.location.href = "/projetos";
   };
 
   return (
@@ -26,7 +27,6 @@ const LoginPage = () => {
             <input
               type="email"
               id="email"
-              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -42,7 +42,6 @@ const LoginPage = () => {
             <input
               type="password"
               id="senha"
-              name="senha"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               required
@@ -64,6 +63,15 @@ const LoginPage = () => {
             Entrar
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Não tem uma conta?{" "}
+            <a href="/cadastro" className="text-blue-500 hover:underline font-medium">
+              Cadastre-se
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
