@@ -33,4 +33,4 @@ def infer_images():
         })
 
     print(result)
-    return jsonify({"Status:": "imagens recebidas"}), 200
+    return jsonify({"status": "imagens recebidas", "result": result}), 200
