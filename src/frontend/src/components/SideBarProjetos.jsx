@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom'
 import '../styles/SideBar.css'
 import {
   FileText,
-  Gamepad2,
   Building,
   Camera,
   Upload,
