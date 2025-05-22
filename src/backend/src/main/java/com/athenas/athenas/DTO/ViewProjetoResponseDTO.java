@@ -16,7 +16,7 @@ public class ViewProjetoResponseDTO {
     private String empresaNome;
     
     @JsonProperty("edificios")
-    private List<Edificio> edificios;
+    private List<EdificioDTO> edificios;
     
     @JsonProperty("descricao")
     private String descricao;
@@ -48,11 +48,11 @@ public class ViewProjetoResponseDTO {
         this.empresaNome = empresaNome;
     }
 
-    public List<Edificio> getEdificios() {
+    public List<EdificioDTO> getEdificios() {
         return edificios;
     }
 
-    public void setEdificios(List<Edificio> edificios) {
+    public void setEdificios(List<EdificioDTO> edificios) {
         this.edificios = edificios;
     }
 
