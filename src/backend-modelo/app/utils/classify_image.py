@@ -77,7 +77,7 @@ class Classifier:
         # Detecção YOLO
         results = self.yolo(img_yolo, conf=0.05)[0]
         if not results.boxes or len(results.boxes.xyxy) == 0:
-            return "Nenhuma fissura detectada", 0.0
+            return "Nenhuma fissura detectada", 0.0, None
 
         # Seleciona a caixa com maior confiança
         confs = results.boxes.conf.cpu().numpy()
