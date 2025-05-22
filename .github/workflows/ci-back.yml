@@ -9,6 +9,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DB_URL: jdbc:postgresql://localhost:5432/testdb
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+
     services:
       postgres:
         image: postgres:13
@@ -38,17 +43,12 @@ jobs:
         run: chmod +x mvnw
         working-directory: src/backend
 
-      - name: Load environment variables
-        run: export $(grep -v '^#' .env | xargs)
-        working-directory: src/backend
-
       - name: Build with Maven
         run: ./mvnw clean package -DskipTests
         working-directory: src/backend
 
       - name: Run Spring Boot and wait for server
         run: |
-          export $(grep -v '^#' .env | xargs)
           ./mvnw spring-boot:run &
           for i in {1..30}; do
             sleep 2
