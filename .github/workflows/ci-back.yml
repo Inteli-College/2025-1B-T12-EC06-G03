@@ -50,9 +50,9 @@ jobs:
       - name: Run Spring Boot and wait for server
         run: |
           ./mvnw spring-boot:run &
-          for i in {1..30}; do
+          for i in {1..45}; do
             sleep 2
-            if curl --fail http://localhost:8080; then
+            if curl --fail http://localhost:8080/health; then
               echo "Server is up"
               exit 0
             fi
