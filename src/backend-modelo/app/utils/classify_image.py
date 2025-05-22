@@ -61,7 +61,7 @@ class Classifier:
         model.eval()
         return model
 
-    def classify(self, image: np.ndarray) -> (str, float):
+    def classify(self, image: np.ndarray) -> (str, float, dict):
         """
         Executa detecção com YOLO e classificação com CNN.
         Retorna: (label, confidence, coords)
