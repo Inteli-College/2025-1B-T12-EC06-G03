@@ -9,7 +9,6 @@ import RecoverPassword from "./pages/RecoverPassword.jsx";
 import Relatorios from "./pages/Report.jsx";
 import ImageAnalysis from "./pages/ImageAnalysis.jsx";
 import DroneImages from "./pages/DroneImages.jsx";
-import VisualizarProjeto from "./pages/VisualizarProjeto.jsx";
 import ControleDrone from "./pages/ControleDrone.jsx";
 import UploadImagens from "./pages/UploadImagens.jsx";
 import Clientes from "./pages/Clientes.jsx";
@@ -24,7 +23,6 @@ const Router = () => (
       <Route path="/cadastro" element={<CadastroPage />} />
       <Route path="/recover-password" element={<RecoverPassword />} />
       <Route path="*" element={<NotFound />} />
-      <Route path = "/visualizar-projeto" element={<VisualizarProjeto />} />
 
       {/* Rotas com sidebar padrão */}
       <Route element={<Layout />}>
@@ -35,7 +33,6 @@ const Router = () => (
 
       {/* Rotas com sidebar de projeto */}
       <Route element={<ProjetoLayout />}>
-        <Route path="/projeto" element={<VisualizarProjeto />} />
         <Route path="/relatorio" element={<Relatorios />} />
         <Route path="/edificios" element={<Edificios />} />
         <Route path="/analisar-imagens" element={<ImageAnalysis />} />
