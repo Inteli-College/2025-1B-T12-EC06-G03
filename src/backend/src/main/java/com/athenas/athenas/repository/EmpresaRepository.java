@@ -10,5 +10,6 @@ import com.athenas.athenas.model.Empresa;
 @Repository
 public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
     Optional<Empresa> findByCnpj(String cnpj);
+    Optional<Empresa> findById(int id);
     Optional<Empresa> findByNome(String nome);
 }
