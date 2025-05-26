@@ -148,6 +148,12 @@ public class ViewProjetoService {
     }
 
     private void createLog(String descricao, Projeto projeto){
+            final int MAX_LOG_LENGTH = 255; // Limite de caracteres para VARCHAR(255)
+
+            if (descricao.length() > MAX_LOG_LENGTH) {
+              descricao = descricao.substring(0, MAX_LOG_LENGTH - 3) + "...";
+             }
+             
         LogAlteracao log = new LogAlteracao();
         log.setProjeto(projeto);
         log.setDescricao(descricao);
