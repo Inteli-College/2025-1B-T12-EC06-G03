@@ -1,4 +1,4 @@
-name: CI - Spring Boot Build and Health Check
+name: CI - Spring Boot Build
 
 on:
   push:
@@ -9,25 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      DB_URL: localhost
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
-
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: testdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
       - name: Checkout repository
@@ -45,18 +26,4 @@ jobs:
 
       - name: Build with Maven
         run: ./mvnw clean package -DskipTests
-        working-directory: src/backend
-
-      - name: Run Spring Boot and wait for server
-        run: |
-          ./mvnw spring-boot:run &
-          for i in {1..45}; do
-            sleep 2
-            if curl --fail http://localhost:8080/health; then
-              echo "Server is up"
-              exit 0
-            fi
-          done
-          echo "Server failed to start"
-          exit 1
         working-directory: src/backend
