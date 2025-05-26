@@ -31,7 +31,7 @@ public class ImageController {
     }
     
     @PostMapping(path = "/{projectId}/upload/{edificioId}/{direction}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> uploadFiles(@PathVariable Long projectId, @PathVariable String direction, @PathVariable Long edificioId,
+    public ResponseEntity<Void> uploadFiles(@PathVariable Long projectId, @PathVariable("direction") String direction, @PathVariable("edificioId") Long edificioId,
             @RequestParam("files") List<MultipartFile> files) {
         if (!projetoService.findById(projectId).isPresent()) {
             return ResponseEntity.notFound().build();
