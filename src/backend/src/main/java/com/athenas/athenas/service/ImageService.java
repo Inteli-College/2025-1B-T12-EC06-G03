@@ -84,8 +84,13 @@ public class ImageService {
             imagemRepository.save(imagem);
         } catch (IOException e) {
             throw new RuntimeException("Falha ao ler o arquivo para upload", e);
+        } catch (org.springframework.web.client.HttpClientErrorException | 
+                 org.springframework.web.client.HttpServerErrorException e) {
+            throw new RuntimeException("Erro HTTP ao fazer upload para Supabase: " + e.getMessage(), e);
+        } catch (java.util.NoSuchElementException e) {
+            throw new RuntimeException("Erro ao acessar elemento inexistente: " + e.getMessage(), e);
         } catch (RuntimeException e) {
-            throw new RuntimeException("Falha no upload do arquivo para Supabase", e);
+            throw new RuntimeException("Falha inesperada no upload do arquivo para Supabase", e);
         }
     }
 }
