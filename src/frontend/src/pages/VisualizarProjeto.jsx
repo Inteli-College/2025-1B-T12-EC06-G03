@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import ImagensCarregadas from '../components/ImagensCarregadas';
+import placeholderIcon from '../assets/placeholder-icon.svg';
 
 const VisualizarProjeto = () => {
   const { id } = useParams(); // pega o ID da URL
@@ -135,6 +137,22 @@ const VisualizarProjeto = () => {
     setFormData(data);
     setIsEditing(true);
   };
+
+  // MOCK: Array de fissuras simuladas
+  const fissurasMock = [
+    {
+      id: 1,
+      descricao: 'Fissura na fachada leste, próximo à janela.',
+      imagem_id: 'abc123',
+      imgSrc: placeholderIcon // Use o placeholder ou uma URL de teste
+    },
+    {
+      id: 2,
+      descricao: 'Fissura na base da coluna principal.',
+      imagem_id: 'def456',
+      imgSrc: placeholderIcon
+    }
+  ];
 
   if (isLoading) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">Carregando...</div>;
   if (error) return <div className="text-center mt-10 text-red-500 font-lato text-2xl">Error: {error}</div>;
@@ -368,6 +386,18 @@ const VisualizarProjeto = () => {
                 <li key={index} className="text-1xl font-lato text-[#010131]">{log}</li>
               ))}
             </ul>
+          </div>
+          <div>
+            <h3 className="text-2xl font-lato text-[#010131]">Imagens das Fissuras:</h3>
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              {fissurasMock.map((fissura) => (
+                <ImagensCarregadas
+                  key={fissura.id}
+                  name={fissura.descricao}
+                  imgSrc={fissura.imgSrc}
+                />
+              ))}
+            </div>
           </div>
         </div>
       )}
