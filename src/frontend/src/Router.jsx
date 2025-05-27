@@ -31,7 +31,7 @@ const Router = () => (
         <Route path="imagens-drone" element={<ImagensDrone />} />
         <Route path="analisar-imagens" element={<AnalisarImagens />} />
         <Route path="relatorio" element={<Relatorio />} /> */}
-        <Route path="/projeto" element={<VisualizarProjeto />} />
+        <Route path="/projeto/:id" element={<VisualizarProjeto />} />
         <Route path="/projetos" element={<ProjectPage />} />
         <Route path="/imagens-drone" element={<DroneImages />} />
         <Route path="/controle-drone" element={<ControleDrone />} />
