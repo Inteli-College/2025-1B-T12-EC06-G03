@@ -2,14 +2,66 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ImagensCarregadas from '../components/ImagensCarregadas';
 import placeholderIcon from '../assets/placeholder-icon.svg';
+import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts';
+import html2pdf from 'html2pdf.js';
 
 const VisualizarProjeto = () => {
-  const { id } = useParams(); // pega o ID da URL
+  const { id } = useParams();
   const [data, setData] = useState(null);
   const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [statusProjeto, setStatusProjeto] = useState("em andamento");
+  const [showModalEncerrar, setShowModalEncerrar] = useState(false);
+  const [fissuras, setFissuras] = useState([]); // Estado para armazenar fissuras
+  const [pieData, setPieData] = useState([]);
+  const COLORS = ['#010131', '#75A1C0', '#F59E42', '#E94F37'];
+
+  // MOCK: Array de fissuras simuladas
+  const fissurasMock = [
+    {
+      id: 1,
+      descricao: 'Fissura na fachada leste, próximo à janela.',
+      imagem_id: 'abc123',
+      imgSrc: placeholderIcon,
+      tipo: 'Trinca fina'
+    },
+    {
+      id: 2,
+      descricao: 'Fissura na base da coluna principal.',
+      imagem_id: 'def456',
+      imgSrc: placeholderIcon,
+      tipo: 'Fissura profunda'
+    },
+    {
+      id: 3,
+      descricao: 'Fissura na parede norte.',
+      imagem_id: 'ghi789',
+      imgSrc: placeholderIcon,
+      tipo: 'Fissura larga'
+    },
+    {
+      id: 4,
+      descricao: 'Fissura na parede sul.',
+      imagem_id: 'jkl012',
+      imgSrc: placeholderIcon,
+      tipo: 'Trinca fina'
+    }
+  ];
+
+  const tiposPossiveis = [
+    'Trinca fina',
+    'Fissura larga',
+    'Trinca média',
+    'Fissura profunda'
+  ];
+
+  const totalFissuras = fissurasMock.length;
+  const porcentagemFissuras = tiposPossiveis.map(tipo => {
+    const count = fissurasMock.filter(f => f.tipo === tipo).length;
+    return { name: tipo, value: totalFissuras > 0 ? Math.round((count / totalFissuras) * 100) : 0 };
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -18,23 +70,18 @@ const VisualizarProjeto = () => {
         setIsLoading(false);
         return;
       }
-
       try {
         const response = await fetch(`http://localhost:8080/api/projeto/ViewProjeto`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({idProjeto: id}),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idProjeto: id }),
         });
-
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const result = await response.json();
         setData(result);
-        setFormData(result.message);
+        setFormData(result);
         setError(null);
       } catch (err) {
         setError(err.message || 'Failed to fetch data');
@@ -42,8 +89,40 @@ const VisualizarProjeto = () => {
         setIsLoading(false);
       }
     }
-
     fetchData();
+  }, [id]);
+
+  useEffect(() => {
+    async function fetchFissuras() {
+      try {
+        const response = await fetch(`http://localhost:8080/api/fissura/projeto/${id}`);
+        if (!response.ok) throw new Error('Erro ao buscar fissuras');
+        const fissuras = await response.json();
+        setFissuras(fissuras); // crie um estado fissuras
+      } catch (err) {
+        setError(err.message);
+      }
+    }
+    if (id) fetchFissuras();
+  }, [id]);
+
+  useEffect(() => {
+    async function fetchPorcentagem() {
+      try {
+        const response = await fetch(`http://localhost:8080/api/fissura/porcentagem/${id}`);
+        if (!response.ok) throw new Error('Erro ao buscar porcentagem de fissuras');
+        const data = await response.json();
+        // data.porcentagemPorTipo é um objeto { "Trinca fina": 25, ... }
+        const pieArr = Object.entries(data.porcentagemPorTipo).map(([name, value]) => ({
+          name,
+          value
+        }));
+        setPieData(pieArr);
+      } catch (err) {
+        setError(err.message);
+      }
+    }
+    if (id) fetchPorcentagem();
   }, [id]);
 
   const handleChange = (e) => {
@@ -59,7 +138,6 @@ const VisualizarProjeto = () => {
       ...updatedEdificios[index],
       [field]: value
     };
-
     setFormData({
       ...formData,
       edificios: updatedEdificios
@@ -109,7 +187,6 @@ const VisualizarProjeto = () => {
       setError('ID do projeto não encontrado');
       return;
     }
-
     try {
       const response = await fetch(`http://localhost:8080/api/projeto/UpdateViewProjeto`, {
         method: 'PUT',
@@ -119,11 +196,9 @@ const VisualizarProjeto = () => {
           viewProjetoResponseDTO: formData
         }),
       });
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
       const updatedData = await response.json();
       setData(updatedData);
       setIsEditing(false);
@@ -138,21 +213,24 @@ const VisualizarProjeto = () => {
     setIsEditing(true);
   };
 
-  // MOCK: Array de fissuras simuladas
-  const fissurasMock = [
-    {
-      id: 1,
-      descricao: 'Fissura na fachada leste, próximo à janela.',
-      imagem_id: 'abc123',
-      imgSrc: placeholderIcon // Use o placeholder ou uma URL de teste
-    },
-    {
-      id: 2,
-      descricao: 'Fissura na base da coluna principal.',
-      imagem_id: 'def456',
-      imgSrc: placeholderIcon
-    }
-  ];
+  const exportarRelatorio = () => {
+    const element = document.getElementById('relatorio');
+    const options = {
+      margin: 1,
+      filename: `relatorio-${data.projeto}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    };
+    html2pdf().set(options).from(element).save();
+  };
+
+  const handleConfirmEncerrar = () => {
+    setStatusProjeto("finalizado");
+    setShowModalEncerrar(false);
+  };
+
+  const pieDataFiltered = pieData.filter(item => item.value > 0);
 
   if (isLoading) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">Carregando...</div>;
   if (error) return <div className="text-center mt-10 text-red-500 font-lato text-2xl">Error: {error}</div>;
@@ -160,12 +238,32 @@ const VisualizarProjeto = () => {
 
   return (
     <div className="max-w-3xl ml-14 mt-14 p-6 bg-white font-lato text-dark-blue">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-5xl font-lato text-[#010131] flex items-center gap-4">
+          {data.projeto}
+          <svg
+            onClick={startEditing}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-8 h-8 cursor-pointer text-[#010131]"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+          </svg>
+        </h1>
+        <button
+          onClick={exportarRelatorio}
+          className="px-4 py-2 bg-dark-blue text-white rounded font-lato"
+        >
+          Exportar Relatório
+        </button>
+      </div>
+
       {isEditing ? (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-5xl font-lato text-[#010131]">{data.projeto}</h1>
-          </div>
-
+          {/* Edição dos campos conectada ao backend */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-2xl font-lato text-[#010131]">Responsáveis:</h3>
@@ -272,14 +370,14 @@ const VisualizarProjeto = () => {
               </div>
             ))}
             <button
-                onClick={addEdificio}
-                className="flex items-center px-2 py-1 bg-dark-blue text-white rounded text-sm font-lato hover:bg-blue-darker"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-1">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                Adicionar Edifício
-              </button>
+              onClick={addEdificio}
+              className="flex items-center px-2 py-1 bg-dark-blue text-white rounded text-sm font-lato hover:bg-blue-darker"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-1">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Adicionar Edifício
+            </button>
           </div>
 
           <div>
@@ -320,21 +418,7 @@ const VisualizarProjeto = () => {
           </div>
         </div>
       ) : (
-        <div className="space-y-6">
-          <div className="flex items-center space-x-10">
-            <h1 className="text-5xl font-lato text-[#010131]">{data.projeto}</h1>
-            <svg
-              onClick={startEditing}
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-8 h-8 cursor-pointer text-[#010131]"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-            </svg>
-          </div>
+        <div id="relatorio" className="space-y-6">
           <div>
             <h3 className="text-2xl font-lato text-[#010131]">Responsáveis:</h3>
             <ul className="list-disc pl-5">
@@ -344,59 +428,108 @@ const VisualizarProjeto = () => {
             </ul>
           </div>
           <div>
-            <h3 className="text-2xl font-lato text-[#010131]">
-              Empresa:
-            </h3>
-            <ul className="list-disc pl-5">
-              <li className="text-1xl font-lato text-[#010131]">{data.empresa}</li>
-            </ul>
+            <h3 className="text-2xl font-lato text-[#010131]">Empresa:</h3>
+            <p>{data.empresa}</p>
           </div>
           <div>
-            <h3 className="text-2xl font-lato text-[#010131]">
-              Edifícios:
-            </h3>
+            <h3 className="text-2xl font-lato text-[#010131]">Edifícios:</h3>
             <ul className="list-disc pl-5">
               {(data.edificios || []).map((edificio, index) => (
                 <li key={index} className="text-1xl font-lato text-[#010131]">
                   <h4>{edificio.nome}</h4>
                   <ul className="list-disc pl-5 mt-1">
-                    <li className="text-1xl font-lato text-[#010131]">Localização: {edificio.localizacao}</li>
-                    <li className="text-1xl font-lato text-[#010131]">Tipo: {edificio.tipo}</li>
-                    <li className="text-1xl font-lato text-[#010131]">Pavimentos: {edificio.pavimentos}</li>
-                    <li className="text-1xl font-lato text-[#010131]">Ano de Construção: {edificio.ano_construcao}</li>
+                    <li>Localização: {edificio.localizacao}</li>
+                    <li>Tipo: {edificio.tipo}</li>
+                    <li>Pavimentos: {edificio.pavimentos}</li>
+                    <li>Ano de Construção: {edificio.ano_construcao}</li>
                   </ul>
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h3 className="text-2xl font-lato text-[#010131]">
-              Descrição:
-            </h3>
-            <ul className="list-disc pl-5">
-              <li className="text-1xl font-lato text-[#010131]">{data.descricao}</li>
-            </ul>
+            <h3 className="text-2xl font-lato text-[#010131]">Descrição:</h3>
+            <p>{data.descricao}</p>
           </div>
-          <div>
-            <h3 className="text-2xl font-lato text-[#010131]">
-              Logs de Alterações:
-            </h3>
+          <div className="mt-8">
+            <h3 className="text-2xl font-lato text-[#010131]">Porcentagem de Fissuras:</h3>
+            <div className="w-80 h-80 mx-auto">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={110}
+                    label
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <div className="mt-8">
+            <h3 className="text-2xl font-lato text-[#010131]">Imagens das Fissuras:</h3>
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              {fissuras.map(fissura => (
+                <div key={fissura.id}>
+                  <img src={`CAMINHO_DA_IMAGEM/${fissura.imagem.id}`} alt="Fissura" />
+                  <p>{fissura.descricao}</p>
+                  <p>{fissura.tipo}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-8">
+            <h3 className="text-2xl font-lato text-[#010131]">Logs de Alterações:</h3>
             <ul className="list-disc pl-5">
               {(data.logs_alteracoes || []).map((log, index) => (
                 <li key={index} className="text-1xl font-lato text-[#010131]">{log}</li>
               ))}
             </ul>
+            <div className="mt-4 flex items-center gap-4">
+              <span className={`text-sm font-semibold px-3 py-1 rounded ${statusProjeto === 'finalizado' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                {statusProjeto === 'finalizado' ? 'Finalizado' : 'Em Andamento'}
+              </span>
+              {statusProjeto === 'em andamento' && (
+                <button
+                  onClick={() => setShowModalEncerrar(true)}
+                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+                >
+                  Encerrar Projeto
+                </button>
+              )}
+            </div>
           </div>
-          <div>
-            <h3 className="text-2xl font-lato text-[#010131]">Imagens das Fissuras:</h3>
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              {fissurasMock.map((fissura) => (
-                <ImagensCarregadas
-                  key={fissura.id}
-                  name={fissura.descricao}
-                  imgSrc={fissura.imgSrc}
-                />
-              ))}
+        </div>
+      )}
+
+      {/* Modal de confirmação */}
+      {showModalEncerrar && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded p-6 max-w-md w-full shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Encerrar Projeto</h2>
+            <p className="mb-4">Tem certeza de que deseja encerrar este projeto? Essa ação não pode ser desfeita.</p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowModalEncerrar(false)}
+                className="px-4 py-2 text-gray-600 hover:underline"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmEncerrar}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Encerrar
+              </button>
             </div>
           </div>
         </div>
