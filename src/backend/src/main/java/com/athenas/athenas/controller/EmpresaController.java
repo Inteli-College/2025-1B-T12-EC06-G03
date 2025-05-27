@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.athenas.athenas.DTO.EmpresaDTO;
+import com.athenas.athenas.dto.EmpresaDTO;
 import com.athenas.athenas.model.Empresa;
 import com.athenas.athenas.service.EmpresaService;
 

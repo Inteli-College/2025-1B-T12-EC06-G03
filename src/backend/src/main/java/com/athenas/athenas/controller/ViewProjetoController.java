@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.athenas.athenas.DTO.UpdateViewProjetoRequest;
-import com.athenas.athenas.DTO.ViewProjetoRequestDTO;
-import com.athenas.athenas.DTO.ViewProjetoResponseDTO;
+import com.athenas.athenas.dto.UpdateViewProjetoRequest;
+import com.athenas.athenas.dto.ViewProjetoRequestDTO;
+import com.athenas.athenas.dto.ViewProjetoResponseDTO;
 import com.athenas.athenas.service.ViewProjetoService;
 
 @RestController

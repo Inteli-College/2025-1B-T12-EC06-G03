@@ -1,4 +1,4 @@
-package com.athenas.athenas.DTO;
+package com.athenas.athenas.dto;
 
 public class EmpresaDTO {
     private String nome;
