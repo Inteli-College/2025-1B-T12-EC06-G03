@@ -12,9 +12,9 @@ import {
 } from 'lucide-react'
 import logoImage from '../assets/logo-fundo-branco.svg'
 
-const logoutUser = async () => {
-  console.log('logoutUser')
-  window.location.href = '/'
+const logoutUser = () => {
+  localStorage.clear()
+  window.location.href = '/login'
 }
 
 const SideBarProjetos = ({ projetoAtivo }) => {
@@ -43,7 +43,7 @@ const SideBarProjetos = ({ projetoAtivo }) => {
           </Link>
         </li>
         <li className={location.pathname === '/edificios' ? 'active' : ''}>
-          <Link to={buildProjectLink("/edificios")}> 
+          <Link to={buildProjectLink("/edificios")}>
             <Building />
             <span className="linkText">Edifícios</span>
           </Link>

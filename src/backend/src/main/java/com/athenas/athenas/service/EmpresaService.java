@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.athenas.athenas.dto.EmpresaDTO;
+import com.athenas.athenas.DTO.EmpresaDTO;
 import com.athenas.athenas.model.Empresa;
 import com.athenas.athenas.repository.EmpresaRepository;
 

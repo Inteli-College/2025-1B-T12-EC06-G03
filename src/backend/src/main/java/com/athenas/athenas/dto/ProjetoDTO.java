@@ -1,4 +1,4 @@
-package com.athenas.athenas.dto;
+package com.athenas.athenas.DTO;
 
 import lombok.*;
 

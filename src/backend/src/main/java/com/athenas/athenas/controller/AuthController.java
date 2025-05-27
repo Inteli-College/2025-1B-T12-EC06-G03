@@ -1,11 +1,10 @@
 package com.athenas.athenas.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.athenas.athenas.model.Usuario;
 import com.athenas.athenas.service.AuthService;
@@ -24,11 +23,14 @@ public class AuthController {
     public ResponseEntity<Object> login(@RequestBody LoginRequest request) {
         try {
             Usuario usuario = authService.autenticar(request.getEmail(), request.getSenha());
-            return ResponseEntity.ok(usuario);
+            String token = authService.gerarToken(usuario.getEmail());
+            return ResponseEntity.ok(new LoginResponse(token, usuario));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse("An error occurred during login", "LOGIN_ERROR"));
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage(), "LOGIN_ERROR"));
         }
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody Usuario usuario) {
@@ -40,11 +42,22 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/@me")
+    public ResponseEntity<Object> me(@RequestHeader("Authorization") String authHeader) {
+        Optional<Usuario> usuarioOpt = authService.getUsuarioFromToken(authHeader);
+
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(usuarioOpt.get());
+    }
+
     @Data
     public static class LoginRequest {
         private String email;
         private String senha;
     }
+
     @Data
     @AllArgsConstructor
     public static class ErrorResponse {
@@ -52,4 +65,10 @@ public class AuthController {
         private String code;
     }
 
+    @Data
+    @AllArgsConstructor
+    public static class LoginResponse {
+        private String token;
+        private Usuario usuario;
+    }
 }
