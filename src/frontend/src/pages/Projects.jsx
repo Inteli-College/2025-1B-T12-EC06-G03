@@ -1,31 +1,63 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProjectRecent from '../components/ProjectRecent';
 import ProjectAll from '../components/ProjectAll';
 
 export default function ProjectPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [projects] = useState([
-    { id: 1, name: "USP" },
-    { id: 2, name: "IBM" },
-    { id: 3, name: "Meta" },
-    { id: 4, name: "Apontar" },
-  ]);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
   const [newProject, setNewProject] = useState({
     nome: "",
-    cliente: "",
+    empresa: 1, // Default to first company, you might want to make this dynamic
     descricao: "",
-    status: "em andamento",
+    status: "EM_ANDAMENTO",
   });
 
   const navigate = useNavigate();
 
+  // Fetch projects from backend
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/projetos');
+        if (!response.ok) {
+          throw new Error('Failed to fetch projects');
+        }
+        const data = await response.json();
+        // Transform backend data to match frontend expectations
+        const transformedProjects = data.map(project => ({
+          id: project.id,
+          name: project.nome,
+          status: project.status === 'EM_ANDAMENTO' ? 'em andamento' : 'finalizado',
+          empresa: project.empresa,
+          descricao: project.descricao,
+          dataCriacao: project.dataCriacao,
+          dataAtualizacao: project.dataAtualizacao
+        }));
+        setProjects(transformedProjects);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching projects:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
   const handleOpenProject = (projectName) => {
-    navigate(`/relatorio?projeto=${projectName.toLowerCase()}`);
+    // Find project by name to get the ID
+    const project = projects.find(p => p.name.toLowerCase() === projectName.toLowerCase());
+    if (project) {
+      navigate(`/relatorio?projeto=${projectName.toLowerCase()}&id=${project.id}`);
+    }
   };
 
   const handleCreateProject = () => {
@@ -36,9 +68,9 @@ export default function ProjectPage() {
     setShowModal(false);
     setNewProject({
       nome: "",
-      cliente: "",
+      empresa: 1,
       descricao: "",
-      status: "em andamento",
+      status: "EM_ANDAMENTO",
     });
   };
 
@@ -47,11 +79,61 @@ export default function ProjectPage() {
     setNewProject({ ...newProject, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Projeto criado:", newProject);
-    handleCloseModal();
+    try {
+      const response = await fetch('http://localhost:8080/api/projetos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProject),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create project');
+      }
+
+      const createdProject = await response.json();
+      
+      // Add the new project to the list
+      const transformedProject = {
+        id: createdProject.id,
+        name: createdProject.nome,
+        status: createdProject.status === 'EM_ANDAMENTO' ? 'em andamento' : 'finalizado',
+        empresa: createdProject.empresa,
+        descricao: createdProject.descricao,
+        dataCriacao: createdProject.dataCriacao,
+        dataAtualizacao: createdProject.dataAtualizacao
+      };
+      
+      setProjects([...projects, transformedProject]);
+      handleCloseModal();
+    } catch (err) {
+      console.error('Error creating project:', err);
+      alert('Erro ao criar projeto: ' + err.message);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center py-8">
+          <p className="text-lg">Carregando projetos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center py-8">
+          <p className="text-lg text-red-600">Erro ao carregar projetos: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   const recentProjects = projects.slice(0, 4);
   const filteredProjects = projects.filter((project) =>
@@ -91,11 +173,11 @@ export default function ProjectPage() {
               </div>
 
               <div>
-                <label className="block font-medium">Cliente</label>
+                <label className="block font-medium">Empresa (ID)</label>
                 <input
-                  type="text"
-                  name="cliente"
-                  value={newProject.cliente}
+                  type="number"
+                  name="empresa"
+                  value={newProject.empresa}
                   onChange={handleInputChange}
                   required
                   className="w-full border border-gray-300 p-2 rounded"
@@ -113,6 +195,19 @@ export default function ProjectPage() {
                 />
               </div>
 
+              <div>
+                <label className="block font-medium">Status</label>
+                <select
+                  name="status"
+                  value={newProject.status}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 p-2 rounded"
+                >
+                  <option value="EM_ANDAMENTO">Em Andamento</option>
+                  <option value="PLANEJAMENTO">Planejamento</option>
+                  <option value="FINALIZADO">Finalizado</option>
+                </select>
+              </div>
 
               <div className="flex justify-end gap-4 pt-4">
                 <button

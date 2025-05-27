@@ -1,58 +1,70 @@
-// import React, { useEffect, useState } from 'react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const VisualizarProjeto = () => {
-
-  const initialData = {
-    message: {
-      projeto: "USP",
-      responsaveis: ["Maria Lima", "Rafael Silva"],
-      empresa: "USP",
-      edificios: [{
-        nome: "Prédio do LMPC Escola Politécnica da USP",
-        localizacao: "Av. Professor Luciano Gualberto, travessa 3, n.º 158, São Paulo – SP",
-        tipo: "Pesquisa e Ensino",
-        pavimentos: 2,
-        ano_construcao: "Estimado em 1980",
-      }],
-      descricao: "Este projeto tem como objetivo identificar fissuras na estrutura do prédio do LMPC, localizado na Escola Politécnica da USP. Utilizando imagens capturadas por drone, o sistema analisa as fachadas do edifício para detectar possíveis falhas estruturais.",
-      logs_alteracoes: [
-        "06/05/2025 - Upload da Imagem Captura01.png",
-        "05/05/2025 - Análise da Imagem Upload03.png feita"
-      ]
-  }};
-
-  const [data, setData] = useState(initialData);
-  const [formData, setFormData] = useState(initialData.message);
-  // const [data, setData] = useState(null);
-  // const [formData, setFormData] = useState({});
+  const [searchParams] = useSearchParams();
+  const projetoId = searchParams.get("id");
+  
+  const [data, setData] = useState(null);
+  const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
-  // const [error, setError] = useState(null);
-  // const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // useEffect(() => {
-    
-  //   async function fetchData() {
-  //     try {
-  //       const response = await fetch('http://127.0.0.1:5000/teste');
-        
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-        
-  //       const result = await response.json();
-  //       setData(result);
-  //       setFormData(result.message);
-  //       setError(null);
-  //     } catch (err) {
-  //       setError(err.message || 'Failed to fetch data');
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   }
+  useEffect(() => {
+    async function fetchData() {
+      if (!projetoId) {
+        setError('ID do projeto não fornecido');
+        setIsLoading(false);
+        return;
+      }
 
-  //   fetchData();
-  // }, []);
+      try {
+        const response = await fetch('http://localhost:8080/api/projeto/ViewProjeto', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json' 
+          },
+          body: JSON.stringify({ idProjeto: parseInt(projetoId) }),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        // Transform backend data to match frontend expectations
+        const transformedData = {
+          message: {
+            projeto: result.nome || '',
+            responsaveis: result.responsaveisNomes || [],
+            empresa: result.empresaNome || '',
+            edificios: result.edificios?.map(edificio => ({
+              nome: edificio.nome || '',
+              localizacao: edificio.localizacao || '',
+              tipo: edificio.tipo || '',
+              pavimentos: edificio.pavimentos || '',
+              ano_construcao: '' // This field might need to be added to your backend
+            })) || [],
+            descricao: result.descricao || '',
+            logs_alteracoes: result.logs || []
+          }
+        };
+        
+        setData(transformedData);
+        setFormData(transformedData.message);
+        setError(null);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch data');
+        console.error('Error fetching project data:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [projetoId]);
 
   const handleChange = (e) => {
     setFormData({
@@ -114,26 +126,65 @@ const VisualizarProjeto = () => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/teste/save', {
+      // Transform form data back to backend format
+      const backendData = {
+        nome: formData.projeto,
+        responsaveisNomes: formData.responsaveis,
+        empresaNome: formData.empresa,
+        edificios: formData.edificios?.map(edificio => ({
+          nome: edificio.nome,
+          localizacao: edificio.localizacao,
+          tipo: edificio.tipo,
+          pavimentos: edificio.pavimentos
+        })) || [],
+        descricao: formData.descricao,
+        logs: formData.logs_alteracoes
+      };
+
+      const response = await fetch('http://localhost:8080/api/projeto/UpdateViewProjeto', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          idProjeto: parseInt(projetoId),
+          viewProjetoResponseDTO: backendData
+        }),
       });
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      setData({ ...data, message: formData });
+      const updatedData = await response.json();
+      
+      // Transform the response back to frontend format
+      const transformedUpdatedData = {
+        message: {
+          projeto: updatedData.nome || '',
+          responsaveis: updatedData.responsaveisNomes || [],
+          empresa: updatedData.empresaNome || '',
+          edificios: updatedData.edificios?.map(edificio => ({
+            nome: edificio.nome || '',
+            localizacao: edificio.localizacao || '',
+            tipo: edificio.tipo || '',
+            pavimentos: edificio.pavimentos || '',
+            ano_construcao: ''
+          })) || [],
+          descricao: updatedData.descricao || '',
+          logs_alteracoes: updatedData.logs || []
+        }
+      };
+      
+      setData(transformedUpdatedData);
       setIsEditing(false);
     } catch (err) {
-      // setError(err.message || 'Failed to save data');
+      setError(err.message || 'Failed to save data');
+      console.error('Error saving project data:', err);
     }
   };
 
-  // if (isLoading) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">Carregando...</div>;
-  // if (error) return <div className="text-center mt-10 text-red-500 font-lato text-2xl">Error: {error}</div>;
-  // if (!data) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">No data available</div>;
+  if (isLoading) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">Carregando...</div>;
+  if (error) return <div className="text-center mt-10 text-red-500 font-lato text-2xl">Error: {error}</div>;
+  if (!data) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">No data available</div>;
 
   return (
     <div className="max-w-3xl ml-14 mt-14 p-6 bg-white font-lato text-dark-blue">
@@ -340,7 +391,9 @@ const VisualizarProjeto = () => {
                     <li className="text-1xl font-lato text-[#010131]">Localização: {edificio.localizacao}</li>
                     <li className="text-1xl font-lato text-[#010131]">Tipo: {edificio.tipo}</li>
                     <li className="text-1xl font-lato text-[#010131]">Pavimentos: {edificio.pavimentos}</li>
-                    <li className="text-1xl font-lato text-[#010131]">Ano de Construção: {edificio.ano_construcao}</li>
+                    {edificio.ano_construcao && (
+                      <li className="text-1xl font-lato text-[#010131]">Ano de Construção: {edificio.ano_construcao}</li>
+                    )}
                   </ul>
                 </li>
               ))}
