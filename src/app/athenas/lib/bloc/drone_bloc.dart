@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import '../models/drone_command.dart';
 import '../models/drone_response.dart';
+import '../models/server_config.dart';
 import '../services/drone_service.dart';
 import 'drone_event.dart';
 import 'drone_state.dart';
@@ -12,7 +13,8 @@ class DroneBloc extends Bloc<DroneEvent, DroneState> {
   late StreamSubscription<DroneResponse> _droneResponseSubscription;
   Timer? _batteryCheckTimer;
 
-  DroneBloc(this._droneService) : super(DroneState.initial()) {
+  DroneBloc(this._droneService, [ServerConfig? initialConfig])
+      : super(DroneState.initialWithConfig(initialConfig)) {
     _droneResponseSubscription = _droneService.responseStream.listen((response) {
       add(ResponseReceivedEvent(response));
     });
