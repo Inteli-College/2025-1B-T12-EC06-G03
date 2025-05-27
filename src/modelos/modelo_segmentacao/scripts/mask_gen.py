@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy as np
 from skimage.filters import sato
-from skimage import img_as_ubyte
+from skimage import measure
 
 # Datasets and classes
 datasets = ['train', 'val', 'test']
@@ -60,13 +60,26 @@ for dataset in datasets:
         # 🔸 Binarização
         _, mask = cv2.threshold(sato_uint8, 75, 255, cv2.THRESH_BINARY)
 
-        # 🔸 Fechamento morfológico
+        # 🔸 Fechamento morfológico (opcional, mas geralmente ajuda)
         kernel = np.ones((5, 5), np.uint8)
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
 
+        # 🔸 Remoção de pequenos objetos (muito eficaz contra ruído)
+        mask_bool = mask.astype(bool)
+        mask_clean = measure.label(mask_bool, connectivity=2)
+        cleaned_mask = np.zeros_like(mask)
+
+        # Ajuste este valor (min_size) conforme o tamanho dos ruídos
+        min_size = 200  # pixels
+
+        for region in measure.regionprops(mask_clean):
+            if region.area >= min_size:
+                for coord in region.coords:
+                    cleaned_mask[coord[0], coord[1]] = 255
+
         # ✅ Salvar máscara
         mask_path = os.path.join(root_masks, mask_subfolder, image_name)
-        cv2.imwrite(mask_path, mask)
+        cv2.imwrite(mask_path, cleaned_mask)
         print(f"✅ Mask saved: {mask_path}")
 
 print("🎯 All masks have been generated successfully!")
