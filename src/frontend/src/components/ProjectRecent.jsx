@@ -2,7 +2,7 @@
 
 import ProjectCard from "./ProjectCard"
 
-const ProjectRecent = ({ projects, onCreateProject }) => {
+const ProjectRecent = ({ projects, onCreateProject, onViewReport }) => {
   return (
     <div className="mb-10">
       <div className="flex justify-between items-center mb-8">
@@ -17,7 +17,11 @@ const ProjectRecent = ({ projects, onCreateProject }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
         {projects.map((project) => (
-          <ProjectCard key={project.id} name={project.name} />
+          <ProjectCard
+            key={project.id}
+            name={project.name}
+            onViewReport={onViewReport}
+          />
         ))}
       </div>
     </div>

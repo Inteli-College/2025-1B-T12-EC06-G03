@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @Entity
 @Table(name = "projetos")
 @Data
@@ -25,10 +28,12 @@ public class Projeto {
     
     private String descricao;
     
-    @Column(name = "data_criacao")
+    @Column(name = "data_criacao", updatable = false)
+    @CreationTimestamp
     private LocalDateTime dataCriacao;
     
     @Column(name = "data_atualizacao")
+    @UpdateTimestamp
     private LocalDateTime dataAtualizacao;
     
     private String status;
