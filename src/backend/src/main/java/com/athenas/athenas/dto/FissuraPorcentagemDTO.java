@@ -1,4 +1,4 @@
-package com.athenas.athenas.DTO;
+package com.athenas.athenas.dto;
 
 import java.util.Map;
 

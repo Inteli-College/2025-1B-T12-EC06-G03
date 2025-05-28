@@ -1,6 +1,6 @@
 package com.athenas.athenas.service;
 
-import com.athenas.athenas.DTO.FissuraPorcentagemDTO;
+import com.athenas.athenas.dto.FissuraPorcentagemDTO;
 import com.athenas.athenas.model.Edificio;
 import com.athenas.athenas.model.Fachada;
 import com.athenas.athenas.model.Imagem;

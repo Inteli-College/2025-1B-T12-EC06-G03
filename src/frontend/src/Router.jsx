@@ -28,7 +28,6 @@ const Router = () => (
       {/* Rotas privadas */}
       <Route element={<PrivateRoute />}>
         {/* Rota sem sidebar */}
-        <Route path="/relatorio/:id" element={<Relatorios />} />
 
         {/* Rotas com sidebar padrão */}
         <Route element={<Layout />}>

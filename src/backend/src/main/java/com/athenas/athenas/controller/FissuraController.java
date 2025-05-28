@@ -1,12 +1,12 @@
 package com.athenas.athenas.controller;
 
-import com.athenas.athenas.DTO.FissuraPorcentagemDTO;
 import com.athenas.athenas.model.Fissura;
 import com.athenas.athenas.repository.FissuraRepository;
 import com.athenas.athenas.model.Imagem;
 import com.athenas.athenas.repository.ImagemRepository;
 import com.athenas.athenas.model.Fachada;
 import com.athenas.athenas.repository.FachadaRepository;
+import com.athenas.athenas.dto.FissuraPorcentagemDTO;
 import com.athenas.athenas.model.Edificio;
 import com.athenas.athenas.repository.EdificioRepository;
 import com.athenas.athenas.model.Projeto;
