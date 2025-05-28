@@ -12,57 +12,9 @@ const VisualizarProjeto = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [statusProjeto, setStatusProjeto] = useState("em andamento");
-  const [showModalEncerrar, setShowModalEncerrar] = useState(false);
-  const [fissuras, setFissuras] = useState([]); // Estado para armazenar fissuras
   const [pieData, setPieData] = useState([]);
   const [imagensProjeto, setImagensProjeto] = useState([]);
-  const COLORS = ['#010131', '#75A1C0', '#F59E42', '#E94F37'];
-
-  // MOCK: Array de fissuras simuladas
-  const fissurasMock = [
-    {
-      id: 1,
-      descricao: 'Fissura na fachada leste, próximo à janela.',
-      imagem_id: 'abc123',
-      imgSrc: placeholderIcon,
-      tipo: 'Trinca fina'
-    },
-    {
-      id: 2,
-      descricao: 'Fissura na base da coluna principal.',
-      imagem_id: 'def456',
-      imgSrc: placeholderIcon,
-      tipo: 'Fissura profunda'
-    },
-    {
-      id: 3,
-      descricao: 'Fissura na parede norte.',
-      imagem_id: 'ghi789',
-      imgSrc: placeholderIcon,
-      tipo: 'Fissura larga'
-    },
-    {
-      id: 4,
-      descricao: 'Fissura na parede sul.',
-      imagem_id: 'jkl012',
-      imgSrc: placeholderIcon,
-      tipo: 'Trinca fina'
-    }
-  ];
-
-  const tiposPossiveis = [
-    'Trinca fina',
-    'Fissura larga',
-    'Trinca média',
-    'Fissura profunda'
-  ];
-
-  const totalFissuras = fissurasMock.length;
-  const porcentagemFissuras = tiposPossiveis.map(tipo => {
-    const count = fissurasMock.filter(f => f.tipo === tipo).length;
-    return { name: tipo, value: totalFissuras > 0 ? Math.round((count / totalFissuras) * 100) : 0 };
-  });
+  const COLORS = ['#010131', '#75A1C0', '#0C668D', '#F7FCFE'];
 
   useEffect(() => {
     async function fetchData() {
@@ -91,20 +43,6 @@ const VisualizarProjeto = () => {
       }
     }
     fetchData();
-  }, [id]);
-
-  useEffect(() => {
-    async function fetchFissuras() {
-      try {
-        const response = await fetch(`http://localhost:8080/api/fissura/projeto/${id}`);
-        if (!response.ok) throw new Error('Erro ao buscar fissuras');
-        const fissuras = await response.json();
-        setFissuras(fissuras); // crie um estado fissuras
-      } catch (err) {
-        setError(err.message);
-      }
-    }
-    if (id) fetchFissuras();
   }, [id]);
 
   useEffect(() => {
@@ -239,13 +177,6 @@ const VisualizarProjeto = () => {
     };
     html2pdf().set(options).from(element).save();
   };
-
-  const handleConfirmEncerrar = () => {
-    setStatusProjeto("finalizado");
-    setShowModalEncerrar(false);
-  };
-
-  const pieDataFiltered = pieData.filter(item => item.value > 0);
 
   if (isLoading) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">Carregando...</div>;
   if (error) return <div className="text-center mt-10 text-red-500 font-lato text-2xl">Error: {error}</div>;
