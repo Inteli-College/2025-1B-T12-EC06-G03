@@ -123,6 +123,14 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 | **SidebarProjetos** | Navegação lateral exibida apenas ao abrir um projeto específico.          |
 
 
+## Conclusão
 
+&emsp;As mudanças realizadas nesta Sprint representam um **avanço estratégico em organização, usabilidade e escalabilidade** do sistema. Ao reorganizar a navegação por projeto, separar responsabilidades em telas específicas e garantir a integridade das ações críticas (como edição de relatório, status de projeto e aprovação de imagens), o projeto se torna mais:
+
+* **Clareado para o usuário final**, com informações acessíveis e centralizadas.
+* **Manutenível e escalável**, facilitando o onboarding de novos devs e expansão futura.
+* **Confiável e robusto**, com validações de etapa, menos pontos de falha e mais previsibilidade nas ações.
+
+&emsp;Com isso, o sistema se posiciona de forma sólida para evoluir em direção a integrações mais avançadas, como painéis analíticos, permissões por papel e auditoria contínua das imagens e estruturas.
 
 
