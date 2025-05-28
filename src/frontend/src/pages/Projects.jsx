@@ -1,28 +1,55 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProjectRecent from '../components/ProjectRecent';
 import ProjectAll from '../components/ProjectAll';
 
 export default function ProjectPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [projects] = useState([
-    { id: 1, name: "USP" },
-    { id: 2, name: "IBM" },
-    { id: 3, name: "Meta" },
-    { id: 4, name: "Apontar" },
-  ]);
+  const [projects, setProjects] = useState([]);
+  const [empresas, setEmpresas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [showModal, setShowModal] = useState(false);
   const [newProject, setNewProject] = useState({
     nome: "",
-    cliente: "",
+    empresa: null,
     descricao: "",
-    status: "em andamento",
+    status: "EM_ANDAMENTO",
   });
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const response = await fetch('http://localhost:8080/api/projetos');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setProjects(data);
+
+        const res = await fetch('http://localhost:8080/api/empresa/getEmpresas');
+        const dados = await res.json();
+        setEmpresas(dados);
+
+      } catch (err) {
+        console.error('Error fetching projects:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const handleOpenProject = (projectName) => {
     navigate(`/relatorio?projeto=${projectName.toLowerCase()}`);
@@ -36,9 +63,9 @@ export default function ProjectPage() {
     setShowModal(false);
     setNewProject({
       nome: "",
-      cliente: "",
+      empresa: null,
       descricao: "",
-      status: "em andamento",
+      status: "EM_ANDAMENTO",
     });
   };
 
@@ -47,16 +74,78 @@ export default function ProjectPage() {
     setNewProject({ ...newProject, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleEmpresaChange = (e) => {
+    const { value } = e.target;
+    setNewProject({
+      ...newProject,
+      empresa: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Projeto criado:", newProject);
+    const empresaSelecionada = empresas.find(emp => emp.nome === newProject.empresa);
+    
+    if (!empresaSelecionada) {
+      alert('Por favor, selecione uma empresa válida');
+      return;
+    }
+
+    const projectData = {
+      nome: newProject.nome,
+      empresa: empresaSelecionada.id,
+      descricao: newProject.descricao,
+      status: newProject.status
+    };
+
+    const response = await fetch('http://localhost:8080/api/projetos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(projectData)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro HTTP: ${response.status}`);
+    }
+
+    const createdProject = await response.json();
+    console.log('Projeto criado com sucesso:', createdProject);
+
+    setProjects(prevProjects => [...prevProjects, createdProject]);
+
     handleCloseModal();
+
+    alert('Projeto criado com sucesso!');
   };
 
   const recentProjects = projects.slice(0, 4);
   const filteredProjects = projects.filter((project) =>
-    project.name.toLowerCase().includes(searchTerm.toLowerCase())
+    project.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <main className="container mx-auto p-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-lg">Carregando projetos...</div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error && projects.length === 0) {
+    return (
+      <main className="container mx-auto p-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-lg text-red-600">
+            Erro ao carregar projetos: {error}
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="container mx-auto p-6">
@@ -92,14 +181,20 @@ export default function ProjectPage() {
 
               <div>
                 <label className="block font-medium">Cliente</label>
-                <input
-                  type="text"
-                  name="cliente"
-                  value={newProject.cliente}
-                  onChange={handleInputChange}
+                <select
+                  name="empresa"
+                  value={newProject.empresa}
+                  onChange={handleEmpresaChange}
                   required
                   className="w-full border border-gray-300 p-2 rounded"
-                />
+                >
+                  <option value="">Selecione uma empresa</option>
+                  {empresas.map((empresa) => (
+                    <option key={empresa.id} value={empresa.nome}>
+                      {empresa.nome}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>

@@ -14,7 +14,7 @@ const ProjectAll = ({ projects, searchTerm, onSearchChange, onViewReport }) => {
         {projects.map((project) => (
           <div key={project.id} className="bg-white p-4 rounded shadow">
             <ProjectElement
-              name={project.name}
+              name={project.nome}
               onViewReport={onViewReport}
             />
             <div className="mt-2">

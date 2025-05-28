@@ -19,7 +19,7 @@ const ProjectRecent = ({ projects, onCreateProject, onViewReport }) => {
         {projects.map((project) => (
           <ProjectCard
             key={project.id}
-            name={project.name}
+            name={project.nome}
             onViewReport={onViewReport}
           />
         ))}
