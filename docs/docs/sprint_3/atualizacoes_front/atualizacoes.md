@@ -59,3 +59,22 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 &emsp;Removemos o uso do `confirm()` por boas práticas de lint e segurança. Em seu lugar, foi desenvolvido um **modal de confirmação customizado**, com estilização em Tailwind e comportamento mais fluido. Isso melhora a **coerência visual e acessibilidade**.
 
+### 5. **Proteção de logs no relatório**
+
+&emsp;Os campos de **logs de alteração foram excluídos do modo de edição**, garantindo que edições de relatório não comprometam o histórico de ações. Isso é essencial para **auditoria, rastreabilidade e segurança da informação**.
+
+<div style={{ textAlign: 'center' }}>
+  <p><strong>Figura 3 - Logs de Edição do Relatório</strong></p>
+  <img 
+    src={useBaseUrl('/img/atualizacao3.png')} 
+    alt="Logs de Edição do Relatório" 
+    title="Logs de Edição do Relatório" 
+    style={{ maxWidth: '100%', height: 'auto' }}
+  />
+  <p>Fonte: Elaborado pelos autores (2025)</p>
+</div>
+
+### 6. **Tratamento de erros na tela de relatórios**
+
+&emsp;Adicionamos tratamento para evitar quebra de tela quando um projeto selecionado não possui dados completos (`porcentagemFissuras`, por exemplo). Isso corrige um erro crítico de runtime e **melhora a resiliência da aplicação**.
+
