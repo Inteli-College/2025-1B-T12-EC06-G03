@@ -1,4 +1,8 @@
 {
     "label": "Sprint 3",
-    "position": 4
+    "position": 3,
+    "link": {
+      "type": "generated-index",
+      "description": "Durante a Sprint 3 do nosso projeto, focamos em aprimorar a experiência do usuário e otimizar o desempenho do sistema. Implementamos diversas melhorias no frontend, backend, modelo e incluindo correções de bugs e novas funcionalidades. Nesta seção, apresentaremos os detalhes técnicos dessas atualizações, as tecnologias utilizadas e as mudanças implementadas para garantir uma navegação mais fluida e intuitiva."
+    }
 }
