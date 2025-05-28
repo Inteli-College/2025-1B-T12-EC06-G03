@@ -9,7 +9,6 @@ import RecoverPassword from "./pages/RecoverPassword.jsx";
 import Relatorios from "./pages/Report.jsx";
 import ImageAnalysis from "./pages/ImageAnalysis.jsx";
 import DroneImages from "./pages/DroneImages.jsx";
-import VisualizarProjeto from "./pages/VisualizarProjeto.jsx";
 import ControleDrone from "./pages/ControleDrone.jsx";
 import UploadImagens from "./pages/UploadImagens.jsx";
 import Clientes from "./pages/Clientes.jsx";
@@ -30,10 +29,9 @@ const Router = () => (
         <Route path="/clientes" element={<Clientes />} />
         <Route path="/projects" element={<ProjectPage />} />
         <Route path="/projetos" element={<ProjectPage />} />
-        <Route path="/relatorio" element={<Relatorios />} />
         <Route path="/analisar-imagens" element={<ImageAnalysis />} />
         <Route path="/controle-drone" element={<ControleDrone />} />
-        <Route path="/projeto/:id" element={<VisualizarProjeto />} />
+        <Route path="/relatorio/:id" element={<Relatorios />} />
       </Route>
 
       {/* Rotas com sidebar de projeto */}
