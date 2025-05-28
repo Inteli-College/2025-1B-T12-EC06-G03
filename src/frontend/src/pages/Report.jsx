@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ImagensCarregadas from '../components/ImagensCarregadas';
-import placeholderIcon from '../assets/placeholder-icon.svg';
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts';
 import html2pdf from 'html2pdf.js';
 
