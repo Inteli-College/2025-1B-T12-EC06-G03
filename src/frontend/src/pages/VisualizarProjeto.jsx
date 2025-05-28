@@ -498,14 +498,11 @@ const VisualizarProjeto = () => {
                 const SUPABASE_BUCKET = "img-projects";
                 const url = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${SUPABASE_BUCKET}/${imagem.caminhoArquivo}`;
                 return (
-                  <div key={imagem.id}>
-                    <img
-                      src={url}
-                      alt={imagem.nomeArquivo}
-                      style={{ maxWidth: 200, maxHeight: 200, objectFit: "contain" }}
-                    />
-                    <p>{imagem.nomeArquivo}</p>
-                  </div>
+                  <ImagensCarregadas
+                    key={imagem.id}
+                    name={imagem.nomeArquivo}
+                    imgSrc={url}
+                  />
                 );
               })}
             </div>

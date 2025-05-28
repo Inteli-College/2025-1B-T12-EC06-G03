@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import placeholderIcon from '../assets/placeholder-icon.svg'; // Renomeado para evitar conflito
+import placeholderIcon from '../assets/placeholder-icon.svg';
 
 const ImagensCarregadas = ({ name, imgSrc }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,29 +14,28 @@ const ImagensCarregadas = ({ name, imgSrc }) => {
 
   return (
     <div>
-      {/* Adiciona padding interno ao contêiner azul */}
-      <div className="bg-blue-dark rounded-md shadow-md p-5">
+      <div className="bg-blue-dark rounded-md shadow-md p-2">
         <div
-          className="relative bg-gray-light rounded-md overflow-hidden"
-          style={{ paddingTop: '60%' }} // Mantém a proporção da imagem
+          className="relative bg-gray-light rounded-md overflow-hidden border border-gray-300"
+          style={{ paddingTop: '50%' }} 
         >
           <div className="absolute inset-0 flex items-center justify-center">
             <img
-              src={imgSrc || placeholderIcon} // Usa imgSrc ou o placeholder padrão
+              src={imgSrc || placeholderIcon}
               alt={name || 'Imagem Placeholder'}
-              className="w-3/4 h-3/4 object-contain cursor-pointer" // Ajusta o tamanho do placeholder
-              onClick={handleImageClick} // Abre o modal ao clicar
+              className="w-full h-full object-contain cursor-pointer" 
+              onClick={handleImageClick} 
             />
           </div>
         </div>
         <div className="flex justify-between items-center"></div>
       </div>
+      <p className="text-center mt-2 text-[#010131]">{name}</p>
 
-      {/* Modal para exibir a imagem ampliada */}
       {isModalOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
-          onClick={closeModal} // Fecha o modal ao clicar fora da imagem
+          onClick={closeModal} 
         >
           <div className="relative">
             <img
