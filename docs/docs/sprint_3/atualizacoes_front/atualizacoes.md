@@ -103,7 +103,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
   <p><strong>Figura 5 - Aprovar Imagens Retonadas do Modelo</strong></p>
   <img 
     src={useBaseUrl('/img/atualizacao5.png')} 
-    alt="Aprovar Imagens Retonadas do Modelo" 
+    alt="Aprovar Imagens Retornadas do Modelo" 
     title="Aprovar Imagens Retonadas do Modelo" 
     style={{ maxWidth: '100%', height: 'auto' }}
   />
