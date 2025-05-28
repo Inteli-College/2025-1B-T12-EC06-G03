@@ -78,3 +78,35 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 &emsp;Adicionamos tratamento para evitar quebra de tela quando um projeto selecionado não possui dados completos (`porcentagemFissuras`, por exemplo). Isso corrige um erro crítico de runtime e **melhora a resiliência da aplicação**.
 
+### 7. **Padronização visual e responsiva**
+
+&emsp;Foram aplicadas diversas correções no layout utilizando Tailwind para garantir que todos os componentes sigam uma **identidade visual consistente**, com melhor experiência para o usuário final e reforço ao branding.
+
+### 8. **Gestão do ciclo de análise de imagens**
+
+&emsp;Agora, as imagens capturadas por drones ou carregadas manualmente apresentam **status visível indicando se já foram processadas pelo modelo**. Após o processamento, o sistema permite que **um funcionário aprove ou não o resultado da análise**. Apenas imagens aprovadas passam a constar no relatório.
+
+<div style={{ textAlign: 'center' }}>
+  <p><strong>Figura 4 - Status das Imagens para o Modelo</strong></p>
+  <img 
+    src={useBaseUrl('/img/atualizacao4.png')} 
+    alt="Status das Imagens para o Modelo" 
+    title="Status das Imagens para o Modelo" 
+    style={{ maxWidth: '100%', height: 'auto' }}
+  />
+  <p>Fonte: Elaborado pelos autores (2025)</p>
+</div>
+
+&emsp;Essa funcionalidade fortalece a **validação humana** antes da tomada de decisão, garantindo mais **confiabilidade e precisão na documentação técnica**.
+
+<div style={{ textAlign: 'center' }}>
+  <p><strong>Figura 5 - Aprovar Imagens Retonadas do Modelo</strong></p>
+  <img 
+    src={useBaseUrl('/img/atualizacao5.png')} 
+    alt="Aprovar Imagens Retonadas do Modelo" 
+    title="Aprovar Imagens Retonadas do Modelo" 
+    style={{ maxWidth: '100%', height: 'auto' }}
+  />
+  <p>Fonte: Elaborado pelos autores (2025)</p>
+</div>
+
