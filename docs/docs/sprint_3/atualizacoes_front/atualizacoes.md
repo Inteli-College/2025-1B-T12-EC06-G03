@@ -40,3 +40,22 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 &emsp;Telas como `/relatorio`, `/analise` e `/drone` agora aceitam parâmetros como `?projeto=usp`. Isso permite que os dados de cada projeto sejam **carregados dinamicamente**, melhorando a escalabilidade e evitando redundância de rotas.
 
+### 3. **Estado do Projeto (Em Andamento / Finalizado)**
+
+&emsp;Adicionou-se **um status visível de andamento** nos cards dos projetos, bem como dentro do relatório. Um botão “Encerrar Projeto” também foi incluído com um modal de confirmação seguro. Isso reforça o **controle de fluxo e ciclo de vida do projeto**, além de evitar alterações acidentais.
+
+<div style={{ textAlign: 'center' }}>
+  <p><strong>Figura 2 - Atualização Status do Projeto</strong></p>
+  <img 
+    src={useBaseUrl('/img/atualizacao2.png')} 
+    alt="Atualização Status do Projeto" 
+    title="Atualização Status do Projeto" 
+    style={{ maxWidth: '100%', height: 'auto' }}
+  />
+  <p>Fonte: Elaborado pelos autores (2025)</p>
+</div>
+
+### 4. **Substituição de `confirm()` por Modal**
+
+&emsp;Removemos o uso do `confirm()` por boas práticas de lint e segurança. Em seu lugar, foi desenvolvido um **modal de confirmação customizado**, com estilização em Tailwind e comportamento mais fluido. Isso melhora a **coerência visual e acessibilidade**.
+
