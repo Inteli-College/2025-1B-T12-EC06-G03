@@ -14,7 +14,7 @@ const Clientes = () => {
   useEffect(() => {
     const fetchEmpresas = async () => {
       try {
-        const response = await fetch(`${baseUrl}/api/empresa/getEmpresas`);
+        const response = await fetch(`${import.meta.env?.VITE_BACKEND_BASE_URL}/api/empresa/getEmpresas`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

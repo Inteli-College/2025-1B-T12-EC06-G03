@@ -30,7 +30,7 @@ export default function ProjectPage() {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(`${baseUrl}/api/projetos`);
+        const response = await fetch(`${import.meta.env?.VITE_BACKEND_BASE_URL}/api/projetos`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -38,7 +38,7 @@ export default function ProjectPage() {
         const data = await response.json();
         setProjects(data);
 
-        const res = await fetch(`${baseUrl}/api/empresa/getEmpresas`);
+        const res = await fetch(`${import.meta.env?.VITE_BACKEND_BASE_URL}/api/empresa/getEmpresas`);
         const dados = await res.json();
         setEmpresas(dados);
 
