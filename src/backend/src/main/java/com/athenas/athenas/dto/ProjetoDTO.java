@@ -11,7 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-
 public class ProjetoDTO {
     private String nome;
     private String descricao;
