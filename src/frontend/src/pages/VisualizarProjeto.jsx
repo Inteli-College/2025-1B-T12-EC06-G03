@@ -16,6 +16,7 @@ const VisualizarProjeto = () => {
   const [showModalEncerrar, setShowModalEncerrar] = useState(false);
   const [fissuras, setFissuras] = useState([]); // Estado para armazenar fissuras
   const [pieData, setPieData] = useState([]);
+  const [imagensProjeto, setImagensProjeto] = useState([]);
   const COLORS = ['#010131', '#75A1C0', '#F59E42', '#E94F37'];
 
   // MOCK: Array de fissuras simuladas
@@ -123,6 +124,20 @@ const VisualizarProjeto = () => {
       }
     }
     if (id) fetchPorcentagem();
+  }, [id]);
+
+  useEffect(() => {
+    async function fetchImagensProjeto() {
+      try {
+        const response = await fetch(`http://localhost:8080/api/images/${id}`);
+        if (!response.ok) throw new Error('Erro ao buscar imagens do projeto');
+        const imagens = await response.json();
+        setImagensProjeto(imagens);
+      } catch (err) {
+        setError(err.message);
+      }
+    }
+    if (id) fetchImagensProjeto();
   }, [id]);
 
   const handleChange = (e) => {
@@ -476,15 +491,23 @@ const VisualizarProjeto = () => {
             </div>
           </div>
           <div className="mt-8">
-            <h3 className="text-2xl font-lato text-[#010131]">Imagens das Fissuras:</h3>
+            <h3 className="text-2xl font-lato text-[#010131]">Imagens do Projeto:</h3>
             <div className="grid grid-cols-2 gap-4 mt-4">
-              {fissuras.map(fissura => (
-                <div key={fissura.id}>
-                  <img src={`CAMINHO_DA_IMAGEM/${fissura.imagem.id}`} alt="Fissura" />
-                  <p>{fissura.descricao}</p>
-                  <p>{fissura.tipo}</p>
-                </div>
-              ))}
+              {imagensProjeto.map(imagem => {
+                const SUPABASE_PROJECT_ID = "efinfalxxeaqfkvboewx"; 
+                const SUPABASE_BUCKET = "img-projects";
+                const url = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${SUPABASE_BUCKET}/${imagem.caminhoArquivo}`;
+                return (
+                  <div key={imagem.id}>
+                    <img
+                      src={url}
+                      alt={imagem.nomeArquivo}
+                      style={{ maxWidth: 200, maxHeight: 200, objectFit: "contain" }}
+                    />
+                    <p>{imagem.nomeArquivo}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="mt-8">
@@ -494,42 +517,8 @@ const VisualizarProjeto = () => {
                 <li key={index} className="text-1xl font-lato text-[#010131]">{log}</li>
               ))}
             </ul>
-            <div className="mt-4 flex items-center gap-4">
-              <span className={`text-sm font-semibold px-3 py-1 rounded ${statusProjeto === 'finalizado' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                {statusProjeto === 'finalizado' ? 'Finalizado' : 'Em Andamento'}
-              </span>
-              {statusProjeto === 'em andamento' && (
-                <button
-                  onClick={() => setShowModalEncerrar(true)}
-                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
-                >
-                  Encerrar Projeto
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de confirmação */}
-      {showModalEncerrar && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded p-6 max-w-md w-full shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Encerrar Projeto</h2>
-            <p className="mb-4">Tem certeza de que deseja encerrar este projeto? Essa ação não pode ser desfeita.</p>
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={() => setShowModalEncerrar(false)}
-                className="px-4 py-2 text-gray-600 hover:underline"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleConfirmEncerrar}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Encerrar
-              </button>
+            <div className="mt-4 flex items-center">
+              {/* Adicione aqui o conteúdo desejado ou remova esta div se não for usar */}
             </div>
           </div>
         </div>
