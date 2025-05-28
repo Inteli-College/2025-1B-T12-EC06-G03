@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:io';
+import 'package:athenas/bloc/project_bloc.dart';
+import 'package:athenas/models/project.dart';
 import 'package:athenas/widgets/dialog_modal.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -483,136 +486,121 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   }
 
   Widget _buildVideoStream() {
-    if (_isConnecting) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(color: Colors.white),
-            SizedBox(height: 20),
-            Text(
-              'Conectando ao stream...',
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-      );
-    }
+    // if (_isConnecting) {
+    //   return const Center(
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: [
+    //         CircularProgressIndicator(color: Colors.white),
+    //         SizedBox(height: 20),
+    //         Text(
+    //           'Conectando ao stream...',
+    //           style: TextStyle(color: Colors.white),
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
 
-    if (_errorMessage != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              color: Colors.red.withOpacity(0.8),
-              size: 70,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Erro na transmissão',
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              _errorMessage!,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.6),
-                fontSize: 14,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _disconnectStream();
-                _connectToStream();
-              },
-              child: const Text('Tentar novamente'),
-            ),
-          ],
-        ),
-      );
-    }
+    // if (_errorMessage != null) {
+    //   return Center(
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: [
+    //         Icon(
+    //           Icons.error_outline,
+    //           color: Colors.red.withOpacity(0.8),
+    //           size: 70,
+    //         ),
+    //         const SizedBox(height: 20),
+    //         Text(
+    //           'Erro na transmissão',
+    //           style: TextStyle(
+    //             color: Colors.white.withOpacity(0.8),
+    //             fontSize: 18,
+    //             fontWeight: FontWeight.bold,
+    //           ),
+    //         ),
+    //         const SizedBox(height: 10),
+    //         Text(
+    //           _errorMessage!,
+    //           style: TextStyle(
+    //             color: Colors.white.withOpacity(0.6),
+    //             fontSize: 14,
+    //           ),
+    //           textAlign: TextAlign.center,
+    //         ),
+    //         const SizedBox(height: 20),
+    //         ElevatedButton(
+    //           onPressed: () {
+    //             _disconnectStream();
+    //             _connectToStream();
+    //           },
+    //           child: const Text('Tentar novamente'),
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
 
-    return _currentFrame != null
+    return _currentFrame == null // !=
         ? Stack(
             children: [
-              Center(
-                child: Image.memory(
-                  _currentFrame!,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                  gaplessPlayback: true,
-                ),
-              ),
+              // Center(
+              //   child: Image.memory(
+              //     _currentFrame ?? Uint8List(0),
+              //     fit: BoxFit.cover,
+              //     width: double.infinity,
+              //     height: double.infinity,
+              //     gaplessPlayback: true,
+              //   ),
+              // ),
               Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 80, left: 16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FloatingActionButton(
-                        heroTag: 'camera_button',
-                        backgroundColor: Colors.blue,
-                        onPressed:
-                            _lastFrame != null ? _saveCurrentFrame : null,
-                        child:
-                            const Icon(Icons.camera_alt, color: Colors.black),
+                  child: BlocProvider<ProjectBloc>(
+                    create: (context) => ProjectBloc(Dio(
+                      BaseOptions(
+                        baseUrl: 'http://10.140.0.11:8080/api',
+                        connectTimeout: const Duration(seconds: 10),
+                        receiveTimeout: const Duration(seconds: 10),
                       ),
-                      const SizedBox(height: 16),
-                      FloatingActionButton(
-                        heroTag: 'building_button',
-                        backgroundColor: Colors.blue,
-                        onPressed: () {
-                          // Ação para abrir o modal de configuração do servidor
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return DialogModal(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Selecione o Projeto',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    // Aqui você pode adicionar campos de configuração
-                                    // Exemplo: TextField, DropdownButton, etc.
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        child:
-                            const Icon(Icons.apartment_rounded, color: Colors.black),
-                      ),
-                      const SizedBox(height: 16),
-                      FloatingActionButton(
-                        heroTag: 'record_button',
-                        backgroundColor:
-                            _isRecording ? Colors.red : Colors.blue,
-                        onPressed: toggleRecording,
-                        child: Icon(
-                            _isRecording
-                                ? Icons.stop
-                                : Icons.fiber_manual_record,
-                            color: Colors.black),
-                      ),
-                    ],
+                    ))
+                      ..add(FetchProjects()),
+                    child: BlocBuilder<ProjectBloc, ProjectState>(
+                      builder: (context, state) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            FloatingActionButton(
+                              heroTag: 'camera_button',
+                              backgroundColor: Colors.blue,
+                              onPressed:
+                                  _lastFrame != null ? _saveCurrentFrame : null,
+                              child: const Icon(Icons.camera_alt,
+                                  color: Colors.black),
+                            ),
+                            const SizedBox(height: 16),
+                            if (state is ProjectLoaded)
+                              _projectWidget(state.projects),
+                            const SizedBox(height: 16),
+                            FloatingActionButton(
+                              heroTag: 'record_button',
+                              backgroundColor:
+                                  _isRecording ? Colors.red : Colors.blue,
+                              onPressed: toggleRecording,
+                              child: Icon(
+                                  _isRecording
+                                      ? Icons.stop
+                                      : Icons.fiber_manual_record,
+                                  color: Colors.black),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -627,5 +615,74 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
               ),
             ),
           );
+  }
+
+  Widget _projectWidget(List<Project> projects) {
+    return FloatingActionButton(
+      heroTag: 'building_button',
+      backgroundColor: Colors.blue,
+      onPressed: () {
+        // Ação para abrir o modal de configuração do servidor
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (context) {
+            return DialogModal(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Selecione o Projeto',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButton<Project>(
+                    value: projects.isNotEmpty ? projects.first : null,
+                    items: projects
+                        .map((project) => DropdownMenuItem<Project>(
+                              value: project,
+                              child: Text(project.name),
+                            ))
+                        .toList(),
+                    onChanged: (Project? selected) {
+                      // Adicione aqui a lógica para selecionar o projeto
+                      Navigator.of(context).pop();
+                      // Por exemplo, você pode usar um evento do Bloc para atualizar o projeto selecionado
+                      // context.read<ProjectBloc>().add(SelectProject(selected));
+                    },
+                    isExpanded: true,
+                  )
+                  ,
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+
+                        child: const Text('Cancelar'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Adicione aqui a lógica para continuar
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Selecionar'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+      child: const Icon(Icons.apartment_rounded, color: Colors.black),
+    );
   }
 }

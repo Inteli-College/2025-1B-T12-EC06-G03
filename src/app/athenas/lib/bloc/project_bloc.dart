@@ -43,7 +43,8 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     emit(ProjectLoading());
     try {
       // Faz um GET para /projects esperando uma lista de projetos
-      final response = await dio.get('/projects');
+      final response = await dio.get('/projetos');
+      print('Response: ${response}');
       if (response.statusCode == 200 && response.data is List) {
         final projects = (response.data as List)
             .map((json) => Project.fromJson(json as Map<String, dynamic>))
