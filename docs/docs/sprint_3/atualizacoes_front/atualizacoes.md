@@ -110,3 +110,19 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
   <p>Fonte: Elaborado pelos autores (2025)</p>
 </div>
 
+## Telas Novas Criadas
+
+&emsp;Além disso, ao longo do processo, foi vista a necessidade da criação de novas telas. Assim, essas telas estruturam o sistema em módulos claros e **viabilizam escalabilidade futura** — como permissões de acesso, histórico por edifício e dashboards de cliente.
+
+| Tela                | Finalidade                                                                |
+| ------------------- | ------------------------------------------------------------------------- |
+| **Cadastro**        | Permitir o registro de novos usuários ou entidades relevantes ao projeto. |
+| **Clientes**        | Visualizar e gerenciar dados dos clientes associados a cada projeto.      |
+| **Edifícios**       | Cadastro e visualização de prédios vinculados a cada projeto.             |
+| **ProjectPage**     | Página de entrada individual por projeto, que gerencia contexto e rotas.  |
+| **SidebarProjetos** | Navegação lateral exibida apenas ao abrir um projeto específico.          |
+
+
+
+
+
