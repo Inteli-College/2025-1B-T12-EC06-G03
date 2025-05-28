@@ -5,8 +5,8 @@ import { FileText, Gamepad2, LogOut, Users } from 'lucide-react'
 import logoImage from '../assets/logo-fundo-branco.svg'
 
 const logoutUser = async () => {
-  console.log('logoutUser')
-  window.location.href = '/'
+  window.location.href = '/login'
+  localStorage.clear()
 }
 
 const Sidebar = () => {

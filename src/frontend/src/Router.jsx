@@ -13,6 +13,7 @@ import ControleDrone from "./pages/ControleDrone.jsx";
 import UploadImagens from "./pages/UploadImagens.jsx";
 import Clientes from "./pages/Clientes.jsx";
 import Edificios from "./pages/Edificios.jsx";
+import PrivateRoute from "./components/PrivateRoutes.jsx";
 
 const Router = () => (
   <BrowserRouter>
@@ -24,23 +25,27 @@ const Router = () => (
       <Route path="/recover-password" element={<RecoverPassword />} />
       <Route path="*" element={<NotFound />} />
 
-      {/* Rotas com sidebar padrão */}
-      <Route element={<Layout />}>
-        <Route path="/clientes" element={<Clientes />} />
-        <Route path="/projects" element={<ProjectPage />} />
-        <Route path="/projetos" element={<ProjectPage />} />
-        <Route path="/analisar-imagens" element={<ImageAnalysis />} />
-        <Route path="/controle-drone" element={<ControleDrone />} />
+      {/* Rotas privadas */}
+      <Route element={<PrivateRoute />}>
+        {/* Rota sem sidebar */}
         <Route path="/relatorio/:id" element={<Relatorios />} />
-      </Route>
 
-      {/* Rotas com sidebar de projeto */}
-      <Route element={<ProjetoLayout />}>
-        <Route path="/relatorio" element={<Relatorios />} />
-        <Route path="/edificios" element={<Edificios />} />
-        <Route path="/analisar-imagens" element={<ImageAnalysis />} />
-        <Route path="/imagens-drone" element={<DroneImages />} />
-        <Route path="/upload-imagens" element={<UploadImagens />} />
+        {/* Rotas com sidebar padrão */}
+        <Route element={<Layout />}>
+          <Route path="/clientes" element={<Clientes />} />
+          <Route path="/projetos" element={<ProjectPage />} />
+          <Route path="/controle-drone" element={<ControleDrone />} />
+        </Route>
+
+        {/* Rotas com sidebar de projeto */}
+        <Route element={<ProjetoLayout />}>
+          <Route path="/relatorio/:id" element={<Relatorios />} />
+          <Route path="/edificios" element={<Edificios />} />
+          <Route path="/analisar-imagens" element={<ImageAnalysis />} />
+          <Route path="/imagens-drone" element={<DroneImages />} />
+          <Route path="/upload-imagens" element={<UploadImagens />} />
+          
+        </Route>
       </Route>
     </Routes>
   </BrowserRouter>

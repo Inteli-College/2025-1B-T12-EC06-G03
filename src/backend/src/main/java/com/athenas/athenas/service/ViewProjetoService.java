@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.athenas.athenas.DTO.EdificioDTO;
-import com.athenas.athenas.DTO.ViewProjetoResponseDTO;
+import com.athenas.athenas.dto.EdificioDTO;
+import com.athenas.athenas.dto.ViewProjetoResponseDTO;
 import com.athenas.athenas.model.Edificio;
 import com.athenas.athenas.model.Empresa;
 import com.athenas.athenas.model.LogAlteracao;
