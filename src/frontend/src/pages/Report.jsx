@@ -4,6 +4,9 @@ import ImagensCarregadas from '../components/ImagensCarregadas';
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts';
 import html2pdf from 'html2pdf.js';
 
+const SUPABASE_PROJECT_ID = "efinfalxxeaqfkvboewx"; 
+const SUPABASE_BUCKET = "img-projects";
+
 const VisualizarProjeto = () => {
   const { id } = useParams();
   const [data, setData] = useState(null);
@@ -12,7 +15,7 @@ const VisualizarProjeto = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [pieData, setPieData] = useState([]);
-  const [imagensProjeto, setImagensProjeto] = useState([]);
+  const [fissurasProjeto, setFissurasProjeto] = useState([]);
   const COLORS = ['#010131', '#75A1C0', '#0C668D', '#F7FCFE'];
 
   useEffect(() => {
@@ -50,7 +53,6 @@ const VisualizarProjeto = () => {
         const response = await fetch(`http://localhost:8080/api/fissura/porcentagem/${id}`);
         if (!response.ok) throw new Error('Erro ao buscar porcentagem de fissuras');
         const data = await response.json();
-        // data.porcentagemPorTipo é um objeto { "Trinca fina": 25, ... }
         const pieArr = Object.entries(data.porcentagemPorTipo).map(([name, value]) => ({
           name,
           value
@@ -63,18 +65,19 @@ const VisualizarProjeto = () => {
     if (id) fetchPorcentagem();
   }, [id]);
 
+  // CORRIGIDO: Busca fissuras detalhadas do projeto
   useEffect(() => {
-    async function fetchImagensProjeto() {
+    async function fetchFissurasProjeto() {
       try {
-        const response = await fetch(`http://localhost:8080/api/images/${id}`);
-        if (!response.ok) throw new Error('Erro ao buscar imagens do projeto');
-        const imagens = await response.json();
-        setImagensProjeto(imagens);
+        const response = await fetch(`http://localhost:8080/api/fissura/detalhes/projeto/${id}`);
+        if (!response.ok) throw new Error('Erro ao buscar fissuras do projeto');
+        const fissuras = await response.json();
+        setFissurasProjeto(fissuras);
       } catch (err) {
         setError(err.message);
       }
     }
-    if (id) fetchImagensProjeto();
+    if (id) fetchFissurasProjeto();
   }, [id]);
 
   const handleChange = (e) => {
@@ -423,15 +426,17 @@ const VisualizarProjeto = () => {
           <div className="mt-8">
             <h3 className="text-2xl font-lato text-[#010131]">Imagens do Projeto:</h3>
             <div className="grid grid-cols-2 gap-4 mt-4">
-              {imagensProjeto.map(imagem => {
-                const SUPABASE_PROJECT_ID = "efinfalxxeaqfkvboewx"; 
-                const SUPABASE_BUCKET = "img-projects";
-                const url = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${SUPABASE_BUCKET}/${imagem.caminhoArquivo}`;
+              {fissurasProjeto.map(fissura => {
+                const url = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${SUPABASE_BUCKET}/${fissura.nomeImagem}`;
                 return (
                   <ImagensCarregadas
-                    key={imagem.id}
-                    name={imagem.nomeArquivo}
+                    key={fissura.id}
+                    name={fissura.nomeImagem}
                     imgSrc={url}
+                    tipo={fissura.tipo}
+                    confianca={fissura.confianca}
+                    coordenadas={fissura.coordenadas}
+                    gravidade={fissura.gravidade}
                   />
                 );
               })}
