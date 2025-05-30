@@ -12,6 +12,8 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import '../bloc/drone_bloc.dart';
 import '../bloc/drone_state.dart';
+import 'package:athenas/models/edificio.dart';
+import 'package:athenas/bloc/edificio_bloc.dart';
 
 class VideoStreamWidget extends StatefulWidget {
   final String? streamUrl;
@@ -49,12 +51,29 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   List<Uint8List> _recordedFrames = [];
   int _maxRecordedFrames = 100; // Limita a 100 frames (~3-4 segundos em 30fps)
 
+  Project? _selectedProject;
+  Edificio? _selectedEdificio;
+  String? _selectedDirection;
+  final List<String> _directions = ['North', 'East', 'West', 'South'];
+
+  late final ProjectBloc _projectBloc;
+  late final EdificioBloc _edificioBloc;
+
   @override
   void initState() {
     super.initState();
     _connectToStream();
     // Iniciar monitoramento da qualidade do stream
     _startQualityMonitoring();
+    _projectBloc = ProjectBloc(Dio(
+      BaseOptions(
+        baseUrl: 'http://10.140.0.11:8080/api',
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+      ),
+    ));
+    _edificioBloc = EdificioBloc(_projectBloc.dio);
+    _projectBloc.add(FetchProjects());
   }
 
   @override
@@ -74,6 +93,8 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
     _qualityMonitorTimer?.cancel();
     _connectionTimeoutTimer?.cancel();
     _recordedFrames.clear();
+    _projectBloc.close();
+    _edificioBloc.close();
     super.dispose();
   }
 
@@ -382,61 +403,45 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
 
   // Método para salvar o quadro atual
   Future<void> _saveCurrentFrame() async {
-    if (_lastFrame == null) {
+    if (_lastFrame == null || _selectedProject == null || _selectedEdificio == null || _selectedDirection == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selecione projeto, edifício e direção antes de tirar a foto!'), duration: Duration(seconds: 3)),
+      );
       return;
     }
-
     try {
-      // Usar caminho configurado ou o diretório de documentos como padrão
       final droneState = context.read<DroneBloc>().state;
       final configuredPath = droneState.serverConfig.savePath;
-
       String savePath;
       if (configuredPath != null && configuredPath.isNotEmpty) {
         savePath = configuredPath;
       } else {
-        // Fallback para diretório de documentos se não houver configuração
-        final directory = await getApplicationDocumentsDirectory();
-        savePath = directory.path;
+        final dir = await getApplicationDocumentsDirectory();
+        savePath = dir.path;
       }
-
-      // Criar pasta para fotos se não existir
       final photosDir = Directory('$savePath/drone_photos');
       if (!await photosDir.exists()) {
         await photosDir.create(recursive: true);
       }
-
       final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
       final fileName = 'drone_capture_$timestamp.jpg';
       final path = '${photosDir.path}/$fileName';
-
-      // Salva a imagem
       final file = File(path);
       await file.writeAsBytes(_lastFrame!);
-
-      // Notifica o usuário
+      // Upload
+      final dio = _projectBloc.dio;
+      final edificioId = _selectedEdificio!.id;
+      final formData = FormData.fromMap({
+        'files': [await MultipartFile.fromFile(path, filename: fileName)],
+      });
+      final uploadUrl = '/images/${_selectedProject!.id}/upload/$edificioId/${_selectedDirection!}';
+      await dio.post(uploadUrl, data: formData);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Imagem salva com sucesso!'),
-              Text('Local: $path', style: const TextStyle(fontSize: 12)),
-              Text('Nome: $fileName', style: const TextStyle(fontSize: 12)),
-            ],
-          ),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 3),
-        ),
+        const SnackBar(content: Text('Foto salva e enviada com sucesso!'), duration: Duration(seconds: 3)),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao salvar imagem: $e'),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
-        ),
+        SnackBar(content: Text('Erro ao salvar/enviar foto: $e'), duration: const Duration(seconds: 3)),
       );
     }
   }
@@ -486,203 +491,211 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   }
 
   Widget _buildVideoStream() {
-    // if (_isConnecting) {
-    //   return const Center(
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         CircularProgressIndicator(color: Colors.white),
-    //         SizedBox(height: 20),
-    //         Text(
-    //           'Conectando ao stream...',
-    //           style: TextStyle(color: Colors.white),
-    //         ),
-    //       ],
-    //     ),
-    //   );
-    // }
+     if (_isConnecting) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(color: Colors.white),
+            SizedBox(height: 20),
+            Text(
+              'Conectando ao stream...',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      );
+    }
 
-    // if (_errorMessage != null) {
-    //   return Center(
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         Icon(
-    //           Icons.error_outline,
-    //           color: Colors.red.withOpacity(0.8),
-    //           size: 70,
-    //         ),
-    //         const SizedBox(height: 20),
-    //         Text(
-    //           'Erro na transmissão',
-    //           style: TextStyle(
-    //             color: Colors.white.withOpacity(0.8),
-    //             fontSize: 18,
-    //             fontWeight: FontWeight.bold,
-    //           ),
-    //         ),
-    //         const SizedBox(height: 10),
-    //         Text(
-    //           _errorMessage!,
-    //           style: TextStyle(
-    //             color: Colors.white.withOpacity(0.6),
-    //             fontSize: 14,
-    //           ),
-    //           textAlign: TextAlign.center,
-    //         ),
-    //         const SizedBox(height: 20),
-    //         ElevatedButton(
-    //           onPressed: () {
-    //             _disconnectStream();
-    //             _connectToStream();
-    //           },
-    //           child: const Text('Tentar novamente'),
-    //         ),
-    //       ],
-    //     ),
-    //   );
-    // }
-
-    return _currentFrame == null // !=
-        ? Stack(
-            children: [
-              // Center(
-              //   child: Image.memory(
-              //     _currentFrame ?? Uint8List(0),
-              //     fit: BoxFit.cover,
-              //     width: double.infinity,
-              //     height: double.infinity,
-              //     gaplessPlayback: true,
-              //   ),
-              // ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 80, left: 16),
-                  child: BlocProvider<ProjectBloc>(
-                    create: (context) => ProjectBloc(Dio(
-                      BaseOptions(
-                        baseUrl: 'http://10.140.0.11:8080/api',
-                        connectTimeout: const Duration(seconds: 10),
-                        receiveTimeout: const Duration(seconds: 10),
-                      ),
-                    ))
-                      ..add(FetchProjects()),
-                    child: BlocBuilder<ProjectBloc, ProjectState>(
-                      builder: (context, state) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            FloatingActionButton(
-                              heroTag: 'camera_button',
-                              backgroundColor: Colors.blue,
-                              onPressed:
-                                  _lastFrame != null ? _saveCurrentFrame : null,
-                              child: const Icon(Icons.camera_alt,
-                                  color: Colors.black),
-                            ),
-                            const SizedBox(height: 16),
-                            if (state is ProjectLoaded)
-                              _projectWidget(state.projects),
-                            const SizedBox(height: 16),
-                            FloatingActionButton(
-                              heroTag: 'record_button',
-                              backgroundColor:
-                                  _isRecording ? Colors.red : Colors.blue,
-                              onPressed: toggleRecording,
-                              child: Icon(
-                                  _isRecording
-                                      ? Icons.stop
-                                      : Icons.fiber_manual_record,
-                                  color: Colors.black),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+    if (_errorMessage != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              color: Colors.red.withOpacity(0.8),
+              size: 70,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Erro na transmissão',
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.8),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              _errorMessage!,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.6),
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                _disconnectStream();
+                _connectToStream();
+              },
+              child: const Text('Tentar novamente'),
+            ),
+          ],
+        ),
+      );
+    }
+    return Stack(
+      children: [
+        _currentFrame != null
+            ? Center(
+                child: Image.memory(
+                  _currentFrame!,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  gaplessPlayback: true,
+                ),
+              )
+            : Center(
+                child: Text(
+                  'Aguardando imagens do stream...',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 16,
                   ),
                 ),
               ),
+        Positioned(
+          top: 100,
+          left: 16,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<ProjectBloc>.value(value: _projectBloc),
+              BlocProvider<EdificioBloc>.value(value: _edificioBloc),
             ],
-          )
-        : Center(
-            child: Text(
-              'Aguardando imagens do stream...',
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
-                fontSize: 16,
-              ),
+            child: BlocBuilder<ProjectBloc, ProjectState>(
+              builder: (context, projectState) {
+                return BlocBuilder<EdificioBloc, EdificioState>(
+                  builder: (context, edificioState) {
+                    List<Project> projects = [];
+                    if (projectState is ProjectLoaded) {
+                      projects = projectState.projects;
+                    }
+                    List<Edificio> edificios = [];
+                    if (edificioState is EdificioLoaded) {
+                      edificios = edificioState.edificios;
+                    }
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                _projectBloc.add(FetchProjects());
+                                if (_selectedProject != null) {
+                                  _edificioBloc.add(FetchEdificios(_selectedProject!.id!));
+                                }
+                              },
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('Atualizar'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        // Seleção de Projeto
+                        DropdownButton<Project>(
+                          value: _selectedProject,
+                          hint: const Text('Projeto'),
+                          items: projects
+                              .map((project) => DropdownMenuItem<Project>(
+                                    value: project,
+                                    child: Text(project.name),
+                                  ))
+                              .toList(),
+                          onChanged: (Project? selected) {
+                            setState(() {
+                              _selectedProject = selected;
+                              _selectedEdificio = null;
+                              _selectedDirection = _directions.first;
+                            });
+                            if (selected != null) {
+                              _edificioBloc.add(FetchEdificios(selected.id!));
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        // Seleção de Edifício
+                        if (_selectedProject != null && edificios.isNotEmpty)
+                          edificioState is EdificioLoading
+                              ? const CircularProgressIndicator()
+                              : DropdownButton<Edificio>(
+                                  value: _selectedEdificio,
+                                  hint: const Text('Edifício'),
+                                  items: edificios
+                                      .map((e) => DropdownMenuItem<Edificio>(
+                                            value: e,
+                                            child: Text(e.nome),
+                                          ))
+                                      .toList(),
+                                  onChanged: (Edificio? selected) {
+                                    setState(() {
+                                      _selectedEdificio = selected;
+                                      _selectedDirection = null;
+                                    });
+                                  },
+                                ),
+                        const SizedBox(height: 12),
+                        // Seleção de Direção
+                        DropdownButton<String>(
+                          value: _selectedDirection,
+                          hint: const Text('Direção'),
+                          items: _directions
+                              .map((dir) => DropdownMenuItem<String>(
+                                    value: dir,
+                                    child: Text(dir),
+                                  ))
+                              .toList(),
+                          onChanged: (String? selected) {
+                            setState(() {
+                              _selectedDirection = selected;
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        // Botão para tirar foto
+                        FloatingActionButton(
+                          heroTag: 'camera_button',
+                          backgroundColor: Colors.blue,
+                          onPressed: _lastFrame != null ? _saveCurrentFrame : null,
+                          child: const Icon(Icons.camera_alt, color: Colors.black),
+                        ),
+                        const SizedBox(height: 12),
+                        // Botão de gravação
+                        // FloatingActionButton(
+                        //   heroTag: 'record_button',
+                        //   backgroundColor: _isRecording ? Colors.red : Colors.blue,
+                        //   onPressed: toggleRecording,
+                        //   child: Icon(_isRecording ? Icons.stop : Icons.fiber_manual_record, color: Colors.black),
+                        // ),
+                      ],
+                    );
+                  },
+                );
+              },
             ),
-          );
-  }
-
-  Widget _projectWidget(List<Project> projects) {
-    return FloatingActionButton(
-      heroTag: 'building_button',
-      backgroundColor: Colors.blue,
-      onPressed: () {
-        // Ação para abrir o modal de configuração do servidor
-        showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) {
-            return DialogModal(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Selecione o Projeto',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButton<Project>(
-                    value: projects.isNotEmpty ? projects.first : null,
-                    items: projects
-                        .map((project) => DropdownMenuItem<Project>(
-                              value: project,
-                              child: Text(project.name),
-                            ))
-                        .toList(),
-                    onChanged: (Project? selected) {
-                      // Adicione aqui a lógica para selecionar o projeto
-                      Navigator.of(context).pop();
-                      // Por exemplo, você pode usar um evento do Bloc para atualizar o projeto selecionado
-                      // context.read<ProjectBloc>().add(SelectProject(selected));
-                    },
-                    isExpanded: true,
-                  )
-                  ,
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-
-                        child: const Text('Cancelar'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Adicione aqui a lógica para continuar
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Selecionar'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-      child: const Icon(Icons.apartment_rounded, color: Colors.black),
+          ),
+        ),
+      ],
     );
   }
 }
