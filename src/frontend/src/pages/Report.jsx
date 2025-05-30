@@ -43,7 +43,6 @@ const VisualizarProjeto = () => {
   useEffect(() => {
     async function fetchData() {
       if (!projectId) {
-        setError('ID do projeto não encontrado na URL');
         setIsLoading(false);
         return;
       }
