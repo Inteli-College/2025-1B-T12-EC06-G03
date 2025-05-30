@@ -20,7 +20,7 @@ const ProjectRecent = ({ projects, onCreateProject, onViewReport }) => {
           <ProjectCard
             key={project.id}
             name={project.nome}
-            onViewReport={onViewReport}
+            onViewReport={() => onViewReport(project.nome)}
           />
         ))}
       </div>
