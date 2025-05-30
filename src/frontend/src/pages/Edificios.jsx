@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Pencil, Trash2, AlertCircle } from 'lucide-react';
 
 const Edificios = () => {
-  // Get projeto from URL parameters (simplified for demo - you can replace with actual router logic)
   const getProjetoFromUrl = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get("projeto") || "1"; // Default to project 1 for demo
+    return urlParams.get("projeto");
   };
   
   const projetoAtivo = getProjetoFromUrl();
@@ -24,10 +23,8 @@ const Edificios = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // API Base URL - adjust this to match your backend
   const API_BASE_URL = 'http://localhost:8080/api/edificio';
 
-  // Load edificios when component mounts or projeto changes
   useEffect(() => {
     if (projetoAtivo) {
       loadEdificios();
@@ -39,7 +36,7 @@ const Edificios = () => {
     setError('');
     try {
       const url = projetoAtivo 
-        ? `${API_BASE_URL}/projeto/${projetoAtivo}`
+        ? `${API_BASE_URL}/projeto-nome/${encodeURIComponent(projetoAtivo)}`
         : API_BASE_URL;
       
       const response = await fetch(url);
@@ -48,7 +45,9 @@ const Edificios = () => {
         const data = await response.json();
         setEdificios(data || []);
       } else if (response.status === 204) {
-        // No content - empty list
+        setEdificios([]);
+      } else if (response.status === 404) {
+        setError(`Projeto "${projetoAtivo}" não encontrado`);
         setEdificios([]);
       } else {
         throw new Error(`Error loading edificios: ${response.status}`);
@@ -95,18 +94,19 @@ const Edificios = () => {
     setError('');
 
     try {
-      const edificioData = {
-        nome: formulario.nome,
-        localizacao: formulario.localizacao,
-        tipo: formulario.tipo,
-        pavimentos: Number(formulario.pavimentos),
-        fachadas: formulario.fachadas
-      };
 
       let response;
       
       if (editandoId) {
-        // Update existing edificio
+        const edificioAtual = edificios.find(e => e.id === editandoId);
+        const edificioData = {
+          nome: formulario.nome,
+          localizacao: formulario.localizacao,
+          tipo: formulario.tipo,
+          pavimentos: Number(formulario.pavimentos),
+          fachadas: formulario.fachadas,
+          projeto: edificioAtual.projeto
+        };
         response = await fetch(`${API_BASE_URL}/${editandoId}`, {
           method: 'PUT',
           headers: {
@@ -115,8 +115,15 @@ const Edificios = () => {
           body: JSON.stringify(edificioData)
         });
       } else {
-        // Create new edificio
-        response = await fetch(`${API_BASE_URL}/${projetoAtivo}`, {
+        const edificioData = {
+          nome: formulario.nome,
+          localizacao: formulario.localizacao,
+          tipo: formulario.tipo,
+          pavimentos: Number(formulario.pavimentos),
+          fachadas: formulario.fachadas
+        };
+
+        response = await fetch(`${API_BASE_URL}/projeto-nome/${encodeURIComponent(projetoAtivo)}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -126,10 +133,12 @@ const Edificios = () => {
       }
 
       if (response.ok) {
-        await loadEdificios(); // Reload the list
+        await loadEdificios();
         setFormulario({ nome: '', localizacao: '', tipo: '', pavimentos: '', fachadas: [] });
         setNovaFachada({ area: '', descricao: '' });
         setEditandoId(null);
+      } else if (response.status === 404) {
+        setError(`Projeto "${projetoAtivo}" não encontrado`);
       } else {
         throw new Error(`Error saving edificio: ${response.status}`);
       }
@@ -166,7 +175,7 @@ const Edificios = () => {
       });
 
       if (response.ok) {
-        await loadEdificios(); // Reload the list
+        await loadEdificios();
       } else {
         throw new Error(`Error deleting edificio: ${response.status}`);
       }
@@ -195,7 +204,7 @@ const Edificios = () => {
         <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
           <div className="flex items-center">
             <AlertCircle className="mr-2" size={20} />
-            <span>Projeto não especificado na URL. Adicione ?projeto=ID_DO_PROJETO</span>
+            <span>Projeto não especificado na URL. Adicione ?projeto=NOME_DO_PROJETO</span>
           </div>
         </div>
       </div>
@@ -205,14 +214,10 @@ const Edificios = () => {
   return (
     <div className="max-w-5xl mx-auto p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-4xl font-bold text-[#050538]">Edifícios</h1>
-        <button
-          onClick={loadEdificios}
-          disabled={loading}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 disabled:opacity-50"
-        >
-          {loading ? 'Carregando...' : 'Atualizar'}
-        </button>
+        <div>
+          <h1 className="text-4xl font-bold text-[#050538]">Edifícios</h1>
+          <p className="text-gray-600 mt-1">Projeto: <span className="font-semibold">{projetoAtivo}</span></p>
+        </div>
       </div>
 
       {error && (
@@ -329,7 +334,7 @@ const Edificios = () => {
         <div className="col-span-full flex gap-3">
           <button 
             onClick={handleSubmit}
-            className="flex-1 bg-[#050538] text-white py-2 rounded hover:bg-blue-800 disabled:opacity-50"
+            className="flex-1 bg-blue-800 text-white py-2 rounded hover:bg-blue-900 disabled:opacity-50"
             disabled={loading}
           >
             {loading ? 'Salvando...' : (editandoId ? 'Salvar Alterações' : 'Cadastrar Edifício')}

@@ -62,6 +62,24 @@ public class EdificioController {
         }
     }
 
+    @PostMapping("/projeto-nome/{projetoNome}")
+    public ResponseEntity<Edificio> createEdificioForProjectByName(
+            @PathVariable String projetoNome,
+            @RequestBody Edificio edificio) {
+        try {
+            Optional<Projeto> projetoOpt = projetoRepository.findByNomeIgnoreCase(projetoNome);
+            if (!projetoOpt.isPresent()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            
+            edificio.setProjeto(projetoOpt.get());
+            Edificio savedEdificio = edificioRepository.save(edificio);
+            return new ResponseEntity<>(savedEdificio, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping
     public ResponseEntity<List<Edificio>> getAllEdificios() {
         try {
@@ -84,6 +102,24 @@ public class EdificioController {
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/projeto-nome/{projetoNome}")
+    public ResponseEntity<List<Edificio>> getAllEdificiosByProjectName(@PathVariable String projetoNome) {
+        try {
+            Optional<Projeto> projetoOpt = projetoRepository.findByNomeIgnoreCase(projetoNome);
+            if (!projetoOpt.isPresent()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            
+            List<Edificio> edificios = edificioRepository.findByProjeto(projetoOpt.get());
+            if (edificios.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(edificios, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
