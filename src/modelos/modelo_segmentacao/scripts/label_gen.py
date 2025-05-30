@@ -2,79 +2,120 @@ import os
 import cv2
 import numpy as np
 
+
+# =========================
+# 🚩 Configurações
+# =========================
+
 # Diretórios principais
-root_images = '../yolo/images'
-root_masks = '../yolo/masks'
-root_labels = '../yolo/labels'
+ROOT_IMAGES = '../yolo/images'
+ROOT_MASKS = '../yolo/masks'
+ROOT_LABELS = '../yolo/labels'
+
+# Dataset splits
+DATASET_SPLITS = ['train', 'val']
 
 # Mapeamento de classes
-class_map = {
+CLASS_MAP = {
     'thermal': 0,
     'retraction': 1
 }
 
-# Dataset splits
-dataset_splits = ['train', 'val']
+# Threshold para ignorar ruídos muito pequenos (pixels)
+MIN_CONTOUR_AREA = 50
 
-for split in dataset_splits:
-    images_split_dir = os.path.join(root_images, split)
-    masks_split_dir = os.path.join(root_masks, split)
-    labels_split_dir = os.path.join(root_labels, split)
-    
-    # Garante que o diretório de labels do split exista
-    os.makedirs(labels_split_dir, exist_ok=True)
-    
-    for image_name in os.listdir(images_split_dir):
-        if not image_name.lower().endswith(('.jpg', '.jpeg', '.png')):
-            continue
-        
-        image_path = os.path.join(images_split_dir, image_name)
+
+# =========================
+# 🚀 Funções auxiliares
+# =========================
+
+def log(msg, level="INFO"):
+    prefix = {"INFO": "ℹ️", "SUCCESS": "✅", "WARN": "⚠️", "ERROR": "❌"}.get(level, "ℹ️")
+    print(f"{prefix} {msg}")
+
+
+def generate_label_line(contour, class_id, img_w, img_h):
+    """Gera uma linha de label no formato YOLO-seg."""
+    x, y, w, h = cv2.boundingRect(contour)
+    x_center = (x + w / 2) / img_w
+    y_center = (y + h / 2) / img_h
+    w_norm = w / img_w
+    h_norm = h / img_h
+
+    # Normaliza pontos do polígono
+    polygon = contour.reshape(-1, 2)
+    poly_norm = [
+        f"{(px / img_w):.6f} {(py / img_h):.6f}"
+        for px, py in polygon
+    ]
+    poly_flat = ' '.join(poly_norm)
+
+    return f"{class_id} {x_center:.6f} {y_center:.6f} {w_norm:.6f} {h_norm:.6f} {poly_flat}"
+
+
+# =========================
+# 🏗️ Pipeline principal
+# =========================
+
+for split in DATASET_SPLITS:
+    images_dir = os.path.join(ROOT_IMAGES, split)
+    masks_dir = os.path.join(ROOT_MASKS, split)
+    labels_dir = os.path.join(ROOT_LABELS, split)
+
+    if not os.path.exists(images_dir):
+        log(f"Diretório de imagens não encontrado: {images_dir}", "ERROR")
+        continue
+
+    os.makedirs(labels_dir, exist_ok=True)
+
+    image_files = [
+        f for f in os.listdir(images_dir)
+        if f.lower().endswith(('.jpg', '.jpeg', '.png'))
+    ]
+
+    for image_name in image_files:
+        image_path = os.path.join(images_dir, image_name)
         image = cv2.imread(image_path)
+
         if image is None:
-            print(f"⚠️ Imagem não pode ser lida: {image_name} ({split})")
+            log(f"Imagem não pode ser lida: {image_name} ({split})", "WARN")
             continue
-        
+
         img_h, img_w = image.shape[:2]
         label_lines = []
-        
-        # Para cada classe, verifica se há máscara e adiciona as anotações
-        for class_folder, class_id in class_map.items():
-            mask_path = os.path.join(masks_split_dir, class_folder, image_name)
+
+        for class_folder, class_id in CLASS_MAP.items():
+            mask_path = os.path.join(masks_dir, class_folder, image_name)
             mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
-            
+
             if mask is None:
-                print(f"⚠️ Máscara não encontrada para {image_name} na classe {class_folder} ({split})")
+                log(f"Máscara ausente para {image_name} na classe '{class_folder}' ({split})", "WARN")
                 continue
 
+            # Processamento dos contornos
             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            
-            for contour in contours:
-                if cv2.contourArea(contour) < 50:
-                    continue  # ignora pequenos ruídos
-                
-                # Bounding box e normalização
-                x, y, w, h = cv2.boundingRect(contour)
-                x_center = (x + w / 2) / img_w
-                y_center = (y + h / 2) / img_h
-                w_norm = w / img_w
-                h_norm = h / img_h
-                
-                # Normaliza os pontos do polígono
-                polygon = contour.reshape(-1, 2)
-                poly_norm = []
-                for point in polygon:
-                    px = point[0] / img_w
-                    py = point[1] / img_h
-                    poly_norm.extend([round(px, 6), round(py, 6)])
-                
-                line = f"{class_id} {x_center:.6f} {y_center:.6f} {w_norm:.6f} {h_norm:.6f} " + ' '.join(map(str, poly_norm))
-                label_lines.append(line)
-        
-        # Salva o arquivo label na pasta do split sem subpastas adicionais
-        label_path = os.path.join(labels_split_dir, image_name.rsplit('.', 1)[0] + '.txt')
-        with open(label_path, 'w') as f:
-            f.write('\n'.join(label_lines))
-        
-        print(f"✅ Label salvo: {label_path}")
 
-print("🎯 Todos os labels foram gerados com sucesso!")
+            valid_contours = [
+                cnt for cnt in contours
+                if cv2.contourArea(cnt) >= MIN_CONTOUR_AREA
+            ]
+
+            if not valid_contours:
+                log(f"Sem contornos relevantes para {image_name} na classe '{class_folder}'", "WARN")
+
+            for contour in valid_contours:
+                line = generate_label_line(contour, class_id, img_w, img_h)
+                label_lines.append(line)
+
+        # Salvar label
+        label_filename = os.path.splitext(image_name)[0] + '.txt'
+        label_path = os.path.join(labels_dir, label_filename)
+
+        if label_lines:
+            with open(label_path, 'w') as f:
+                f.write('\n'.join(label_lines))
+            log(f"Label salvo: {label_path}", "SUCCESS")
+        else:
+            log(f"Nenhuma anotação gerada para {image_name}. Label vazio não salvo.", "WARN")
+
+log("🎯 Todos os labels foram gerados com sucesso!", "SUCCESS")
