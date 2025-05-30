@@ -11,7 +11,7 @@ const ProjectCard = ({ name, onViewReport }) => (
         onClick={() => onViewReport(name)}
         className="bg-dark-blue text-white px-4 py-2 rounded-md hover:bg-blue-darker transition"
       >
-        VER MAIS
+        Abrir
       </button>
     </div>
   </div>

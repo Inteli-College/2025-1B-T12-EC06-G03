@@ -12,7 +12,7 @@ export default function ProjectPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const baseUrl = import.meta.env?.VITE_BACKEND_BASE_URL || 'http://localhost:8080';
+  const baseUrl = 'http://localhost:8080';
 
   const [showModal, setShowModal] = useState(false);
   const [newProject, setNewProject] = useState({
@@ -30,7 +30,7 @@ export default function ProjectPage() {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(`${import.meta.env?.VITE_BACKEND_BASE_URL}/api/projetos`);
+        const response = await fetch(`${baseUrl}/api/projetos`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -38,7 +38,7 @@ export default function ProjectPage() {
         const data = await response.json();
         setProjects(data);
 
-        const res = await fetch(`${import.meta.env?.VITE_BACKEND_BASE_URL}/api/empresa/getEmpresas`);
+        const res = await fetch(`${baseUrl}/api/empresa/getEmpresas`);
         const dados = await res.json();
         setEmpresas(dados);
 
