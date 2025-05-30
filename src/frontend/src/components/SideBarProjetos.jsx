@@ -2,13 +2,13 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import '../styles/SideBar.css'
 import {
-  FileText,
   Building,
   Camera,
   Upload,
   Images,
   FileCheck,
-  LogOut
+  LogOut,
+  Home
 } from 'lucide-react'
 import logoImage from '../assets/logo-fundo-branco.svg'
 
@@ -38,8 +38,8 @@ const SideBarProjetos = ({ projetoAtivo }) => {
       <ul>
         <li className={location.pathname === '/projetos' ? 'active' : ''}>
           <Link to="/projetos">
-            <FileText />
-            <span className="linkText">Projetos</span>
+            <Home />
+            <span className="linkText">Início</span>
           </Link>
         </li>
         <li className={location.pathname === '/edificios' ? 'active' : ''}>
