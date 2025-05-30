@@ -14,6 +14,7 @@ public interface ProjetoRepository extends JpaRepository<Projeto, Long> {
     List<Projeto> findByEmpresa(Empresa empresa);
     List<Projeto> findByStatus(String status);
     Optional<Projeto> findById(int idProjeto);
-    List<Projeto> findByNome(String nome);
+    Optional<Projeto> findByNome(String nome);
+    Optional<Projeto> findByNomeIgnoreCase(String nome);
     List<Projeto> findByStatusAndEmpresa(String status, Empresa empresa);
 }
