@@ -1,0 +1,6 @@
+train: ./yolo/images/train
+val: ./yolo/images/val
+test: ./yolo/images/test
+
+nc: 2  # Número de classes a serem identificadas
+names: ['thermal', 'retraction']
