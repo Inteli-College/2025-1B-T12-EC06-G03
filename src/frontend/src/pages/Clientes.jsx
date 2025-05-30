@@ -42,7 +42,7 @@ const Clientes = () => {
   };
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const validateCNPJ = (cnpj) => /^\d{14}$/.test(cnpj.replace(/\D/g, ''));
+  const validateCNPJ = (cnpj) => /^\d{14,}$/.test(cnpj.replace(/\D/g, ''));
 
   const handleChange = (e) => {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
