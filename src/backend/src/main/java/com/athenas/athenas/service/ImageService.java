@@ -38,13 +38,13 @@ public class ImageService {
     private String supabaseServiceRoleKey;
 
     public ImageService(ProjetoRepository projetoRepository, EmpresaRepository empresaRepository,
-            EdificioRepository edificioRepository,
-            FachadaRepository fachadaRepository, ImagemRepository imagemRepository) {
+                        EdificioRepository edificioRepository,
+                        FachadaRepository fachadaRepository, ImagemRepository imagemRepository) {
         this.imagemRepository = imagemRepository;
         this.fachadaRepository = fachadaRepository;
         this.edificioRepository = edificioRepository;
     }
-    
+
     public List<Imagem> getImagesByProject(Projeto projeto) {
         return imagemRepository.findByProjeto(projeto);
     }
@@ -92,5 +92,9 @@ public class ImageService {
         } catch (RuntimeException e) {
             throw new RuntimeException("Falha inesperada no upload do arquivo para Supabase", e);
         }
+    }
+
+    public void deleteImageById(Long id) {
+        imagemRepository.deleteById(id);
     }
 }

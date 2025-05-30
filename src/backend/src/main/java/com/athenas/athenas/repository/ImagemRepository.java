@@ -12,8 +12,14 @@ import com.athenas.athenas.model.Projeto;
 
 @Repository
 public interface ImagemRepository extends JpaRepository<Imagem, Long> {
+
     List<Imagem> findByFachada(Fachada fachada);
+
     List<Imagem> findByProcessada(Boolean processada);
+
     List<Imagem> findByDataCapturaBetween(LocalDateTime inicio, LocalDateTime fim);
-    List<Imagem> findByProjeto(Projeto projetoId);
+
+    List<Imagem> findByProjeto(Projeto projeto);
+    
+    
 }

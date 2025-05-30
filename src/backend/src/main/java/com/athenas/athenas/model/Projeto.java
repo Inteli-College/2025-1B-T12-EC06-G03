@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "projetos")
@@ -16,25 +13,21 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Projeto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nome;
-    
+
+    private String descricao; // já adicionado anteriormente
+
+    private String status; // ✅ novo campo
+
     @ManyToOne
     @JoinColumn(name = "empresa_id")
-    private Empresa empresa;
-    
-    private String descricao;
-    
-    @Column(name = "data_criacao", updatable = false)
-    @CreationTimestamp
-    private LocalDateTime dataCriacao;
-    
-    @Column(name = "data_atualizacao")
-    @UpdateTimestamp
-    private LocalDateTime dataAtualizacao;
-    
-    private String status;
+    private Empresa empresa; // ✅ novo campo
+
+    @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Imagem> imagens;
 }
