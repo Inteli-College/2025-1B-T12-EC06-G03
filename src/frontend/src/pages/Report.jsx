@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import ImagensCarregadas from '../components/ImagensCarregadas';
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts';
 import html2pdf from 'html2pdf.js';
@@ -8,7 +8,9 @@ const SUPABASE_PROJECT_ID = "efinfalxxeaqfkvboewx";
 const SUPABASE_BUCKET = "img-projects";
 
 const VisualizarProjeto = () => {
-  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const projectName = searchParams.get("projeto");
+  const [projectId, setProjectId] = useState(null);
   const [data, setData] = useState(null);
   const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
@@ -18,10 +20,29 @@ const VisualizarProjeto = () => {
   const [fissurasProjeto, setFissurasProjeto] = useState([]);
   const COLORS = ['#010131', '#75A1C0', '#0C668D', '#F7FCFE'];
 
+  // Busca o id do projeto pelo nome
+  useEffect(() => {
+    if (projectName) {
+      fetch(`http://localhost:8080/api/projetos?nome=${encodeURIComponent(projectName)}`)
+        .then(res => res.json())
+        .then(projetos => {
+          if (projetos && projetos.length > 0) {
+            setProjectId(projetos[0].id);
+          } else {
+            setError("Projeto não encontrado");
+            setIsLoading(false);
+          }
+        })
+        .catch(() => {
+          setError("Erro ao buscar projeto");
+          setIsLoading(false);
+        });
+    }
+  }, [projectName]);
+
   useEffect(() => {
     async function fetchData() {
-      if (!id) {
-        setError('ID do projeto não encontrado na URL');
+      if (!projectId) {
         setIsLoading(false);
         return;
       }
@@ -29,7 +50,7 @@ const VisualizarProjeto = () => {
         const response = await fetch(`http://localhost:8080/api/projeto/ViewProjeto`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idProjeto: id }),
+          body: JSON.stringify({ idProjeto: projectId }),
         });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -45,12 +66,12 @@ const VisualizarProjeto = () => {
       }
     }
     fetchData();
-  }, [id]);
+  }, [projectId]);
 
   useEffect(() => {
     async function fetchPorcentagem() {
       try {
-        const response = await fetch(`http://localhost:8080/api/fissura/porcentagem/${id}`);
+        const response = await fetch(`http://localhost:8080/api/fissura/porcentagem/${projectId}`);
         if (!response.ok) throw new Error('Erro ao buscar porcentagem de fissuras');
         const data = await response.json();
         const pieArr = Object.entries(data.porcentagemPorTipo).map(([name, value]) => ({
@@ -62,14 +83,14 @@ const VisualizarProjeto = () => {
         setError(err.message);
       }
     }
-    if (id) fetchPorcentagem();
-  }, [id]);
+    if (projectId) fetchPorcentagem();
+  }, [projectId]);
 
   // CORRIGIDO: Busca fissuras detalhadas do projeto
   useEffect(() => {
     async function fetchFissurasProjeto() {
       try {
-        const response = await fetch(`http://localhost:8080/api/fissura/detalhes/projeto/${id}`);
+        const response = await fetch(`http://localhost:8080/api/fissura/detalhes/projeto/${projectId}`);
         if (!response.ok) throw new Error('Erro ao buscar fissuras do projeto');
         const fissuras = await response.json();
         setFissurasProjeto(fissuras);
@@ -77,8 +98,8 @@ const VisualizarProjeto = () => {
         setError(err.message);
       }
     }
-    if (id) fetchFissurasProjeto();
-  }, [id]);
+    if (projectId) fetchFissurasProjeto();
+  }, [projectId]);
 
   const handleChange = (e) => {
     setFormData({
@@ -138,7 +159,7 @@ const VisualizarProjeto = () => {
   };
 
   const handleSave = async () => {
-    if (!id) {
+    if (!projectId) {
       setError('ID do projeto não encontrado');
       return;
     }
@@ -147,7 +168,7 @@ const VisualizarProjeto = () => {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          idProjeto: id,
+          idProjeto: projectId,
           viewProjetoResponseDTO: formData
         }),
       });

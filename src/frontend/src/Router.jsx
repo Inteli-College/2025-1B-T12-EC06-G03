@@ -38,7 +38,7 @@ const Router = () => (
 
         {/* Rotas com sidebar de projeto */}
         <Route element={<ProjetoLayout />}>
-          <Route path="/relatorio/:id" element={<Relatorios />} />
+          <Route path="/relatorio" element={<Relatorios />} />
           <Route path="/edificios" element={<Edificios />} />
           <Route path="/analisar-imagens" element={<ImageAnalysis />} />
           <Route path="/imagens-drone" element={<DroneImages />} />
