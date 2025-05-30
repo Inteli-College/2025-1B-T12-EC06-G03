@@ -14,6 +14,7 @@ import '../bloc/drone_bloc.dart';
 import '../bloc/drone_state.dart';
 import 'package:athenas/models/edificio.dart';
 import 'package:athenas/bloc/edificio_bloc.dart';
+import 'package:http_parser/http_parser.dart';
 
 class VideoStreamWidget extends StatefulWidget {
   final String? streamUrl;
@@ -432,7 +433,13 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       final dio = _projectBloc.dio;
       final edificioId = _selectedEdificio!.id;
       final formData = FormData.fromMap({
-        'files': [await MultipartFile.fromFile(path, filename: fileName)],
+        'files': [
+          await MultipartFile.fromFile(
+            path,
+            filename: fileName,
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        ],
       });
       final uploadUrl = '/images/${_selectedProject!.id}/upload/$edificioId/${_selectedDirection!}';
       await dio.post(uploadUrl, data: formData);
