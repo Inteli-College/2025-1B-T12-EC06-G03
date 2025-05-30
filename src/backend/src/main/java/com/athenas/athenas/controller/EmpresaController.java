@@ -30,7 +30,7 @@ public class EmpresaController {
         return empresaService.createEmpresa(empresaDTO);
     }
 
-    @GetMapping("getEmpresas")
+    @GetMapping("/getEmpresas")
     public List<Empresa> getAllEmpresas(){
         return empresaService.getAllEmpresas();
     }
