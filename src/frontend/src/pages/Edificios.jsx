@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Pencil, Trash2, AlertCircle } from 'lucide-react';
 
 const Edificios = () => {
@@ -25,13 +25,7 @@ const Edificios = () => {
 
   const API_BASE_URL = 'http://localhost:8080/api/edificio';
 
-  useEffect(() => {
-    if (projetoAtivo) {
-      loadEdificios();
-    }
-  }, [projetoAtivo]);
-
-  const loadEdificios = async () => {
+  const loadEdificios = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
@@ -58,7 +52,13 @@ const Edificios = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [projetoAtivo]);
+
+  useEffect(() => {
+    if (projetoAtivo) {
+      loadEdificios();
+    }
+  }, [projetoAtivo, loadEdificios]);
 
   const handleChange = (e) => {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
