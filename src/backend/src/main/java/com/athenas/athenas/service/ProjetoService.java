@@ -61,7 +61,7 @@ public class ProjetoService {
         return projetoRepository.findByStatus(status);
     }
 
-    public List<Projeto> findByNome(String nome) {
+    public Optional<Projeto> findByNome(String nome) {
         return projetoRepository.findByNome(nome);
     }
 

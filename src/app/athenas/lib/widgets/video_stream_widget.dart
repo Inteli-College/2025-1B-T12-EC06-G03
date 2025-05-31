@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:io';
+import 'package:athenas/bloc/project_bloc.dart';
+import 'package:athenas/models/project.dart';
+import 'package:athenas/widgets/dialog_modal.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +12,9 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import '../bloc/drone_bloc.dart';
 import '../bloc/drone_state.dart';
+import 'package:athenas/models/edificio.dart';
+import 'package:athenas/bloc/edificio_bloc.dart';
+import 'package:http_parser/http_parser.dart';
 
 class VideoStreamWidget extends StatefulWidget {
   final String? streamUrl;
@@ -28,7 +35,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   String? _errorMessage;
   StreamSubscription<List<int>>? _streamSubscription;
   StreamController<Uint8List>? _imageStreamController;
-  
+
   // Buffer para acumular bytes do stream
   List<int> _buffer = [];
 
@@ -45,12 +52,29 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   List<Uint8List> _recordedFrames = [];
   int _maxRecordedFrames = 100; // Limita a 100 frames (~3-4 segundos em 30fps)
 
+  Project? _selectedProject;
+  Edificio? _selectedEdificio;
+  String? _selectedDirection;
+  final List<String> _directions = ['North', 'East', 'West', 'South'];
+
+  late final ProjectBloc _projectBloc;
+  late final EdificioBloc _edificioBloc;
+
   @override
   void initState() {
     super.initState();
     _connectToStream();
     // Iniciar monitoramento da qualidade do stream
     _startQualityMonitoring();
+    _projectBloc = ProjectBloc(Dio(
+      BaseOptions(
+        baseUrl: 'http://10.140.0.11:8080/api',
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+      ),
+    ));
+    _edificioBloc = EdificioBloc(_projectBloc.dio);
+    _projectBloc.add(FetchProjects());
   }
 
   @override
@@ -70,6 +94,8 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
     _qualityMonitorTimer?.cancel();
     _connectionTimeoutTimer?.cancel();
     _recordedFrames.clear();
+    _projectBloc.close();
+    _edificioBloc.close();
     super.dispose();
   }
 
@@ -99,7 +125,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       _errorMessage = null;
       _buffer.clear();
     });
-    
+
     // Criar um novo StreamController com broadcast para permitir múltiplos ouvintes
     _imageStreamController?.close();
     _imageStreamController = StreamController<Uint8List>.broadcast();
@@ -108,10 +134,10 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       // Configurar cliente HTTP para processar o stream MJPEG
       final client = http.Client();
       final request = http.Request('GET', Uri.parse(widget.streamUrl!));
-      
+
       // Adicionar o header ngrok-skip-browser-warning
       request.headers['ngrok-skip-browser-warning'] = 'true';
-      
+
       final response = await client.send(request);
 
       if (response.statusCode != 200) {
@@ -129,7 +155,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
         (List<int> newBytes) {
           // Adicionar novos bytes ao buffer
           _buffer.addAll(newBytes);
-          
+
           // Processar frames completos
           _processFrames();
         },
@@ -157,7 +183,6 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
           });
         }
       });
-
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -167,7 +192,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       }
     }
   }
-  
+
   void _startQualityMonitoring() {
     _qualityMonitorTimer?.cancel();
     _qualityMonitorTimer = Timer.periodic(const Duration(seconds: 5), (_) {
@@ -178,7 +203,8 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
           // Se a taxa de erro for alta, mostrar aviso
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Qualidade do stream baixa: ${(errorRate * 100).toStringAsFixed(0)}% de erros'),
+              content: Text(
+                  'Qualidade do stream baixa: ${(errorRate * 100).toStringAsFixed(0)}% de erros'),
               duration: const Duration(seconds: 3),
             ),
           );
@@ -188,7 +214,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       }
     });
   }
-  
+
   void _resetConnectionTimeout() {
     _connectionTimeoutTimer?.cancel();
     _connectionTimeoutTimer = Timer(_frameTimeout, () {
@@ -206,20 +232,22 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
   void _processFrames() {
     // Reiniciar o timer de timeout sempre que novos bytes forem recebidos
     _resetConnectionTimeout();
-    
+
     // Limitar o tamanho do buffer para evitar vazamento de memória
     final int maxBufferSize = 2 * 1024 * 1024; // 2MB limite
     if (_buffer.length > maxBufferSize) {
-      _buffer = _buffer.sublist(_buffer.length - 100000); // Manter apenas os últimos 100KB
+      _buffer = _buffer
+          .sublist(_buffer.length - 100000); // Manter apenas os últimos 100KB
       _frameErrors++;
       return;
     }
-    
+
     // Continuar processando enquanto houver bytes suficientes no buffer
-    while (_buffer.length > 4) { // Precisamos de pelo menos alguns bytes para verificar marcadores
+    while (_buffer.length > 4) {
+      // Precisamos de pelo menos alguns bytes para verificar marcadores
       // Procurar pelo início do frame JPEG (FF D8)
       int startMarkerIndex = _findSequence(_buffer, [0xFF, 0xD8], 0);
-      
+
       if (startMarkerIndex == -1) {
         // Nenhum início de frame encontrado, manter apenas os últimos bytes para evitar perder um marcador dividido
         if (_buffer.length > 2) {
@@ -227,33 +255,36 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
         }
         return;
       }
-      
+
       // Remover bytes antes do início do frame
       if (startMarkerIndex > 0) {
         _buffer = _buffer.sublist(startMarkerIndex);
       }
-      
+
       // Procurar pelo fim do frame JPEG (FF D9)
-      int endMarkerIndex = _findSequence(_buffer, [0xFF, 0xD9], 2); // Começar depois do marcador inicial
-      
+      int endMarkerIndex = _findSequence(
+          _buffer, [0xFF, 0xD9], 2); // Começar depois do marcador inicial
+
       if (endMarkerIndex == -1) {
         // Frame incompleto, aguardar mais bytes
         return;
       }
-      
+
       // Extrair o frame completo (incluindo o marcador final FF D9)
       final frameEndIndex = endMarkerIndex + 2;
-      
+
       try {
-        final frameBytes = Uint8List.fromList(_buffer.sublist(0, frameEndIndex));
-        
+        final frameBytes =
+            Uint8List.fromList(_buffer.sublist(0, frameEndIndex));
+
         // Adicionar o frame ao stream se o controlador ainda estiver ativo e não nulo
-        if (_imageStreamController != null && !_imageStreamController!.isClosed) {
+        if (_imageStreamController != null &&
+            !_imageStreamController!.isClosed) {
           _imageStreamController!.add(frameBytes);
           _framesReceived++;
           _lastFrameTime = DateTime.now();
           _lastFrame = frameBytes;
-          
+
           // Armazenar o frame se estiver gravando
           if (_isRecording) {
             _recordFrame(frameBytes);
@@ -264,18 +295,18 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
         print('Erro ao processar frame: $e');
         _frameErrors++;
       }
-      
+
       // Remover o frame processado do buffer
       _buffer = _buffer.sublist(frameEndIndex);
     }
   }
-  
+
   // Método auxiliar para encontrar uma sequência de bytes no buffer
   int _findSequence(List<int> buffer, List<int> sequence, int startIndex) {
     if (buffer.length - startIndex < sequence.length) {
       return -1; // Buffer não tem tamanho suficiente para conter a sequência
     }
-    
+
     for (int i = startIndex; i <= buffer.length - sequence.length; i++) {
       bool found = true;
       for (int j = 0; j < sequence.length; j++) {
@@ -288,7 +319,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
         return i;
       }
     }
-    
+
     return -1; // Sequência não encontrada
   }
 
@@ -300,12 +331,12 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       _recordedFrames.removeAt(0);
     }
   }
-  
+
   // Método para iniciar/parar gravação
   void toggleRecording() {
     setState(() {
       _isRecording = !_isRecording;
-      
+
       if (!_isRecording && _recordedFrames.isNotEmpty) {
         // Se parou de gravar e tem frames, salvar
         _saveRecordedFrames();
@@ -315,7 +346,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       }
     });
   }
-  
+
   // Método para salvar os frames gravados
   Future<void> _saveRecordedFrames() async {
     if (_recordedFrames.isEmpty) return;
@@ -324,7 +355,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       // Usar caminho configurado ou o diretório de documentos como padrão
       final droneState = context.read<DroneBloc>().state;
       final configuredPath = droneState.serverConfig.savePath;
-      
+
       String savePath;
       if (configuredPath != null && configuredPath.isNotEmpty) {
         savePath = configuredPath;
@@ -333,7 +364,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
         final directory = await getApplicationDocumentsDirectory();
         savePath = '${directory.path}/Documentos';
       }
-      
+
       // Criar pasta com timestamp para este conjunto de frames
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final path = '$savePath/drone_capture_$timestamp';
@@ -373,61 +404,51 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
 
   // Método para salvar o quadro atual
   Future<void> _saveCurrentFrame() async {
-    if (_lastFrame == null) {
+    if (_lastFrame == null || _selectedProject == null || _selectedEdificio == null || _selectedDirection == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selecione projeto, edifício e direção antes de tirar a foto!'), duration: Duration(seconds: 3)),
+      );
       return;
     }
-    
     try {
-      // Usar caminho configurado ou o diretório de documentos como padrão
       final droneState = context.read<DroneBloc>().state;
       final configuredPath = droneState.serverConfig.savePath;
-      
       String savePath;
       if (configuredPath != null && configuredPath.isNotEmpty) {
         savePath = configuredPath;
       } else {
-        // Fallback para diretório de documentos se não houver configuração
-        final directory = await getApplicationDocumentsDirectory();
-        savePath = directory.path;
+        final dir = await getApplicationDocumentsDirectory();
+        savePath = dir.path;
       }
-      
-      // Criar pasta para fotos se não existir
       final photosDir = Directory('$savePath/drone_photos');
       if (!await photosDir.exists()) {
         await photosDir.create(recursive: true);
       }
-      
       final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
       final fileName = 'drone_capture_$timestamp.jpg';
       final path = '${photosDir.path}/$fileName';
-      
-      // Salva a imagem
       final file = File(path);
       await file.writeAsBytes(_lastFrame!);
-      
-      // Notifica o usuário
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Imagem salva com sucesso!'),
-              Text('Local: $path', style: const TextStyle(fontSize: 12)),
-              Text('Nome: $fileName', style: const TextStyle(fontSize: 12)),
-            ],
+      // Upload
+      final dio = _projectBloc.dio;
+      final edificioId = _selectedEdificio!.id;
+      final formData = FormData.fromMap({
+        'files': [
+          await MultipartFile.fromFile(
+            path,
+            filename: fileName,
+            contentType: MediaType('image', 'jpeg'),
           ),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 3),
-        ),
+        ],
+      });
+      final uploadUrl = '/images/${_selectedProject!.id}/upload/$edificioId/${_selectedDirection!}';
+      await dio.post(uploadUrl, data: formData);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Foto salva e enviada com sucesso!'), duration: Duration(seconds: 3)),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao salvar imagem: $e'),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
-        ),
+        SnackBar(content: Text('Erro ao salvar/enviar foto: $e'), duration: const Duration(seconds: 3)),
       );
     }
   }
@@ -443,7 +464,7 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
           : _buildVideoStream(),
     );
   }
-  
+
   Widget _buildNoStreamPlaceholder() {
     return Center(
       child: Column(
@@ -475,9 +496,9 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
       ),
     );
   }
-  
+
   Widget _buildVideoStream() {
-    if (_isConnecting) {
+     if (_isConnecting) {
       return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -533,11 +554,10 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
         ),
       );
     }
-
-    return _currentFrame != null
-        ? Stack(
-            children: [
-              Center(
+    return Stack(
+      children: [
+        _currentFrame != null
+            ? Center(
                 child: Image.memory(
                   _currentFrame!,
                   fit: BoxFit.cover,
@@ -545,42 +565,144 @@ class _VideoStreamWidgetState extends State<VideoStreamWidget> {
                   height: double.infinity,
                   gaplessPlayback: true,
                 ),
-              ),
-                Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 80, left: 16),
-                  child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FloatingActionButton(
-                    heroTag: 'camera_button',
-                    backgroundColor: Colors.blue,
-                    onPressed: _lastFrame != null ? _saveCurrentFrame : null,
-                    child: const Icon(Icons.camera_alt, color: Colors.black),
-                    ),
-                    const SizedBox(height: 16),
-                    FloatingActionButton(
-                    heroTag: 'record_button',
-                    backgroundColor: _isRecording ? Colors.red : Colors.blue,
-                    onPressed: toggleRecording,
-                    child: Icon(_isRecording ? Icons.stop : Icons.fiber_manual_record, color: Colors.black),
-                    ),
-                  ],
+              )
+            : Center(
+                child: Text(
+                  'Aguardando imagens do stream...',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 16,
                   ),
                 ),
-                ),
-            ],
-          )
-        : Center(
-            child: Text(
-              'Aguardando imagens do stream...',
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
-                fontSize: 16,
               ),
+        Positioned(
+          top: 100,
+          left: 16,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<ProjectBloc>.value(value: _projectBloc),
+              BlocProvider<EdificioBloc>.value(value: _edificioBloc),
+            ],
+            child: BlocBuilder<ProjectBloc, ProjectState>(
+              builder: (context, projectState) {
+                return BlocBuilder<EdificioBloc, EdificioState>(
+                  builder: (context, edificioState) {
+                    List<Project> projects = [];
+                    if (projectState is ProjectLoaded) {
+                      projects = projectState.projects;
+                    }
+                    List<Edificio> edificios = [];
+                    if (edificioState is EdificioLoaded) {
+                      edificios = edificioState.edificios;
+                    }
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                _projectBloc.add(FetchProjects());
+                                if (_selectedProject != null) {
+                                  _edificioBloc.add(FetchEdificios(_selectedProject!.id!));
+                                }
+                              },
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('Atualizar'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        // Seleção de Projeto
+                        DropdownButton<Project>(
+                          value: _selectedProject,
+                          hint: const Text('Projeto'),
+                          items: projects
+                              .map((project) => DropdownMenuItem<Project>(
+                                    value: project,
+                                    child: Text(project.name),
+                                  ))
+                              .toList(),
+                          onChanged: (Project? selected) {
+                            setState(() {
+                              _selectedProject = selected;
+                              _selectedEdificio = null;
+                              _selectedDirection = _directions.first;
+                            });
+                            if (selected != null) {
+                              _edificioBloc.add(FetchEdificios(selected.id!));
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        // Seleção de Edifício
+                        if (_selectedProject != null && edificios.isNotEmpty)
+                          edificioState is EdificioLoading
+                              ? const CircularProgressIndicator()
+                              : DropdownButton<Edificio>(
+                                  value: _selectedEdificio,
+                                  hint: const Text('Edifício'),
+                                  items: edificios
+                                      .map((e) => DropdownMenuItem<Edificio>(
+                                            value: e,
+                                            child: Text(e.nome),
+                                          ))
+                                      .toList(),
+                                  onChanged: (Edificio? selected) {
+                                    setState(() {
+                                      _selectedEdificio = selected;
+                                      _selectedDirection = null;
+                                    });
+                                  },
+                                ),
+                        const SizedBox(height: 12),
+                        // Seleção de Direção
+                        DropdownButton<String>(
+                          value: _selectedDirection,
+                          hint: const Text('Direção'),
+                          items: _directions
+                              .map((dir) => DropdownMenuItem<String>(
+                                    value: dir,
+                                    child: Text(dir),
+                                  ))
+                              .toList(),
+                          onChanged: (String? selected) {
+                            setState(() {
+                              _selectedDirection = selected;
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        // Botão para tirar foto
+                        FloatingActionButton(
+                          heroTag: 'camera_button',
+                          backgroundColor: Colors.blue,
+                          onPressed: _lastFrame != null ? _saveCurrentFrame : null,
+                          child: const Icon(Icons.camera_alt, color: Colors.black),
+                        ),
+                        const SizedBox(height: 12),
+                        // Botão de gravação
+                        // FloatingActionButton(
+                        //   heroTag: 'record_button',
+                        //   backgroundColor: _isRecording ? Colors.red : Colors.blue,
+                        //   onPressed: toggleRecording,
+                        //   child: Icon(_isRecording ? Icons.stop : Icons.fiber_manual_record, color: Colors.black),
+                        // ),
+                      ],
+                    );
+                  },
+                );
+              },
             ),
-          );
+          ),
+        ),
+      ],
+    );
   }
 }
