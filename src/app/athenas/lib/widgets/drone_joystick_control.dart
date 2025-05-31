@@ -53,16 +53,8 @@ class DroneJoystickControlState extends State<DroneJoystickControl> {
   // Converte os valores do joystick (-1 a 1) para a escala correta (-100 a 100)
   // com uma curva de resposta quadrática para melhor controle em velocidades mais baixas
   int _scaleJoystickValue(double value) {
-    // Aplicar uma curva quadrática para melhorar a precisão em baixas velocidades
-    // Preservando o sinal do valor original
-    double sign = value >= 0 ? 1 : -1;
-    double absValue = value.abs();
-    
-    // Curva quadrática suave: valor^2 para melhor controle em baixas velocidades
-    double scaled = sign * (absValue * absValue) * 100;
-    
     // Arredondar para o inteiro mais próximo
-    return scaled.round();
+    return value.round();
   }
 
   // Envia os valores de controle ao drone

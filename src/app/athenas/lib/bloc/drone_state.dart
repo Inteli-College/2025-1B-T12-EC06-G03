@@ -27,6 +27,11 @@ class DroneState extends Equatable {
     return const DroneState();
   }
   
+  // Static method to create the initial state with custom config
+  static DroneState initialWithConfig(ServerConfig? config) {
+    return DroneState(serverConfig: config ?? const ServerConfig(host: '10.32.0.11', port: 5000));
+  }
+  
   // Getter for connection status
   bool get isConnected => connectionStatus == ConnectionStatus.connected;
 

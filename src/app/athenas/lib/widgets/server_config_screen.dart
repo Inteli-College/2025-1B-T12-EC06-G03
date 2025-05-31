@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/drone_bloc.dart';
 import '../bloc/drone_event.dart';
 import '../bloc/drone_state.dart';
@@ -17,24 +18,38 @@ class ServerConfigScreen extends StatefulWidget {
 
 class _ServerConfigScreenState extends State<ServerConfigScreen> {
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _hostController;
-  late TextEditingController _portController;
-  late TextEditingController _savePathController;
+  final TextEditingController _hostController = TextEditingController();
+  final TextEditingController _portController = TextEditingController();
+  final TextEditingController _savePathController = TextEditingController();
   
   @override
   void initState() {
     super.initState();
-    
-    // Initialize with current config from BLoC
+    _loadConfigFromPrefs();
+  }
+
+  Future<void> _loadConfigFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final host = prefs.getString('server_host');
+    final port = prefs.getInt('server_port');
+    final savePath = prefs.getString('server_savePath');
+
     final currentConfig = context.read<DroneBloc>().state.serverConfig;
-    _hostController = TextEditingController(text: currentConfig.host);
-    _portController = TextEditingController(text: currentConfig.port.toString());
-    _savePathController = TextEditingController(text: currentConfig.savePath ?? '');
-    
-    // Se não houver caminho configurado, obtenha o diretório padrão de documentos
+    _hostController.text = host ?? currentConfig.host;
+    _portController.text = (port ?? currentConfig.port).toString();
+    _savePathController.text = savePath ?? currentConfig.savePath ?? '';
+
     if (_savePathController.text.isEmpty) {
       _getDefaultDocumentsPath();
     }
+    setState(() {});
+  }
+
+  Future<void> _saveConfigToPrefs(String host, int port, String savePath) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('server_host', host);
+    await prefs.setInt('server_port', port);
+    await prefs.setString('server_savePath', savePath);
   }
   
   Future<void> _getDefaultDocumentsPath() async {
@@ -370,21 +385,24 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
   
   Widget _buildSaveButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
+      onPressed: () async {
         if (_formKey.currentState!.validate()) {
           final host = _hostController.text.trim();
           final port = int.parse(_portController.text.trim());
           final savePath = _savePathController.text.trim();
-          
+
           final newConfig = ServerConfig(
-            host: host, 
-            port: port, 
+            host: host,
+            port: port,
             savePath: savePath,
           );
-          
+
+          // Salva no SharedPreferences
+          await _saveConfigToPrefs(host, port, savePath);
+
           // Update configuration via BLoC
           context.read<DroneBloc>().add(UpdateServerConfigEvent(newConfig));
-          
+
           // Show a snackbar to indicate the change
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -401,7 +419,7 @@ class _ServerConfigScreenState extends State<ServerConfigScreen> {
               duration: const Duration(seconds: 3),
             ),
           );
-          
+
           Navigator.of(context).pop();
         }
       },
