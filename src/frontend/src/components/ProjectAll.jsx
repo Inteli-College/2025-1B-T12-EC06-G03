@@ -15,7 +15,7 @@ const ProjectAll = ({ projects, searchTerm, onSearchChange, onViewReport }) => {
           <div key={project.id} className="bg-white p-4 rounded shadow">
             <ProjectElement
               name={project.nome}
-              onViewReport={onViewReport}
+              onViewReport={() => onViewReport(project.nome)}
             />
             <div className="mt-2">
               <span className={`text-sm font-semibold px-3 py-1 rounded ${project.status === 'finalizado' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>

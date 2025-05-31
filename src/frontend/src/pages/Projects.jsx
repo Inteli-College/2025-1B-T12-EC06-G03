@@ -54,7 +54,7 @@ export default function ProjectPage() {
   }, []);
 
   const handleOpenProject = (projectName) => {
-    navigate(`/relatorio?projeto=${projectName.toLowerCase()}`);
+    navigate(`/relatorio?projeto=${encodeURIComponent(projectName)}`);
   };
 
   const handleCreateProject = () => {

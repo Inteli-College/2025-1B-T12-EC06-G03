@@ -9,7 +9,7 @@ const SUPABASE_BUCKET = "img-projects";
 
 const VisualizarProjeto = () => {
   const [searchParams] = useSearchParams();
-  const projectName = searchParams.get("projeto");
+  const projectName = searchParams.get("projeto"); // agora pega o nome
   const [projectId, setProjectId] = useState(null);
   const [data, setData] = useState(null);
   const [formData, setFormData] = useState({});
@@ -20,32 +20,29 @@ const VisualizarProjeto = () => {
   const [fissurasProjeto, setFissurasProjeto] = useState([]);
   const COLORS = ['#010131', '#75A1C0', '#0C668D', '#F7FCFE'];
 
-  // Busca o id do projeto pelo nome
   useEffect(() => {
-    if (projectName) {
-      fetch(`http://localhost:8080/api/projetos?nome=${encodeURIComponent(projectName)}`)
-        .then(res => res.json())
-        .then(projetos => {
-          if (projetos && projetos.length > 0) {
-            setProjectId(projetos[0].id);
-          } else {
-            setError("Projeto não encontrado");
-            setIsLoading(false);
-          }
-        })
-        .catch(() => {
-          setError("Erro ao buscar projeto");
+    async function fetchProjectId() {
+      if (!projectName) return;
+      try {
+        const response = await fetch(`http://localhost:8080/api/projetos?nome=${encodeURIComponent(projectName)}`);
+        const projetos = await response.json();
+        if (projetos && projetos.length > 0) {
+          setProjectId(projetos[0].id);
+        } else {
+          setError("Projeto não encontrado");
           setIsLoading(false);
-        });
+        }
+      } catch (err) {
+        setError("Erro ao buscar projeto");
+        setIsLoading(false);
+      }
     }
+    fetchProjectId();
   }, [projectName]);
 
   useEffect(() => {
     async function fetchData() {
-      if (!projectId) {
-        setIsLoading(false);
-        return;
-      }
+      if (!projectId) return;
       try {
         const response = await fetch(`http://localhost:8080/api/projeto/ViewProjeto`, {
           method: 'POST',

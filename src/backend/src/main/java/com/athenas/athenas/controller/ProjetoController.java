@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +29,13 @@ public class ProjetoController {
     }
 
     @GetMapping
-    public List<Projeto> listAllProjects() {
+    public List<Projeto> listAllProjects(
+        @RequestParam(value = "nome", required = false) String nome
+    ) {
+        if (nome != null && !nome.isEmpty()) {
+            // Busca usando o método que ignora acentos e maiúsculas/minúsculas
+            return projetoService.buscarPorNomeSemAcento(nome);
+        }
         return projetoService.findAll();
     }
 

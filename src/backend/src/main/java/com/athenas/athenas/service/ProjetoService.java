@@ -95,4 +95,8 @@ public class ProjetoService {
         return projetoRepository.save(projeto);
     }
 
+    public List<Projeto> buscarPorNomeSemAcento(String nome) {
+        return projetoRepository.buscarPorNomeSemAcento(nome);
+    }
+
 }
