@@ -1,0 +1,8 @@
+{
+    "label": "Back-End da Aplicação Web",
+    "position": 2,
+    "link": {
+      "type": "generated-index",
+      "description": "Nesta seção, iremos explorar a arquitetura e funcionamento do back-end do sistema Athenas, que serve como a base tecnológica responsável por todo o processamento de dados, regras de negócio e integrações da aplicação."
+    }
+  }

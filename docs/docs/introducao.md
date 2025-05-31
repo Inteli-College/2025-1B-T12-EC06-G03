@@ -35,7 +35,7 @@ O projeto Athena é desenvolvido por uma equipe multidisciplinar de estudantes d
 - [Heitor Candido](https://www.linkedin.com/in/heitorfariacandido/)
 - [Gabriel Martins](https://www.linkedin.com/in/gabriel-martins-alves/)
 - [Matheus Jorge](https://www.linkedin.com/in/matheusjorgerosa/)
-- [Sofia Senne](https://www.linkedin.com/in/sophia-emanuele-de-senne-silva/)
+- [Sophia Senne](https://www.linkedin.com/in/sophia-emanuele-de-senne-silva/)
 
 ## Log de Atividades das Sprints
 
