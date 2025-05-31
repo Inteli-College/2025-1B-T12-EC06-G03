@@ -30,7 +30,7 @@ SUPABASE_SERVICE_ROLE_KEY=chave_do_servico
 
 ## Estrutura das pastas
 
-&nbsp;&nbsp;&nbsp;&nbsp;A estrura de pastas de back-end é:
+&nbsp;&nbsp;&nbsp;&nbsp;A estrutura de pastas de back-end é:
 
 ```
 ├── HELP.md
