@@ -7,13 +7,13 @@ sidebar_position: 1
 
 ## Introdução
 
-Este documento descreve o funcionamento de um sistema automatizado para **segmentação de fissuras** em imagens, com foco em aplicações na engenharia civil e inspeção de estruturas. O sistema utiliza um modelo **YOLOv8-seg** para **detecção e segmentação das fissuras** na imagem.
+&emsp;Este documento descreve o funcionamento de um sistema automatizado para **segmentação de fissuras** em imagens, com foco em aplicações na engenharia civil e inspeção de estruturas. O sistema utiliza um modelo **YOLOv8-seg** para **detecção e segmentação das fissuras** na imagem.
 
 ---
 
 ## Modelo YOLOv8-seg - Detecção de Fissura
 
-O modelo YOLOv8 é responsável por identificar a presença de **fissuras visíveis** em uma imagem. Ele foi treinado através da anotação automatizada em máscaras das imagens de input, marcando a localização e contorno da fissura.
+&emsp;O modelo YOLOv8 é responsável por identificar a presença de **fissuras visíveis** em uma imagem. Ele foi treinado através da anotação automatizada em máscaras das imagens de input, marcando a localização e contorno da fissura.
 
 ## Desenvolvimento:
 
@@ -215,20 +215,27 @@ model.train(
 7. As coordenadas dos polígonos encontrados são classificados entre fissuras `térmicas` e `retração`.
 8. As saídas, contendo a segmentação e classificação das fissuras na imagem são salvas.
 
-* O diretório `..yolo/output/` recebe as imagens classificadas com fissuras segmentadas.
+* O diretório `../yolo/output/` recebe as imagens classificadas com fissuras segmentadas.
 
 &emsp; Esse fluxo permite reaproveitamento modular, validação visual e explicabilidade.
 
 ---
 
+## Como rodar o modelo
+
+&emsp; Para teste do modelo de segmentação, basta instalar as dependências necessárias no diretório `../src/modelos/modelo_segmentacao` através do comando `pip install -r requirements.txt`.
+
+&emsp; Após a instalação das dependências, basta entrar no diretório `../src/modelos/modelo_segmentacao/scripts` através do comando `cd scripts` e executar o comando de ativação da interface provisória do modelo através do comando `streamlit run app.py`. Ao executar o *script*, o aplicativo WEB será aberto em seu navegador padrão e, para teste do modelo, basta seguir o passo-a-passo na plataforma.
+
 ## Conclusão
 
-&emsp; O modelo de segmentação oferece mais informações quanto as fissuras quando comparado com o modelo de classificação. O fluxo de treinamento e predição das imagens utilizado nesta Sprint é apenas um das diversas maneiras possíveis para utilização do modelo **YOLOv8-seg**. Futuramente, o grupo Athena explorará outras maneiras de treinamento, geração de máscaras e geração de anotações, visando melhoria da fidelidade das segmentações.
+&emsp; O modelo de segmentação desenvolvido na Sprint 3 é um piloto do modelo de segmentação a ser entrege ao final do projeto Athena, em parceria com o IPT e, portanto, passará por melhorias em seu fluxo de funcionamento. Futuramente, o grupo Athena explorará outras maneiras de treinamento, geração de máscaras e geração de anotações, visando melhoria da fidelidade das segmentações.
+
+&emsp; O modelo de segmentação oferece mais informações quanto as fissuras quando comparado com o modelo de classificação. O fluxo de treinamento e predição das imagens utilizado nesta Sprint é apenas um das diversas maneiras possíveis para utilização do modelo **YOLOv8-seg**. Como validado pelos técnicos e engenheiros do IPT, o modelo de segmentação é interessante e possui significativo valor aos funcionários da instituição, especialmente quando consideradas as possíveis utilizações do modelo para cálculo de tamanho e espessura das fissuras.
 
 ---
 
 ## Bibliografia
 
-- LEI, Xinyu; PAN, Hongguang; HUANG, Xiangdong. A dilated CNN model for image classification. Ieee access, v. 7, p. 124087-124095, 2019.
 - MARENGONI, Maurício; STRINGHINI, Stringhini. Tutorial: Introdução à visão computacional usando opencv. Revista de Informática Teórica e Aplicada, v. 16, n. 1, p. 125-160, 2009.
 - HUSSAIN, Mazhar. YOLOv8 Real-time Instance Segmentation with Python. 2024.
