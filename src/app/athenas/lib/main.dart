@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'services/drone_service.dart';
 import 'bloc/drone_bloc.dart';
 import 'bloc/drone_event.dart';
 import 'bloc/drone_state.dart';
 import 'models/drone_command.dart';
+import 'models/server_config.dart';
 import 'widgets/video_stream_widget.dart';
 import 'widgets/status_notification.dart';
 import 'widgets/server_config_screen.dart';
@@ -17,24 +19,38 @@ import 'dart:math' as math;
 void main() async {
   // Inicializa os widgets do Flutter
   WidgetsFlutterBinding.ensureInitialized();
-  
+
+  // Carrega configs do SharedPreferences
+  final prefs = await SharedPreferences.getInstance();
+  final host = prefs.getString('server_host') ?? '10.32.0.11';
+  final port = prefs.getInt('server_port') ?? 5000;
+  final savePath = prefs.getString('server_savePath');
+  final initialConfig = ServerConfig(host: host, port: port, savePath: savePath);
+
   // Configura a aplicação para modo tela cheia e orientação paisagem
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
-  
-  runApp(const DroneControlApp());
+
+  runApp(DroneControlApp(initialConfig: initialConfig));
 }
 
 class DroneControlApp extends StatelessWidget {
-  const DroneControlApp({Key? key}) : super(key: key);
+  final ServerConfig initialConfig;
+  const DroneControlApp({Key? key, required this.initialConfig}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DroneBloc(DroneService()),
+      create: (_) => DroneBloc(
+        DroneService(
+          host: initialConfig.host,
+          port: initialConfig.port,
+        ),
+        initialConfig,
+      ),
       child: MaterialApp(
         title: 'Athenas Drone Control',
         debugShowCheckedModeBanner: false,

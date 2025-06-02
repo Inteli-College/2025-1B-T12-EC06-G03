@@ -1,12 +1,23 @@
 import React, { useState } from "react";
 import logo from "../assets/logo.svg";
+import httpClient from "../httpClient";
+
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-      window.location.href = '/projetos';
+    setError("");
+    try {
+      const response = await httpClient.post("/auth/login", { email, senha });
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+      window.location.href = "/projetos";
+    } catch (err) {
+      setError("Email ou senha inválidos");
+    }
   };
 
   return (
@@ -15,18 +26,18 @@ const LoginPage = () => {
         <div className="flex justify-center mb-8">
           <img src={logo} alt="Logo" className="w-32 h-32" />
         </div>
-        <h1 className="text-4xl font-semibold text-center text-gray-800 mb-6">
-          Login
-        </h1>
+        <h1 className="text-4xl font-semibold text-center text-gray-800 mb-6">Login</h1>
+
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email
             </label>
             <input
-              type="email"
               id="email"
-              name="email"
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -40,9 +51,8 @@ const LoginPage = () => {
               Senha
             </label>
             <input
-              type="password"
               id="senha"
-              name="senha"
+              type="password"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               required
@@ -64,6 +74,15 @@ const LoginPage = () => {
             Entrar
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Não tem uma conta?{" "}
+            <a href="/cadastro" className="text-blue-500 hover:underline font-medium">
+              Cadastre-se
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
