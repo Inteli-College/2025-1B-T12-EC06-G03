@@ -8,7 +8,7 @@ from tqdm import tqdm
 # 🚀 Carregar modelo treinado
 model = YOLO('../runs/segmentation_model/weights/best.pt')
 
-# 📁 Pasta com as imagens de teste
+# Pasta com as imagens de teste
 image_dir = '../yolo/images/test'
 output_dir = '../yolo/output'
 
@@ -72,6 +72,6 @@ for image_name in tqdm(os.listdir(image_dir)):
         y = output.shape[0] - margin
         cv2.putText(output, text, (x, y), font, font_scale, (0, 255, 0), thickness, cv2.LINE_AA)
 
-    # 💾 Salvar resultado visual
+    # Salvar resultado visual
     save_path = os.path.join(output_dir, image_name)
     cv2.imwrite(save_path, output)
