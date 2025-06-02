@@ -122,6 +122,26 @@ export default function ProjectPage() {
     alert('Projeto criado com sucesso!');
   };
 
+  if (loading) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center py-8">
+          <p className="text-lg">Carregando projetos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center py-8">
+          <p className="text-lg text-red-600">Erro ao carregar projetos: {error}</p>
+        </div>
+      </div>
+    );
+  }
+
   const recentProjects = projects.slice(0, 4);
   const filteredProjects = projects.filter((project) =>
     project.nome.toLowerCase().includes(searchTerm.toLowerCase())
@@ -210,6 +230,19 @@ export default function ProjectPage() {
                 />
               </div>
 
+              <div>
+                <label className="block font-medium">Status</label>
+                <select
+                  name="status"
+                  value={newProject.status}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 p-2 rounded"
+                >
+                  <option value="EM_ANDAMENTO">Em Andamento</option>
+                  <option value="PLANEJAMENTO">Planejamento</option>
+                  <option value="FINALIZADO">Finalizado</option>
+                </select>
+              </div>
 
               <div className="flex justify-end gap-4 pt-4">
                 <button
