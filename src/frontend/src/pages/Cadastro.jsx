@@ -1,18 +1,41 @@
 import React, { useState } from "react";
 import logo from "../assets/logo.svg";
+import httpClient from "../httpClient";
 
 const CadastroPage = () => {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [cargo, setCargo] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aqui você pode enviar os dados para o backend
-    console.log({ nome, email, senha, cargo });
-    // Redirecionar para login após cadastro
-    window.location.href = "/login";
+    setError("");
+    setLoading(true);
+
+    try {
+      const userData = {
+        nome,
+        email,
+        senha,
+        cargo
+      };
+
+      const response = await httpClient.post("/auth/register", userData);
+      
+      window.location.href = "/login";
+    } catch (err) {
+      console.error("Erro no cadastro:", err);
+      if (err.response?.data) {
+        setError(err.response.data.message || err.response.data);
+      } else {
+        setError("Erro ao realizar cadastro. Tente novamente.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -24,6 +47,9 @@ const CadastroPage = () => {
         <h1 className="text-4xl font-semibold text-center text-gray-800 mb-6">
           Cadastro
         </h1>
+
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="nome" className="block text-sm font-medium text-gray-700">
@@ -35,7 +61,8 @@ const CadastroPage = () => {
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               required
-              className="w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
+              className="w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
               placeholder="Digite seu nome completo"
             />
           </div>
@@ -50,7 +77,8 @@ const CadastroPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
+              className="w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
               placeholder="Digite seu email"
             />
           </div>
@@ -65,7 +93,8 @@ const CadastroPage = () => {
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               required
-              className="w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
+              className="w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
               placeholder="Crie uma senha"
             />
           </div>
@@ -80,16 +109,18 @@ const CadastroPage = () => {
               value={cargo}
               onChange={(e) => setCargo(e.target.value)}
               required
-              className="w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
+              className="w-full px-4 py-2 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
               placeholder="Informe seu cargo (ex: Engenheiro, Gestor, etc.)"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-dark-blue text-white py-2 rounded-lg hover:bg-blue-darker transition"
+            disabled={loading}
+            className="w-full bg-dark-blue text-white py-2 rounded-lg hover:bg-blue-darker transition disabled:opacity-50"
           >
-            Cadastrar
+            {loading ? "Cadastrando..." : "Cadastrar"}
           </button>
         </form>
 
