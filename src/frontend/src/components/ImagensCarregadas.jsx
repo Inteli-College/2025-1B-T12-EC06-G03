@@ -14,6 +14,13 @@ const ImagensCarregadas = (props) => {
     coords = null;
   }
 
+  const handleAprovar = () => {
+    if (props.onAprovar) {
+      props.onAprovar(props.id);
+    }
+    setIsModalOpen(false);
+  };
+
   return (
     <div>
       {/* Card pequeno: tipo apenas como texto no bloco azul */}
@@ -34,6 +41,19 @@ const ImagensCarregadas = (props) => {
         {/* Tipo como texto simples */}
         <div className="mt-2 text-white text-sm text-center font-semibold">
           {props.tipo}
+        </div>
+        
+        {/* Status de aprovação */}
+        <div className="mt-1 text-center">
+          {props.aprovado ? (
+            <span className="text-green-300 text-xs">
+              ✓ Aprovado {props.aprovadoPor && `por ${props.aprovadoPor}`}
+            </span>
+          ) : (
+            <span className="text-yellow-300 text-xs">
+              ⏳ Aguardando aprovação
+            </span>
+          )}
         </div>
       </div>
 
@@ -70,6 +90,29 @@ const ImagensCarregadas = (props) => {
                   </div>
                 </div>
               )}
+              
+              {/* Status e botão de aprovação */}
+              <div className="mt-4 pt-4 border-t">
+                {props.aprovado ? (
+                  <div className="text-green-600 font-medium">
+                    ✓ Classificação aprovada {props.aprovadoPor && `por ${props.aprovadoPor}`}
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="text-yellow-600">
+                      ⏳ Esta fissura ainda não foi aprovada por um especialista
+                    </div>
+                    {props.onAprovar && (
+                      <button
+                        onClick={handleAprovar}
+                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                      >
+                        Aprovar Classificação
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

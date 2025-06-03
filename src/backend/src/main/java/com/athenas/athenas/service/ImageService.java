@@ -112,4 +112,25 @@ public class ImageService {
     public void deleteImageById(Long id) {
         imagemRepository.deleteById(id);
     }
+
+    public Imagem updateProcessadaStatus(Long imageId, Boolean processada, String processadaPor) {
+        Imagem imagem = imagemRepository.findById(imageId)
+            .orElseThrow(() -> new RuntimeException("Imagem não encontrada com id: " + imageId));
+        
+        imagem.setProcessada(processada);
+        imagem.setProcessadaPor(processadaPor);
+        
+        return imagemRepository.save(imagem);
+    }
+
+    public void deleteImage(Long imageId) {
+        Imagem imagem = imagemRepository.findById(imageId)
+            .orElseThrow(() -> new RuntimeException("Imagem não encontrada com id: " + imageId));
+        
+        // Here you could also delete the file from Supabase storage if needed
+        // String filePath = imagem.getCaminhoArquivo();
+        // deleteFromSupabase(filePath);
+        
+        imagemRepository.delete(imagem);
+    }
 }

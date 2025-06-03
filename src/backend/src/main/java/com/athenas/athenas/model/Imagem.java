@@ -51,4 +51,7 @@ public class Imagem {
 
     @Column(nullable = false)
     private Boolean processada = false;
+
+    @Column(name = "processada_por")
+    private String processadaPor;
 }

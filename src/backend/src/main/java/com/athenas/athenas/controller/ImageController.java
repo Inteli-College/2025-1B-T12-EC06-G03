@@ -63,4 +63,49 @@ public class ImageController {
         logger.info("Found {} images for projectId {}", images.size(), projectId);
         return ResponseEntity.ok(images);
     }
+
+    @PutMapping("/{imageId}/processada")
+    public ResponseEntity<Imagem> updateImageProcessada(@PathVariable Long imageId, @RequestBody ProcessadaRequest request) {
+        logger.info("Updating processada status for imageId {}", imageId);
+        try {
+            Imagem imagem = imageService.updateProcessadaStatus(imageId, request.getProcessada(), request.getProcessadaPor());
+            return ResponseEntity.ok(imagem);
+        } catch (RuntimeException e) {
+            logger.error("Error updating processada status for imageId {}: {}", imageId, e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{imageId}")
+    public ResponseEntity<Void> deleteImage(@PathVariable Long imageId) {
+        logger.info("Deleting image with id {}", imageId);
+        try {
+            imageService.deleteImage(imageId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            logger.error("Error deleting image with id {}: {}", imageId, e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    public static class ProcessadaRequest {
+        private Boolean processada;
+        private String processadaPor;
+
+        public Boolean getProcessada() {
+            return processada;
+        }
+
+        public void setProcessada(Boolean processada) {
+            this.processada = processada;
+        }
+
+        public String getProcessadaPor() {
+            return processadaPor;
+        }
+
+        public void setProcessadaPor(String processadaPor) {
+            this.processadaPor = processadaPor;
+        }
+    }
 }
