@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import placeholder from '../assets/placeholder-icon.svg';
 import { Trash2 } from 'lucide-react';
+import imageInferenceService, { getCurrentUser } from '../utils/imageInference';
 
 const DroneImages = () => {
   const [searchParams] = useSearchParams();
@@ -13,9 +14,21 @@ const DroneImages = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [resolvedProjectId, setResolvedProjectId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [processingImage, setProcessingImage] = useState(null);
+  const [processingStatus, setProcessingStatus] = useState('');
 
   // Supabase base URL for images
   const SUPABASE_BASE_URL = "https://efinfalxxeaqfkvboewx.supabase.co/storage/v1/object/public/img-projects/";
+
+  // Get current user on component mount
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const user = await getCurrentUser();
+      setCurrentUser(user);
+    };
+    fetchCurrentUser();
+  }, []);
 
   // Function to resolve project ID from project name
   const resolveProjectId = async (projectName) => {
@@ -81,7 +94,7 @@ const DroneImages = () => {
           src: SUPABASE_BASE_URL + image.caminhoArquivo,
           nome: image.nomeArquivo,
           enviado: image.processada, // Use processada as enviado status
-          enviadoPor: image.processada ? 'Sistema' : '',
+          enviadoPor: image.processadaPor || (image.processada ? 'Sistema' : ''),
           projeto: resolvedProjectId,
           dataCaptura: image.dataCaptura,
           dataUpload: image.dataUpload,
@@ -102,24 +115,104 @@ const DroneImages = () => {
     fetchImages();
   }, [resolvedProjectId]);
 
-  const handleEnviarParaModelo = () => {
-    const nomeUsuario = localStorage.getItem('userName') || 'Usuário Atual';
-    setImages((prev) =>
-      prev.map((img) =>
-        img.id === selectedImage.id
-          ? { ...img, enviado: true, enviadoPor: nomeUsuario }
-          : img
-      )
-    );
-    setSelectedImage(null);
-    // TODO: Implement API call to mark image as processed
-    console.warn('Image marked as sent locally. Backend integration needed for persistence.');
+  const handleEnviarParaModelo = async () => {
+    if (!selectedImage || !currentUser) {
+      alert('Erro: Usuário não identificado ou imagem não selecionada');
+      return;
+    }
+
+    try {
+      setProcessingImage(selectedImage.id);
+      setProcessingStatus('Conectando ao servidor...');
+
+      // Connect to WebSocket
+      await imageInferenceService.connect();
+      
+      // Update UI to show processing
+      const userName = currentUser.nome || 'Usuário Atual';
+      setImages((prev) =>
+        prev.map((img) =>
+          img.id === selectedImage.id
+            ? { ...img, enviado: true, enviadoPor: userName }
+            : img
+        )
+      );
+
+      // Persist status in backend
+      await fetch(`http://localhost:8080/api/images/${selectedImage.id}/processada`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          processada: true,
+          processadaPor: userName
+        })
+      });
+
+      // Send image for processing
+      await imageInferenceService.inferImages([selectedImage.id], {
+        onStatus: (data) => {
+          setProcessingStatus(data.message);
+        },
+        onResults: (results) => {
+          console.log('Resultados do processamento:', results);
+          // Here you could update images with classification results if needed
+          // For now, we just keep the processing status
+        },
+        onError: (error) => {
+          console.error('Erro no processamento:', error);
+          setProcessingStatus('Erro no processamento');
+          // Revert the UI change on error
+          setImages((prev) =>
+            prev.map((img) =>
+              img.id === selectedImage.id
+                ? { ...img, enviado: false, enviadoPor: '' }
+                : img
+            )
+          );
+          alert('Erro ao processar imagem: ' + error.error);
+        },
+        onComplete: (data) => {
+          setProcessingStatus('Processamento concluído!');
+          setTimeout(() => {
+            setProcessingStatus('');
+            setProcessingImage(null);
+          }, 2000);
+        }
+      });
+
+      setSelectedImage(null);
+      
+    } catch (error) {
+      console.error('Erro ao enviar para modelo:', error);
+      setProcessingStatus('');
+      setProcessingImage(null);
+      
+      // Revert the UI change on error
+      setImages((prev) =>
+        prev.map((img) =>
+          img.id === selectedImage.id
+            ? { ...img, enviado: false, enviadoPor: '' }
+            : img
+        )
+      );
+      
+      alert('Erro ao conectar com o servidor de processamento: ' + error.message);
+    }
   };
 
-  const handleDeleteImage = (id) => {
-    setImages((prev) => prev.filter((img) => img.id !== id));
-    // TODO: Implement API call to delete image from backend
-    console.warn('Image deleted locally. Backend integration needed for persistence.');
+  const handleDeleteImage = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/images/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Erro ao deletar');
+
+      setImages((prev) => prev.filter((img) => img.id !== id));
+    } catch (err) {
+      console.error("Erro ao deletar imagem:", err);
+      alert('Erro ao deletar imagem: ' + err.message);
+    }
   };
 
   if (isLoading) {
@@ -144,6 +237,16 @@ const DroneImages = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
+      {/* Processing status indicator */}
+      {processingImage && (
+        <div className="fixed top-4 right-4 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded shadow-lg z-50">
+          <div className="flex items-center">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-700 mr-2"></div>
+            <span>{processingStatus}</span>
+          </div>
+        </div>
+      )}
+
       {/* Imagem atual do drone */}
       <div className="mb-10 text-center">
         <label className="block text-3xl font-semibold mb-4">Imagem do Drone</label>
@@ -203,6 +306,13 @@ const DroneImages = () => {
                   }}
                 />
 
+                {/* Loading overlay for processing image */}
+                {processingImage === imagem.id && (
+                  <div className="absolute inset-0 bg-blue-100 bg-opacity-75 flex items-center justify-center rounded-lg">
+                    <div className="text-blue-700 font-medium">Processando...</div>
+                  </div>
+                )}
+
                 {/* Lixeira */}
                 <button
                   onClick={() => handleDeleteImage(imagem.id)}
@@ -249,9 +359,10 @@ const DroneImages = () => {
               {!selectedImage.enviado ? (
                 <button
                   onClick={handleEnviarParaModelo}
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                  disabled={processingImage !== null}
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Enviar para o modelo
+                  {processingImage === selectedImage.id ? 'Processando...' : 'Enviar para o modelo'}
                 </button>
               ) : (
                 <p className="text-green-600 font-medium">
@@ -261,6 +372,7 @@ const DroneImages = () => {
               <button
                 onClick={() => setSelectedImage(null)}
                 className="text-sm text-gray-500 hover:underline ml-4"
+                disabled={processingImage === selectedImage.id}
               >
                 Fechar
               </button>
