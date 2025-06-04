@@ -98,7 +98,10 @@ sidebar_position: 3
 
 ## Testes Dependentes de Validação do Usuário
 
-&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;O Quadro 2 a seguir apresenta os Testes Dependentes da Validação do Usuário. Diferente dos testes objetivos, estas avaliações são focadas na experiência e percepção do usuário final, garantindo que o sistema não apenas funcione tecnicamente, mas também atenda às expectativas de usabilidade, intuitividade e satisfação. Desse modo, eles buscam confirmar que a solução é prática e eficaz no contexto de uso real.
+
+<div align="center">
+<sup>Quadro 2 - Testes de validação do usuário</sup>
 
 | ID  | RF Relacionado | Descrição do Teste                                                 | Método                                              | Critério de Aceitação                                            |
 | --- | -------------- | ------------------------------------------------------------------ | --------------------------------------------------- | ---------------------------------------------------------------- |
@@ -107,3 +110,47 @@ sidebar_position: 3
 | T10 | RF07           | Validação do processo de cadastro de edificações                   | Simulação com usuários reais                        | Cadastro completo em até 3 minutos, sem erros                    |
 | T11 | RF09           | Validação do sistema de autenticação e permissões                  | Testes com diferentes perfis (admin, operador)      | Acesso permitido e bloqueado corretamente conforme perfil        |
 | T12 | RF10           | Teste da funcionalidade de validação manual de fissuras            | Operadores revisam, aceitam, ou descartam detecções | Interface permite edição com fluidez; 90% dos testes sem falhas  |
+
+<sup>Fonte: Material Produzido pelos autores. (2025)</sup>
+</div>
+
+&nbsp;&nbsp;&nbsp;&nbsp;A seguir, estão detalhados cada um dos testes listados no Quadro 2. Estas descrições aprofundam os métodos de execução e os critérios de sucesso para cada teste, focando na validação da experiência do usuário e na confirmação de que o sistema é intuitivo, eficaz e atende às expectativas de quem realmente o utilizará no dia a dia.
+
+### T08 — Validação da Integração com Dispositivos
+&nbsp;&nbsp;&nbsp;&nbsp;Verificar com usuários reais a facilidade e eficácia do envio automático de imagens via drones/câmeras.
+* **Como testar:**
+  * Operadores realizam coleta com drones/câmeras conectadas ao sistema.
+  * Observa-se se a imagem chega automaticamente.
+* **Critério de Aceitação:**
+  * ≥ 90% das tentativas com sucesso sem intervenção manual.
+
+### T09 — Usabilidade da Interface Gráfica
+&nbsp;&nbsp;&nbsp;&nbsp;Avaliar se a interface gráfica é compreensível e funcional para os usuários-alvo.
+* **Como testar:**
+  * Entrevistas e testes de usabilidade com engenheiros civis e técnicos.
+  * Questionário de avaliação.
+* **Critério de Aceitação:**
+  * ≥ 80% dos usuários avaliam como “intuitiva” ou “muito intuitiva”.
+
+### T10 — Cadastro de Edificações
+&nbsp;&nbsp;&nbsp;&nbsp;Testar com usuários reais a funcionalidade e facilidade do cadastro de novas edificações e áreas.
+* **Como testar:**
+  * Usuário realiza cadastro completo (nome, área, localização, imagens).
+* **Critério de Aceitação:**
+  * Cadastro realizado em até 3 minutos e sem erros.
+
+### T11 — Permissões e Autenticação
+&nbsp;&nbsp;&nbsp;&nbsp;Confirmar se o controle de acesso funciona corretamente para diferentes perfis de usuário.
+* **Como testar:**
+  * Testar ações de leitura, escrita e administração com contas de administrador e operador.
+* **Critério de Aceitação:**
+  * Apenas administradores têm acesso completo; operadores têm acesso restrito.
+
+### T12 — Validação Manual das Fissuras
+&nbsp;&nbsp;&nbsp;&nbsp;Verificar a funcionalidade de revisão, edição e exclusão de fissuras detectadas automaticamente.
+* **Como testar:**
+  * Usuário técnico acessa imagem com detecções e interage com elas (valida, edita, descarta).
+* **Critério de Aceitação:**
+  * Usuário consegue modificar/validar todas as detecções conforme desejado, sem erro.
+
+&nbsp;&nbsp;&nbsp;&nbsp;A documentação completa dos testes realizados, incluindo os resultados detalhados, logs de execução e status de cada validação, estará disponível na próxima seção deste documento. 
