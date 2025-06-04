@@ -120,7 +120,6 @@ const UploadImagens = () => {
   };
 
   const handleEnviarParaModelo = async () => {
-    const nomeUsuario = localStorage.getItem('userName') || 'Usuário Atual';
 
     if (!selectedImage || !selectedImage.id) {
       console.error("Imagem selecionada inválida");
