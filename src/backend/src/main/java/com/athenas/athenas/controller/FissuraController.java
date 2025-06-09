@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/fissura")
@@ -40,6 +40,51 @@ public class FissuraController {
     private ImagemRepository imagemRepository;
     @Autowired
     private FissuraRepository fissuraRepository;
+
+    @PostMapping
+    public ResponseEntity<Fissura> createFissura(@RequestBody Fissura fissura) {
+        try {
+            // Validar se a imagem existe
+            if (fissura.getImagem() == null || fissura.getImagem().getId() == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            
+            Imagem imagem = imagemRepository.findById(fissura.getImagem().getId())
+                .orElseThrow(() -> new RuntimeException("Imagem não encontrada"));
+            
+            // Configurar a imagem completa no objeto fissura
+            fissura.setImagem(imagem);
+            
+            // Definir data de detecção se não foi fornecida
+            if (fissura.getDataDeteccao() == null) {
+                fissura.setDataDeteccao(java.time.LocalDateTime.now());
+            }
+            
+            Fissura savedFissura = fissuraRepository.save(fissura);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedFissura);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/{id}/aprovar")
+    public ResponseEntity<Fissura> aprovarFissura(@PathVariable Long id, @RequestBody Map<String, Object> request) {
+        try {
+            Fissura fissura = fissuraRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Fissura não encontrada"));
+            
+            fissura.setAprovado(true);
+            fissura.setAprovadoPor((String) request.get("aprovadoPor"));
+            
+            Fissura updatedFissura = fissuraRepository.save(fissura);
+            return ResponseEntity.ok(updatedFissura);
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     @GetMapping("/porcentagem/{projetoId}")
     public FissuraPorcentagemDTO getPorcentagemPorTipo(@PathVariable Integer projetoId) {
@@ -125,110 +170,5 @@ public class FissuraController {
             detalhes.add(dto);
         }
         return ResponseEntity.ok(detalhes);
-    }
-
-    @PostMapping
-    public ResponseEntity<Fissura> criarFissura(@RequestBody CriarFissuraRequest request) {
-        try {
-            // Buscar a imagem
-            Imagem imagem = imagemRepository.findById(request.getImagem_id())
-                .orElseThrow(() -> new RuntimeException("Imagem not found with id: " + request.getImagem_id()));
-            
-            // Criar nova fissura
-            Fissura fissura = new Fissura();
-            fissura.setImagem(imagem);
-            fissura.setTipo(request.getTipo());
-            fissura.setCoordenadas(request.getCoordenadas());
-            fissura.setGravidade(request.getGravidade());
-            fissura.setDataDeteccao(request.getData_deteccao());
-            fissura.setConfianca(request.getConfianca());
-            fissura.setAprovado(false); // Por padrão, não aprovado
-            
-            Fissura fissuraSalva = fissuraRepository.save(fissura);
-            return ResponseEntity.status(HttpStatus.CREATED).body(fissuraSalva);
-            
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @PutMapping("/{fissuraId}/aprovar")
-    public ResponseEntity<Fissura> aprovarFissura(@PathVariable Long fissuraId, @RequestBody AprovarFissuraRequest request) {
-        try {
-            System.out.println("Tentando aprovar fissura ID: " + fissuraId);
-            System.out.println("Request: aprovado=" + request.getAprovado() + ", aprovadoPor=" + request.getAprovadoPor());
-            
-            Optional<Fissura> fissuraOpt = fissuraRepository.findById(fissuraId);
-            
-            if (fissuraOpt.isEmpty()) {
-                System.out.println("Fissura não encontrada com ID: " + fissuraId);
-                return ResponseEntity.notFound().build();
-            }
-            
-            Fissura fissura = fissuraOpt.get();
-            fissura.setAprovado(request.getAprovado());
-            fissura.setAprovadoPor(request.getAprovadoPor());
-            
-            System.out.println("Salvando fissura aprovada...");
-            Fissura fissuraAtualizada = fissuraRepository.save(fissura);
-            System.out.println("Fissura salva com sucesso: " + fissuraAtualizada.getId());
-            
-            return ResponseEntity.ok(fissuraAtualizada);
-        } catch (Exception e) {
-            System.err.println("Erro ao aprovar fissura: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    // DTO para o request de criação de fissura
-    public static class CriarFissuraRequest {
-        private Long imagem_id;
-        private String tipo;
-        private String coordenadas;
-        private String gravidade;
-        private java.time.LocalDateTime data_deteccao;
-        private Double confianca;
-        
-        // Getters e setters
-        public Long getImagem_id() { return imagem_id; }
-        public void setImagem_id(Long imagem_id) { this.imagem_id = imagem_id; }
-        
-        public String getTipo() { return tipo; }
-        public void setTipo(String tipo) { this.tipo = tipo; }
-        
-        public String getCoordenadas() { return coordenadas; }
-        public void setCoordenadas(String coordenadas) { this.coordenadas = coordenadas; }
-        
-        public String getGravidade() { return gravidade; }
-        public void setGravidade(String gravidade) { this.gravidade = gravidade; }
-        
-        public java.time.LocalDateTime getData_deteccao() { return data_deteccao; }
-        public void setData_deteccao(java.time.LocalDateTime data_deteccao) { this.data_deteccao = data_deteccao; }
-        
-        public Double getConfianca() { return confianca; }
-        public void setConfianca(Double confianca) { this.confianca = confianca; }
-    }
-
-    // DTO para o request de aprovação
-    public static class AprovarFissuraRequest {
-        private Boolean aprovado;
-        private String aprovadoPor;
-        
-        public Boolean getAprovado() {
-            return aprovado;
-        }
-        
-        public void setAprovado(Boolean aprovado) {
-            this.aprovado = aprovado;
-        }
-        
-        public String getAprovadoPor() {
-            return aprovadoPor;
-        }
-        
-        public void setAprovadoPor(String aprovadoPor) {
-            this.aprovadoPor = aprovadoPor;
-        }
     }
 }

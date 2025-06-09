@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +28,7 @@ public class Fissura {
 
     private String tipo;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "json")
     private String coordenadas;
 

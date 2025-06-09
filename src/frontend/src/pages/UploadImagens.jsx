@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Trash2 } from "lucide-react";
+import { Trash2, Upload, AlertCircle, CheckCircle } from "lucide-react";
 import placeholder from "../assets/placeholder-icon.svg";
 import imageInferenceService, { getCurrentUser } from '../utils/imageInference';
 
@@ -19,6 +19,14 @@ const UploadImagens = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [processingImage, setProcessingImage] = useState(null);
   const [processingStatus, setProcessingStatus] = useState('');
+
+  // New states for building and facade selection
+  const [edificios, setEdificios] = useState([]);
+  const [fachadas, setFachadas] = useState([]);
+  const [selectedEdificio, setSelectedEdificio] = useState('');
+  const [selectedFachada, setSelectedFachada] = useState('');
+  const [uploadingFiles, setUploadingFiles] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState('');
 
   // Get current user on component mount
   useEffect(() => {
@@ -55,6 +63,60 @@ const UploadImagens = () => {
     initializeProjectId();
   }, [projectIdParam, projectNameParam]);
 
+  // Fetch buildings when project is resolved
+  useEffect(() => {
+    const fetchEdificios = async () => {
+      if (!resolvedProjectId) return;
+      
+      try {
+        const projectName = projectNameParam || (await getProjectName(resolvedProjectId));
+        if (!projectName) return;
+
+        const response = await fetch(`http://localhost:8080/api/edificio/projeto-nome/${encodeURIComponent(projectName)}`);
+        if (response.ok) {
+          const data = await response.json();
+          setEdificios(data || []);
+        } else if (response.status === 204) {
+          setEdificios([]);
+        }
+      } catch (err) {
+        console.error('Erro ao buscar edifícios:', err);
+        setEdificios([]);
+      }
+    };
+
+    fetchEdificios();
+  }, [resolvedProjectId, projectNameParam]);
+
+  // Fetch facades when building is selected
+  useEffect(() => {
+    if (selectedEdificio) {
+      const edificio = edificios.find(e => e.id.toString() === selectedEdificio);
+      if (edificio && edificio.fachadas && edificio.fachadas.length > 0) {
+        setFachadas(edificio.fachadas);
+        setSelectedFachada(''); // Reset facade selection
+      } else {
+        setFachadas([]);
+      }
+    } else {
+      setFachadas([]);
+      setSelectedFachada('');
+    }
+  }, [selectedEdificio, edificios]);
+
+  const getProjectName = async (projectId) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/projetos');
+      if (!response.ok) return null;
+      const projects = await response.json();
+      const project = projects.find(p => p.id.toString() === projectId.toString());
+      return project ? project.nome : null;
+    } catch (err) {
+      console.error('Erro ao buscar nome do projeto:', err);
+      return null;
+    }
+  };
+
   const fetchImages = async (projectId) => {
     try {
       const response = await fetch(`http://localhost:8080/api/images/${projectId}`);
@@ -68,7 +130,7 @@ const UploadImagens = () => {
         enviadoPor: img.processadaPor || (img.processada ? 'Sistema' : ''),
         dataCaptura: img.dataCaptura,
         dataUpload: img.dataUpload,
-        fachada: img.fachada?.nome || 'Sem fachada',
+        fachada: img.fachada?.descricao || 'Sem fachada', // Usar descricao em vez de nome
         edificio: img.fachada?.edificio?.nome || 'Sem edifício',
         tipo: img.fissura?.tipo || null,
         coordenadas: img.fissura?.coordenadas || null,
@@ -90,25 +152,62 @@ const UploadImagens = () => {
   }, [resolvedProjectId]);
 
   const handleImageUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file || !resolvedProjectId) return;
+    const files = Array.from(event.target.files);
+    if (!files.length || !resolvedProjectId) return;
 
-    const formData = new FormData();
-    formData.append("files", file);
-    const edificioId = 1;
-    const direction = "west";
+    if (!selectedEdificio) {
+      alert('Por favor, selecione um edifício antes de fazer o upload.');
+      return;
+    }
+
+    if (!selectedFachada) {
+      alert('Por favor, selecione uma fachada antes de fazer o upload.');
+      return;
+    }
+
+    setUploadingFiles(true);
+    setUploadProgress('Preparando upload...');
 
     try {
-      const response = await fetch(`http://localhost:8080/api/images/${resolvedProjectId}/upload/${edificioId}/${direction}`, {
+      const formData = new FormData();
+      files.forEach(file => {
+        formData.append("files", file);
+      });
+
+      // Get the selected facade info
+      const fachada = fachadas.find(f => f.id?.toString() === selectedFachada || f.descricao === selectedFachada);
+      const direction = fachada ? fachada.descricao.toLowerCase() : 'general';
+
+      setUploadProgress(`Fazendo upload de ${files.length} arquivo(s)...`);
+
+      const response = await fetch(`http://localhost:8080/api/images/${resolvedProjectId}/upload/${selectedEdificio}/${direction}`, {
         method: "POST",
         body: formData,
       });
 
-      if (!response.ok) throw new Error('Erro no upload');
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Erro no upload: ${response.status} - ${errorText}`);
+      }
 
+      setUploadProgress('Upload concluído! Atualizando lista...');
       await fetchImages(resolvedProjectId);
+      
+      // Reset form
+      event.target.value = '';
+      setUploadProgress('');
+      
+      // Show success message
+      setTimeout(() => {
+        setUploadProgress('');
+      }, 2000);
+
     } catch (err) {
       console.error("Erro no upload:", err);
+      setError(`Erro no upload: ${err.message}`);
+      setUploadProgress('');
+    } finally {
+      setUploadingFiles(false);
     }
   };
 
@@ -169,20 +268,43 @@ const UploadImagens = () => {
           console.log('Resultados do processamento:', results);
           const resultado = results[0];
 
-          // Create fissura record in backend
+          // Create fissura record in backend with correct format
           try {
-            await fetch('http://localhost:8080/api/fissuras', {
+            const fissuraData = {
+              imagem: {
+                id: resultado.id
+              },
+              tipo: resultado.label,
+              coordenadas: resultado.coords ? JSON.stringify({
+                x1: resultado.coords.x1,
+                y1: resultado.coords.y1,
+                x2: resultado.coords.x2,
+                y2: resultado.coords.y2,
+                width: resultado.coords.x2 - resultado.coords.x1,
+                height: resultado.coords.y2 - resultado.coords.y1
+              }) : null,
+              gravidade: resultado.severity || 'Baixa',
+              confianca: resultado.confidence,
+              dataDeteccao: new Date().toISOString(),
+              aprovado: false,
+              aprovadoPor: null
+            };
+
+            console.log('Enviando dados da fissura:', fissuraData);
+
+            const fissuraResponse = await fetch('http://localhost:8080/api/fissura', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                imagem_id: resultado.id,
-                tipo: resultado.label,
-                coordenadas: resultado.coords,
-                gravidade: resultado.severity || 'moderada',
-                data_deteccao: new Date().toISOString(),
-                confianca: resultado.confidence
-              })
+              body: JSON.stringify(fissuraData)
             });
+
+            if (!fissuraResponse.ok) {
+              const errorText = await fissuraResponse.text();
+              console.error('Erro ao salvar fissura:', errorText);
+              throw new Error(`Erro ${fissuraResponse.status}: ${errorText}`);
+            }
+
+            console.log('Fissura salva com sucesso');
           } catch (fissuraError) {
             console.error('Erro ao salvar fissura:', fissuraError);
           }
@@ -233,8 +355,30 @@ const UploadImagens = () => {
     }
   };
 
-  if (isLoading) return <div className="p-8">Carregando imagens...</div>;
-  if (error) return <div className="p-8 text-red-600">Erro: {error}</div>;
+  if (isLoading) return (
+    <div className="min-h-screen bg-slate-100 p-8">
+      <div className="flex justify-center items-center h-64">
+        <div className="text-lg">Carregando dados do projeto...</div>
+      </div>
+    </div>
+  );
+  
+  if (error) return (
+    <div className="min-h-screen bg-slate-100 p-8">
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+        <div className="flex items-center">
+          <AlertCircle className="mr-2" size={20} />
+          <span>Erro: {error}</span>
+        </div>
+      </div>
+      <button 
+        onClick={() => window.location.reload()} 
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Tentar Novamente
+      </button>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-slate-100 p-8">
@@ -248,110 +392,322 @@ const UploadImagens = () => {
         </div>
       )}
 
-      <h1 className="text-3xl font-bold mb-6 text-dark-blue">Upload de Imagem</h1>
-
-      <div className="bg-gray-light h-72 flex items-center justify-center rounded-md mb-10">
-        <label className="bg-dark-blue text-gray-light px-6 py-2 rounded-xl shadow-md cursor-pointer">
-          Carregar Imagem
-          <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-        </label>
-      </div>
-
-      <h2 className="text-3xl font-bold mb-6 text-dark-blue">Imagens Carregadas</h2>
-
-      {imagens.length === 0 ? (
-        <div className="text-center text-gray-500 py-8">Nenhuma imagem encontrada.</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {imagens.map(imagem => (
-            <div key={imagem.id} className="relative border rounded-lg p-4 bg-white shadow">
-              <div className="mb-2">
-                {imagem.enviado ? (
-                  <span className="text-green-700 bg-green-100 px-2 py-1 rounded text-sm font-medium">
-                    Processada {imagem.enviadoPor && `por ${imagem.enviadoPor}`}
-                  </span>
-                ) : (
-                  <span className="text-yellow-800 bg-yellow-100 px-2 py-1 rounded text-sm font-medium">
-                    Aguardando processamento
-                  </span>
-                )}
-              </div>
-
-              <div className="mb-2 text-xs text-gray-600">
-                <div>Fachada: {imagem.fachada}</div>
-                <div>Edifício: {imagem.edificio}</div>
-                {imagem.tipo && <div>Tipo: {imagem.tipo}</div>}
-                {imagem.confianca && <div>Confiança: {(imagem.confianca * 100).toFixed(1)}%</div>}
-                {imagem.coordenadas && (
-                  <div>Coordenadas: x={imagem.coordenadas.x}, y={imagem.coordenadas.y}, w={imagem.coordenadas.width}, h={imagem.coordenadas.height}</div>
-                )}
-              </div>
-
-              <img
-                src={imagem.src}
-                alt={imagem.name}
-                className="w-full h-48 object-contain rounded cursor-pointer"
-                onClick={() => setSelectedImage(imagem)}
-                onError={(e) => { e.target.src = placeholder }}
-              />
-
-              {/* Loading overlay for processing image */}
-              {processingImage === imagem.id && (
-                <div className="absolute inset-0 bg-blue-100 bg-opacity-75 flex items-center justify-center rounded-lg">
-                  <div className="text-blue-700 font-medium">Processando...</div>
-                </div>
-              )}
-
-              <button
-                onClick={() => handleDeleteImage(imagem.id)}
-                className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-              >
-                <Trash2 size={20} />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {selectedImage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">{selectedImage.name}</h2>
-
-            <div className="w-full h-80 mb-4 bg-gray-100 rounded flex items-center justify-center overflow-hidden">
-              <img
-                src={selectedImage.src}
-                alt={selectedImage.name}
-                className="max-w-full max-h-full object-contain"
-                onError={(e) => { e.target.src = placeholder }}
-              />
-            </div>
-
-            <div className="flex justify-between items-center">
-              {!selectedImage.enviado ? (
-                <button
-                  onClick={handleEnviarParaModelo}
-                  disabled={processingImage !== null}
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {processingImage === selectedImage.id ? 'Processando...' : 'Enviar para o modelo'}
-                </button>
-              ) : (
-                <p className="text-green-600 font-medium">
-                  Já processada {selectedImage.enviadoPor && `por ${selectedImage.enviadoPor}`}
-                </p>
-              )}
-              <button
-                onClick={() => setSelectedImage(null)}
-                className="text-sm text-gray-500 hover:underline ml-4"
-                disabled={processingImage === selectedImage.id}
-              >
-                Fechar
-              </button>
-            </div>
+      {/* Upload progress indicator */}
+      {uploadingFiles && (
+        <div className="fixed top-4 left-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg z-50">
+          <div className="flex items-center">
+            <Upload className="mr-2" size={20} />
+            <span>{uploadProgress}</span>
           </div>
         </div>
       )}
+
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6 text-dark-blue">Upload de Imagens</h1>
+        
+        {projectNameParam && (
+          <p className="text-gray-600 mb-6">Projeto: <span className="font-semibold">{projectNameParam}</span></p>
+        )}
+
+        {/* Building and Facade Selection */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Selecionar Localização</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label htmlFor="edificio" className="block text-sm font-medium text-gray-700 mb-2">
+                Edifício *
+              </label>
+              <select
+                id="edificio"
+                value={selectedEdificio}
+                onChange={(e) => setSelectedEdificio(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={uploadingFiles}
+              >
+                <option value="">Selecione um edifício</option>
+                {edificios.map((edificio) => (
+                  <option key={edificio.id} value={edificio.id}>
+                    {edificio.nome} - {edificio.localizacao}
+                  </option>
+                ))}
+              </select>
+              {edificios.length === 0 && (
+                <p className="text-sm text-amber-600 mt-1">
+                  Nenhum edifício encontrado. Cadastre edifícios no projeto primeiro.
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="fachada" className="block text-sm font-medium text-gray-700 mb-2">
+                Fachada *
+              </label>
+              <select
+                id="fachada"
+                value={selectedFachada}
+                onChange={(e) => setSelectedFachada(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={!selectedEdificio || uploadingFiles}
+              >
+                <option value="">Selecione uma fachada</option>
+                {fachadas.map((fachada, index) => (
+                  <option key={fachada.id || index} value={fachada.id || fachada.descricao}>
+                    {fachada.descricao} {fachada.area && `(${fachada.area} m²)`}
+                  </option>
+                ))}
+              </select>
+              {selectedEdificio && fachadas.length === 0 && (
+                <p className="text-sm text-amber-600 mt-1">
+                  Nenhuma fachada encontrada para este edifício.
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="text-sm text-gray-600">
+            <p>* Campos obrigatórios para realizar o upload das imagens.</p>
+          </div>
+        </div>
+
+        {/* Upload Area */}
+        <div className="bg-white p-8 rounded-lg shadow-md mb-8">
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors">
+            {uploadingFiles ? (
+              <div className="py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">{uploadProgress}</p>
+              </div>
+            ) : (
+              <>
+                <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <label className="cursor-pointer">
+                  <span className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-block">
+                    Selecionar Imagens
+                  </span>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    multiple 
+                    className="hidden" 
+                    onChange={handleImageUpload}
+                    disabled={!selectedEdificio || !selectedFachada}
+                  />
+                </label>
+                <p className="text-gray-500 mt-2">
+                  Selecione múltiplas imagens (JPG, PNG, etc.)
+                </p>
+                {(!selectedEdificio || !selectedFachada) && (
+                  <p className="text-amber-600 text-sm mt-2">
+                    Selecione um edifício e fachada antes de fazer o upload
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+
+        <h2 className="text-2xl font-bold mb-6 text-dark-blue">Imagens Carregadas</h2>
+
+        {imagens.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-lg shadow-md">
+            <div className="text-gray-500 text-lg">Nenhuma imagem encontrada.</div>
+            <p className="text-gray-400 mt-2">Faça o upload de imagens para começar.</p>
+          </div>
+        ) : (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '1.5rem',
+            gridAutoRows: 'max-content'
+          }}>
+            {imagens.map(imagem => (
+              <div key={imagem.id} className="relative bg-white rounded-lg shadow-md overflow-hidden" style={{ breakInside: 'avoid' }}>
+                {/* Status Badge */}
+                <div className="absolute top-3 left-3 z-10">
+                  {imagem.enviado ? (
+                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium flex items-center">
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      Processada {imagem.enviadoPor && `por ${imagem.enviadoPor}`}
+                    </span>
+                  ) : (
+                    <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium">
+                      Aguardando processamento
+                    </span>
+                  )}
+                </div>
+
+                {/* Delete Button */}
+                <button
+                  onClick={() => handleDeleteImage(imagem.id)}
+                  className="absolute top-3 right-3 z-10 bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-full transition-colors"
+                  title="Deletar imagem"
+                >
+                  <Trash2 size={16} />
+                </button>
+
+                {/* Image Container with dynamic aspect ratio */}
+                <div className="relative bg-gray-100 overflow-hidden">
+                  <img
+                    src={imagem.src}
+                    alt={imagem.name}
+                    className="w-full h-auto cursor-pointer hover:scale-105 transition-transform"
+                    onClick={() => setSelectedImage(imagem)}
+                    onError={(e) => { e.target.src = placeholder }}
+                    style={{
+                      maxHeight: '300px',
+                      objectFit: 'cover',
+                      aspectRatio: 'auto'
+                    }}
+                  />
+                </div>
+
+                {/* Loading overlay for processing image */}
+                {processingImage === imagem.id && (
+                  <div className="absolute inset-0 bg-blue-100 bg-opacity-90 flex items-center justify-center">
+                    <div className="text-blue-700 font-medium text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-700 mx-auto mb-2"></div>
+                      Processando...
+                    </div>
+                  </div>
+                )}
+
+                {/* Image Info */}
+                <div className="p-4">
+                  <h3 className="font-medium text-gray-900 mb-2 truncate" title={imagem.name}>
+                    {imagem.name}
+                  </h3>
+                  
+                  <div className="space-y-1 text-xs text-gray-600">
+                    <div className="flex justify-between">
+                      <span>Edifício:</span>
+                      <span className="font-medium">{imagem.edificio}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Fachada:</span>
+                      <span className="font-medium">{imagem.fachada}</span>
+                    </div>
+                    {imagem.tipo && (
+                      <div className="flex justify-between">
+                        <span>Tipo:</span>
+                        <span className="font-medium">{imagem.tipo}</span>
+                      </div>
+                    )}
+                    {imagem.confianca && (
+                      <div className="flex justify-between">
+                        <span>Confiança:</span>
+                        <span className="font-medium">{(imagem.confianca * 100).toFixed(1)}%</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Modal */}
+        {selectedImage && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <h2 className="text-2xl font-semibold mb-4">{selectedImage.name}</h2>
+                
+                {/* Image details */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h3 className="font-semibold text-gray-800 mb-3">Informações da Imagem</h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Edifício:</span>
+                        <span className="font-medium">{selectedImage.edificio}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Fachada:</span>
+                        <span className="font-medium">{selectedImage.fachada}</span>
+                      </div>
+                      {selectedImage.dataCaptura && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Data de Captura:</span>
+                          <span className="font-medium">{new Date(selectedImage.dataCaptura).toLocaleDateString()}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Data de Upload:</span>
+                        <span className="font-medium">{new Date(selectedImage.dataUpload).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {(selectedImage.tipo || selectedImage.confianca || selectedImage.coordenadas) && (
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <h3 className="font-semibold text-gray-800 mb-3">Análise</h3>
+                      <div className="space-y-2 text-sm">
+                        {selectedImage.tipo && (
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Tipo:</span>
+                            <span className="font-medium">{selectedImage.tipo}</span>
+                          </div>
+                        )}
+                        {selectedImage.confianca && (
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Confiança:</span>
+                            <span className="font-medium">{(selectedImage.confianca * 100).toFixed(1)}%</span>
+                          </div>
+                        )}
+                        {selectedImage.coordenadas && (
+                          <div>
+                            <span className="text-gray-600">Coordenadas:</span>
+                            <div className="text-xs font-mono mt-1 bg-white p-2 rounded">
+                              x: {selectedImage.coordenadas.x}, y: {selectedImage.coordenadas.y}<br/>
+                              w: {selectedImage.coordenadas.width}, h: {selectedImage.coordenadas.height}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Image container */}
+                <div className="bg-gray-100 rounded-lg p-4 mb-6">
+                  <img
+                    src={selectedImage.src}
+                    alt={selectedImage.name}
+                    className="max-w-full max-h-96 mx-auto object-contain rounded"
+                    onError={(e) => { e.target.src = placeholder }}
+                  />
+                </div>
+                
+                {/* Actions */}
+                <div className="flex justify-between items-center">
+                  {!selectedImage.enviado ? (
+                    <button
+                      onClick={handleEnviarParaModelo}
+                      disabled={processingImage !== null}
+                      className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {processingImage === selectedImage.id ? 'Processando...' : 'Enviar para Análise'}
+                    </button>
+                  ) : (
+                    <div className="flex items-center text-green-600 font-medium">
+                      <CheckCircle className="w-5 h-5 mr-2" />
+                      Já processada {selectedImage.enviadoPor && `por ${selectedImage.enviadoPor}`}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setSelectedImage(null)}
+                    className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+                    disabled={processingImage === selectedImage.id}
+                  >
+                    Fechar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
