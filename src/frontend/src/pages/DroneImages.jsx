@@ -201,14 +201,33 @@ const DroneImages = () => {
   };
 
   const handleDeleteImage = async (id) => {
+    if (!window.confirm('Tem certeza que deseja deletar esta imagem? Esta ação não pode ser desfeita.')) {
+      return;
+    }
+
     try {
       const response = await fetch(`http://localhost:8080/api/images/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       });
 
-      if (!response.ok) throw new Error('Erro ao deletar');
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Erro na resposta do servidor:', response.status, errorText);
+        throw new Error(`Erro ${response.status}: ${errorText || 'Erro ao deletar imagem'}`);
+      }
 
+      // Remove a imagem da lista local apenas se a deleção foi bem-sucedida
       setImages((prev) => prev.filter((img) => img.id !== id));
+      
+      // Se a imagem deletada estava selecionada, feche o modal
+      if (selectedImage && selectedImage.id === id) {
+        setSelectedImage(null);
+      }
+
+      console.log('Imagem deletada com sucesso');
     } catch (err) {
       console.error("Erro ao deletar imagem:", err);
       alert('Erro ao deletar imagem: ' + err.message);

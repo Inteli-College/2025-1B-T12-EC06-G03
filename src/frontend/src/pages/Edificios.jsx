@@ -35,14 +35,15 @@ const Edificios = () => {
       
       const response = await fetch(url);
       
-      if (response.ok) {
-        const data = await response.json();
-        setEdificios(data || []);
-      } else if (response.status === 204) {
+      if (response.status === 204) {
+        // No content - lista vazia
         setEdificios([]);
       } else if (response.status === 404) {
         setError(`Projeto "${projetoAtivo}" não encontrado`);
         setEdificios([]);
+      } else if (response.ok) {
+        const data = await response.json();
+        setEdificios(data || []);
       } else {
         throw new Error(`Error loading edificios: ${response.status}`);
       }

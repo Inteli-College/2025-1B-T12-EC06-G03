@@ -182,10 +182,61 @@ public class ImageService {
         Imagem imagem = imagemRepository.findById(imageId)
             .orElseThrow(() -> new RuntimeException("Imagem não encontrada com id: " + imageId));
         
-        // Here you could also delete the file from Supabase storage if needed
-        // String filePath = imagem.getCaminhoArquivo();
-        // deleteFromSupabase(filePath);
+        // Delete the file from Supabase storage
+        String filePath = imagem.getCaminhoArquivo();
+        if (filePath != null && !filePath.isEmpty()) {
+            deleteFromSupabase(filePath);
+        }
         
         imagemRepository.delete(imagem);
+    }
+
+    /**
+     * Deleta um arquivo do Supabase Storage
+     */
+    private void deleteFromSupabase(String filePath) {
+        try {
+            // Validação das configurações
+            if (supabaseProjectUrl == null || supabaseProjectUrl.isEmpty()) {
+                logger.error("supabaseProjectUrl não configurado");
+                return;
+            }
+            if (supabaseBucketName == null || supabaseBucketName.isEmpty()) {
+                logger.error("supabaseBucketName não configurado");
+                return;
+            }
+            if (supabaseServiceRoleKey == null || supabaseServiceRoleKey.isEmpty()) {
+                logger.error("supabaseServiceRoleKey não configurado");
+                return;
+            }
+
+            String url = String.format("%s/storage/v1/object/%s/%s", supabaseProjectUrl, supabaseBucketName, filePath);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(supabaseServiceRoleKey);
+            
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            RestTemplate restTemplate = new RestTemplate();
+            
+            logger.info("Deletando arquivo do Supabase: {} | URL: {}", filePath, url);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class);
+            
+            if (response.getStatusCode().is2xxSuccessful()) {
+                logger.info("Arquivo deletado com sucesso do Supabase: {}", filePath);
+            } else if (response.getStatusCode().value() == 404) {
+                logger.warn("Arquivo não encontrado no Supabase (pode já ter sido deletado): {}", filePath);
+            } else {
+                logger.warn("Falha ao deletar arquivo do Supabase. Status: {}, Response: {}", 
+                           response.getStatusCode(), response.getBody());
+            }
+        } catch (org.springframework.web.client.HttpClientErrorException.NotFound e) {
+            logger.warn("Arquivo não encontrado no Supabase (404): {}", filePath);
+        } catch (org.springframework.web.client.HttpClientErrorException | 
+                 org.springframework.web.client.HttpServerErrorException e) {
+            logger.error("Erro HTTP ao deletar arquivo do Supabase: {} - Status: {}, Response: {}", 
+                        filePath, e.getStatusCode(), e.getResponseBodyAsString());
+        } catch (Exception e) {
+            logger.error("Erro inesperado ao deletar arquivo do Supabase: {}", filePath, e);
+        }
     }
 }
