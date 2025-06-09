@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import placeholder from '../assets/placeholder-icon.svg';
-import { Trash2 } from 'lucide-react';
 import imageInferenceService, { getCurrentUser } from '../utils/imageInference';
 
 const DroneImages = () => {
@@ -331,15 +330,6 @@ const DroneImages = () => {
                     <div className="text-blue-700 font-medium">Processando...</div>
                   </div>
                 )}
-
-                {/* Lixeira */}
-                <button
-                  onClick={() => handleDeleteImage(imagem.id)}
-                  className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                  title="Deletar imagem"
-                >
-                  <Trash2 size={20} />
-                </button>
               </div>
             ))}
           </div>
