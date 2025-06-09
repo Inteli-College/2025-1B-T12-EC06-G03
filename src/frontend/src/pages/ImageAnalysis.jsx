@@ -12,50 +12,70 @@ export default function ImageAnalysis() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Função para traduzir tipos de fissura
+  const traduzirTipoFissura = (tipo) => {
+    const traducoes = {
+      'retraction': 'Retração',
+      'thermal': 'Térmica'
+    };
+    return traducoes[tipo?.toLowerCase()] || tipo;
+  };
+
   useEffect(() => {
     const fetchFissuras = async () => {
       if (!projetoAtivo) {
-        setError("Nenhum projeto selecionado");
         setLoading(false);
         return;
       }
 
       try {
-        setLoading(true);
-        setError(null);
-
-        // Primeiro, buscar o projeto pelo nome para obter o ID
-        const projetoResponse = await fetch(`http://localhost:8080/api/projetos?nome=${encodeURIComponent(projetoAtivo)}`);
-        if (!projetoResponse.ok) throw new Error("Erro ao buscar projeto");
-        const projetos = await projetoResponse.json();
-        
-        if (projetos.length === 0) {
-          throw new Error("Projeto não encontrado");
+        // Primeiro, buscar o ID do projeto pelo nome
+        const projetosResponse = await fetch('http://localhost:8080/api/projetos');
+        if (!projetosResponse.ok) {
+          throw new Error('Erro ao buscar projetos');
         }
+        const projetos = await projetosResponse.json();
+        const projeto = projetos.find(p => p.nome.toLowerCase() === projetoAtivo.toLowerCase());
         
-        const projeto = projetos[0];
-        
-        // Agora buscar as fissuras detalhadas do projeto
-        const response = await fetch(`http://localhost:8080/api/fissura/detalhes/projeto/${projeto.id}`);
-        if (!response.ok) throw new Error("Erro ao buscar fissuras");
-        const fissuras = await response.json();
+        if (!projeto) {
+          throw new Error(`Projeto "${projetoAtivo}" não encontrado`);
+        }
 
-        const formatadas = fissuras.map(f => ({
-          id: f.id,
-          fissuraId: f.id,
-          caminho: `https://efinfalxxeaqfkvboewx.supabase.co/storage/v1/object/public/img-projects/${f.nomeImagem}`,
-          label: f.tipo,
-          bbox: f.coordenadas,
-          confidence: f.confianca,
-          gravidade: f.gravidade,
-          dataDeteccao: f.dataDeteccao,
-          aprovado: f.aprovado || false,
-          aprovadoPor: f.aprovadoPor || null,
-        }));
+        // Buscar fissuras detalhadas do projeto
+        const fissurasResponse = await fetch(`http://localhost:8080/api/fissura/detalhes/projeto/${projeto.id}`);
+        if (!fissurasResponse.ok) {
+          throw new Error('Erro ao buscar fissuras do projeto');
+        }
+        const fissuras = await fissurasResponse.json();
+
+        // Formatar dados para exibição
+        const formatadas = fissuras.map(f => {
+          let bbox = null;
+          try {
+            bbox = f.coordenadas ? JSON.parse(f.coordenadas) : null;
+          } catch (e) {
+            console.warn('Erro ao parsear coordenadas:', f.coordenadas);
+          }
+
+          return {
+            id: f.id,
+            fissuraId: f.id,
+            caminho: `https://efinfalxxeaqfkvboewx.supabase.co/storage/v1/object/public/img-projects/${f.nomeImagem}`,
+            label: traduzirTipoFissura(f.tipo), // Aplicar tradução aqui
+            labelOriginal: f.tipo, // Manter original para referência
+            bbox: bbox,
+            gravidade: f.gravidade,
+            dataDeteccao: f.dataDeteccao,
+            confidence: f.confianca,
+            aprovado: f.aprovado || false,
+            aprovadoPor: f.aprovadoPor || null,
+          };
+        });
 
         setImages(formatadas);
+        setError(null);
       } catch (err) {
-        console.error("Erro ao carregar imagens analisadas:", err);
+        console.error("Erro ao carregar fissuras:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -80,93 +100,92 @@ export default function ImageAnalysis() {
       });
       
       if (!userResponse.ok) {
-        throw new Error('Usuário não autenticado');
+        throw new Error('Erro ao obter dados do usuário');
       }
       
       const userData = await userResponse.json();
-      
-      // Aprovar a fissura - corrigido para enviar os campos corretos
-      const response = await fetch(`http://localhost:8080/api/fissura/${selectedImage.fissuraId}/aprovar`, {
-        method: "PUT",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          aprovado: true,
-          aprovadoPor: userData.nome
-        })
-      });
+      const nomeUsuario = userData.nome || 'Usuário';
 
-      if (!response.ok) {
-        throw new Error('Erro ao aprovar fissura');
-      }
-
-      // Atualizar o estado local
+      // Atualizar estado local
       setImages((prev) =>
         prev.map((img) =>
-          img.fissuraId === selectedImage.fissuraId
-            ? { ...img, aprovado: true, aprovadoPor: userData.nome }
+          img.id === selectedImage.id
+            ? { ...img, aprovado: true, aprovadoPor: nomeUsuario }
             : img
         )
       );
-      setSelectedImage(null);
 
+      // Enviar aprovação para o backend
+      await fetch(`http://localhost:8080/api/fissura/${selectedImage.fissuraId}/aprovar`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          aprovado: true, 
+          aprovadoPor: nomeUsuario 
+        })
+      });
+
+      setSelectedImage(null);
     } catch (err) {
-      console.error("Erro ao aprovar fissura:", err);
+      console.error('Erro ao aprovar:', err);
       alert('Erro ao aprovar fissura: ' + err.message);
     }
   };
 
   const formatarData = (dataString) => {
-    if (!dataString) return "Data não disponível";
+    if (!dataString) return 'N/A';
     try {
       const data = new Date(dataString);
-      return data.toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+      return data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR');
     } catch (e) {
-      return "Data inválida";
+      return dataString;
     }
   };
 
   const formatarCoordenadas = (coordenadas) => {
-    if (!coordenadas) return "Coordenadas não disponíveis";
+    if (!coordenadas) return 'N/A';
     try {
-      const coords = typeof coordenadas === 'string' ? JSON.parse(coordenadas) : coordenadas;
-      return `x: ${coords.x || 'N/A'}, y: ${coords.y || 'N/A'}, largura: ${coords.width || 'N/A'}, altura: ${coords.height || 'N/A'}`;
+      if (typeof coordenadas === 'string') {
+        coordenadas = JSON.parse(coordenadas);
+      }
+      // Novo formato com x1, y1, x2, y2
+      if (coordenadas.x1 !== undefined && coordenadas.y1 !== undefined && 
+          coordenadas.x2 !== undefined && coordenadas.y2 !== undefined) {
+        return `x1: ${coordenadas.x1}, y1: ${coordenadas.y1}, x2: ${coordenadas.x2}, y2: ${coordenadas.y2}, largura: ${coordenadas.width || coordenadas.x2 - coordenadas.x1}, altura: ${coordenadas.height || coordenadas.y2 - coordenadas.y1}`;
+      }
+      // Formato antigo como fallback
+      return `x: ${coordenadas.x || 'N/A'}, y: ${coordenadas.y || 'N/A'}, largura: ${coordenadas.width || 'N/A'}, altura: ${coordenadas.height || 'N/A'}`;
     } catch (e) {
-      return "Coordenadas inválidas";
+      return 'Formato inválido';
     }
   };
 
   const getGravidadeColor = (gravidade) => {
     switch (gravidade?.toLowerCase()) {
-      case 'leve':
-        return 'text-green-600 bg-green-100';
-      case 'moderada':
-        return 'text-yellow-600 bg-yellow-100';
-      case 'severa':
-        return 'text-red-600 bg-red-100';
+      case 'alta':
+        return 'bg-red-100 text-red-800';
+      case 'média':
+      case 'media':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'baixa':
+        return 'bg-green-100 text-green-800';
       default:
-        return 'text-gray-600 bg-gray-100';
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getTipoColor = (tipo) => {
     switch (tipo?.toLowerCase()) {
-      case 'termica':
       case 'térmica':
-        return 'text-orange-700 bg-orange-100';
-      case 'retracao':
+      case 'termica':
+      case 'thermal':
+        return 'bg-orange-100 text-orange-800';
       case 'retração':
-        return 'text-blue-700 bg-blue-100';
+      case 'retracao':
+      case 'retraction':
+        return 'bg-blue-100 text-blue-800';
       default:
-        return 'text-purple-700 bg-purple-100';
+        return 'bg-purple-100 text-purple-800';
     }
   };
 

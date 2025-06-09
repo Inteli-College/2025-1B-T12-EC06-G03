@@ -22,14 +22,14 @@ public class Imagem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "fachada_id")
-    @JsonIgnoreProperties({"imagens", "edificio"}) // evita recursividade com fachada
+    @JsonIgnoreProperties({"imagens"}) // evita recursividade mas permite acesso à fachada e ao edifício
     private Fachada fachada;
 
     @ManyToOne
     @JoinColumn(name = "projeto_id")
-    @JsonIgnoreProperties({"imagens"}) // evita loop e permite acesso a projeto.nome
+    @JsonIgnoreProperties({"imagens", "edificios"}) // evita loop
     private Projeto projeto;
 
     @Column(name = "caminho_arquivo")

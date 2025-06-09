@@ -98,7 +98,7 @@ const DroneImages = () => {
           projeto: resolvedProjectId,
           dataCaptura: image.dataCaptura,
           dataUpload: image.dataUpload,
-          fachada: image.fachada?.nome || 'Sem fachada',
+          fachada: image.fachada?.descricao || 'Sem fachada', // Usar descricao em vez de nome
           edificio: image.fachada?.edificio?.nome || 'Sem edifício'
         }));
         
