@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Trash2, Upload, AlertCircle, CheckCircle } from "lucide-react";
+import { Upload, AlertCircle, CheckCircle } from "lucide-react";
 import placeholder from "../assets/placeholder-icon.svg";
 import imageInferenceService, { getCurrentUser } from '../utils/imageInference';
 
@@ -556,15 +556,6 @@ const UploadImagens = () => {
                     </span>
                   )}
                 </div>
-
-                {/* Delete Button */}
-                <button
-                  onClick={() => handleDeleteImage(imagem.id)}
-                  className="absolute top-3 right-3 z-10 bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-full transition-colors"
-                  title="Deletar imagem"
-                >
-                  <Trash2 size={16} />
-                </button>
 
                 {/* Image Container with dynamic aspect ratio */}
                 <div className="relative bg-gray-100 overflow-hidden">
