@@ -45,21 +45,23 @@ Gerente de Produto (PO)|	1	|10.000	|25.000
 
 ## Ferramentas e softwares 
 
-&emsp; Para o desenvolvimento da solução, foi necessário o uso de diversas ferramentas e softwares que auxiliaram na organização, no design, no desenvolvimento e na colaboração entre os membros da equipe. Algumas dessas ferramentas são gratuitas, enquanto outras possuem planos pagos que foram considerados no cálculo dos custos. A seguir, detalhamos os principais softwares utilizados:
+&emsp; Para o desenvolvimento da solução, foi necessário o uso de diversas ferramentas e softwares que auxiliaram na organização, no design, no desenvolvimento e na colaboração da equipe. A seguir, detalhamos os principais:
 
 
-Ferramenta/Software|	Finalidade	|Plano Utilizado	|Custo por Pessoa	|Nº de Pessoas	|Duração (semanas)	|Custo Total
-|-|-|-|-|-|-|-|
-Supabase|	Backend e armazenamento de imagens|	Gratuito (Free Tier)|	R$0,00|	6	|10	|R$0,00
-Figma Pro	|Design de interfaces	|Pago (Pro)	|R$75,00/mês|	6|	~2,5 meses 	|R$1.125,00
-Trello	|Organização de tarefas|	Gratuito	|R$0,00|	6	|10|	R$0,00
-GitHub	|Controle de versão	|Gratuito	|R$0,00|	6	|10|	R$0,00
-VS Code	|Edição de código|	Gratuito|	R$0,00	|6	|10|	R$0,00
-Slack|	Comunicação da equipe|	Gratuito	|R$0,00	|6	|10	| R$0,00
+
+Ferramenta/Software | Finalidade | Plano Utilizado | Custo por Pessoa | Nº de Pessoas | Duração | Custo Total
+| - | - | - | - | - | - | -
+Supabase | Backend e armazenamento | Free Tier | R$ 0,00 | 6 | 10 semanas | R$ 0,00
+AWS (EC2 + S3) | Deploy da aplicação e imagens | Plano sob demanda (estimado) | - | - | 10 semanas | R$ 900,00
+Figma | Design de interfaces | Pro | R$ 75,00/mês | 1 | 2,5 meses | R$ 187,50
+GitHub | Controle de versão | Pro | R$ 24,00/mês | 6 | 2,5 meses | R$ 360,00
+Trello | Organização de tarefas | Gratuito | R$ 0,00 | 6 | 10 semanas | R$ 0,00
+VS Code | Editor de código | Gratuito | R$ 0,00 | 6 | 10 semanas | R$ 0,00
+Slack | Comunicação da equipe | Gratuito | R$ 0,00 | 6 | 10 semanas | R$ 0,00
 
 Considerando R$75,00 por mês para o desginer, único que necessitará o plano plano Pro do Figma.
 
-**Total estimado com ferramentas e softwares: R$187,50**
+**Total estimado com ferramentas e softwares: R$ 1.447,50**
 
 
 ## Equipamentos
@@ -68,21 +70,21 @@ Considerando R$75,00 por mês para o desginer, único que necessitará o plano p
 
 Item	|Descrição|	Valor (R$)
 |-|-|-|
-Estações de trabalho (notebooks)	|7 unidades	|35.000
+Notebooks para desenvolvimento |6 unidades	|35.000
 Dispositivo Android e iOS	|Testes da aplicação mobile	|6.000
-Periféricos e rede (switch, roteador)	|Infraestrutura básica	|2.000
+Roteador de campo 4G | Conexão em áreas externas | 2.500
 
-**Total com equipamentos: R$ 43.000**
+**Total com equipamentos: R$ 43.500**
 
 
 
 ## Custos operacionais 
 
-&emsp; Custos indiretos com  energia, internet, alimentação, comunicação, suporte jurídico e contábil foram estimados como 25% do total dos custos fixos (pessoal + equipamentos + ferramentas/softwares):
+&emsp; Estimamos os custos indiretos com  energia, internet, alimentação, comunicação, suporte jurídico e contábil foram estimados como 25% do total dos custos fixos (pessoal + equipamentos + ferramentas/softwares):
 
-Custo base = 152.00 + 187,50 + 43.000 = 195.187,50
+**Custo base = R$ 152.500 + 1.447,50 + 43.500 = R$ 197.447,50**  
 
-Custo operacional = R$ 195.187,50* 0,25 = R$ 48.795.87
+**Custo operacional = R$ 197.447,50 × 0,25 = R$ 49.361,88**
 
 
 
@@ -90,34 +92,34 @@ Custo operacional = R$ 195.187,50* 0,25 = R$ 48.795.87
 
 &emsp; Considerando o regime tributário Lucro Presumido (CNAE 6201-5/00), a carga tributária efetiva é de aproximadamente 17% sobre o valor bruto da operação.
 
-Custo com impostos = (Custo base + operacionais) + 17% 
-= 202.507,03 + 17% ≈ R$ 236.933,19
+**Custo com impostos = (197.447,50 + 49.361,88) × 0,17 ≈ R$ 41.852,62** 
 
+**Subtotal com impostos = R$ 288.662,00**
 
 ## Manutenção 
 
 &emsp; Após a entrega da solução, será necessário garantir a estabilidade e o suporte ao sistema durante 12 meses.
 
 
-Item	|Descrição	|Valor (R$)
-|-|-|-
-Servidores e banco de dados	|AWS, Supabase, armazenamento	|18.000
-Suporte técnico (meio período)|	Dev + DevOps alocados	|60.000
-Atualizações, melhorias e testes|	Correções e evolução incremental|	15.000
-Licenças anuais|	Renovação de ferramentas	|800
+Item | Descrição | Valor (R$)
+| - | - | -
+Servidores e banco de dados | AWS (t2.medium + S3) + Supabase extra | 18.000
+Suporte técnico (meio período) | Dev + DevOps | 60.000
+Atualizações, melhorias e testes | Correções e atualizações| 15.000
+Licenças anuais | Figma Pro + GitHub Pro (1 ano) | 1.200
 
 
-**Total com manutenção anual: R$ 93.800**
+**Total com manutenção anual: R$ 94.200**
 
 
 ## Lucros
+
 &emsp; Aplicando uma margem de 20% sobre o valor total (projeto + manutenção):
 
-Custo total = 243.984,37 + 93.800 = R$ 337.784,37
+**Custo total = R$ 288.662,00 + R$ 94.200 = R$ 382.862,00**  
 
-Valor final com lucro = 337.784,37 + 20% = R$ 405.341,24
-
+**Valor final com lucro = R$ 382.862,00 × 1,2 = R$ 459.434,40**
 
 # Conclusão 
 
-&emsp; A solução proposta representa um investimento de aproximadamente R$ 405 mil e engloba o desenvolvimento completo da aplicação (backend, frontend web/mobile e IA), um suporte técnico e manutenção anual e uma margem de lucro sustentável para a continuidade do projeto.  Este valor garante a entrega de uma solução robusta, funcional e adaptada à realidade do IPT, com potencial para expansão futura e reaproveitamento em outras campos que enfrentem desafios semenlhantes. 
+&emsp; A solução proposta representa um investimento de aproximadamente R$ 459 mil e engloba o desenvolvimento completo da aplicação (backend, frontend web/mobile e IA), um suporte técnico e manutenção anual e uma margem de lucro sustentável para a continuidade do projeto.  Este valor garante a entrega de uma solução funcional e adaptada à realidade do IPT, com potencial para expansão futura e reaproveitamento em outras campos que enfrentem desafios semelhantes. 
