@@ -55,7 +55,7 @@ sidebar_position: 3
 &nbsp;&nbsp;&nbsp;&nbsp;Validar se os relatórios gerados contêm todas as informações exigidas.
 * **Como testar:**
   * Gerar múltiplos relatórios com dados simulados.
-  * Analisar presença das imagens com suas respectivas classificações no relatório., além das demais informações inseridas, como edifícios e pessoas responsáveis.
+  * Analisar presença das imagens com suas respectivas classificações no relatório, além das demais informações inseridas, como edifícios e pessoas responsáveis.
 * **Critério de Aceitação:**
   * Todos os campos obrigatórios presentes e corretos.
 
