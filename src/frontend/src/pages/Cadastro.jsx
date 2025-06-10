@@ -23,7 +23,7 @@ const CadastroPage = () => {
         cargo
       };
 
-      const response = await httpClient.post("/auth/register", userData);
+      //const response = await httpClient.post("/auth/register", userData);
       
       window.location.href = "/login";
     } catch (err) {

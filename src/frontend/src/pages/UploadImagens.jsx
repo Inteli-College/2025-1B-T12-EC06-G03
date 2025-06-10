@@ -211,7 +211,7 @@ const UploadImagens = () => {
     }
   };
 
-  const handleDeleteImage = async (id) => {
+  /*const handleDeleteImage = async (id) => {
     if (!window.confirm('Tem certeza que deseja deletar esta imagem? Esta ação não pode ser desfeita.')) {
       return;
     }
@@ -244,7 +244,7 @@ const UploadImagens = () => {
       alert('Erro ao deletar imagem: ' + err.message);
     }
   };
-
+*/
   const handleEnviarParaModelo = async () => {
     if (!selectedImage || !selectedImage.id || !currentUser) {
       console.error("Imagem selecionada inválida ou usuário não identificado");

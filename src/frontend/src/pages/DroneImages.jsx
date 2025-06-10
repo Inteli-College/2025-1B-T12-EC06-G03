@@ -199,7 +199,7 @@ const DroneImages = () => {
     }
   };
 
-  const handleDeleteImage = async (id) => {
+  /*const handleDeleteImage = async (id) => {
     if (!window.confirm('Tem certeza que deseja deletar esta imagem? Esta ação não pode ser desfeita.')) {
       return;
     }
@@ -231,7 +231,7 @@ const DroneImages = () => {
       console.error("Erro ao deletar imagem:", err);
       alert('Erro ao deletar imagem: ' + err.message);
     }
-  };
+  }; */
 
   if (isLoading) {
     return (
