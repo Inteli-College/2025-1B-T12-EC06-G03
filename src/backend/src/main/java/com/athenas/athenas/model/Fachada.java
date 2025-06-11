@@ -1,5 +1,7 @@
 package com.athenas.athenas.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +19,7 @@ public class Fachada {
 
     @ManyToOne
     @JoinColumn(name = "edificio_id")
+    @JsonIgnoreProperties({"fachadas"}) // evita loop de serialização
     private Edificio edificio;
     
     private String nome;
