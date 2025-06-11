@@ -5,55 +5,56 @@ from skimage.filters import sato
 from skimage import measure
 
 
-def generate_mask(image):
+def generate_mask(image, initial_thresh=75, min_thresh=5, step=5):
     """
     Gera uma máscara binária a partir de uma imagem usando processamento de imagem.
+    Se a máscara sair vazia, reduz o threshold gradualmente até min_thresh.
 
     Args:
-        image (np.ndarray): imagem lida no formato OpenCV (BGR).
+        image (np.ndarray): imagem BGR.
+        initial_thresh (int): valor inicial de threshold.
+        min_thresh (int): valor mínimo de threshold a testar.
+        step (int): decremento em cada iteração de fallback.
 
     Returns:
-        np.ndarray: máscara binária no formato uint8 (valores 0 e 255).
+        np.ndarray: máscara binária uint8 (0 e 255).
     """
     if image is None:
         raise ValueError("Imagem inválida ou não carregada corretamente.")
 
-    # 🔸 Grayscale
+    # 🔸 Grayscale + suavização + CLAHE + Sato + normalização
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    # 🔸 Suavização bilateral
     smoothed = cv2.bilateralFilter(gray, d=2, sigmaColor=25, sigmaSpace=25)
-
-    # 🔸 CLAHE
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     enhanced = clahe.apply(smoothed)
-
-    # 🔸 Filtro Sato
     sato_filtered = sato(enhanced, sigmas=range(1, 2), black_ridges=True)
-
-    # 🔸 Normalização manual para [0, 255]
     sato_norm = (sato_filtered - np.min(sato_filtered)) / (np.max(sato_filtered) - np.min(sato_filtered))
     sato_uint8 = (sato_norm * 255).astype(np.uint8)
 
-    # 🔸 Binarização
-    _, mask = cv2.threshold(sato_uint8, 75, 255, cv2.THRESH_BINARY)
-
-    # 🔸 Fechamento morfológico
+    # configurações de morfologia e tamanho mínimo
     kernel = np.ones((5, 5), np.uint8)
-    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
-
-    # 🔸 Remoção de pequenos objetos
-    mask_bool = mask.astype(bool)
-    mask_clean = measure.label(mask_bool, connectivity=2)
-    cleaned_mask = np.zeros_like(mask)
-
     min_size = 200  # pixels
-    for region in measure.regionprops(mask_clean):
-        if region.area >= min_size:
-            for coord in region.coords:
-                cleaned_mask[coord[0], coord[1]] = 255
 
-    return cleaned_mask
+    # loop de thresholds decrescentes
+    for thresh in range(initial_thresh, min_thresh - 1, -step):
+        _, mask = cv2.threshold(sato_uint8, thresh, 255, cv2.THRESH_BINARY)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+
+        # limpeza de pequenas regiões
+        mask_bool = mask.astype(bool)
+        labeled = measure.label(mask_bool, connectivity=2)
+        cleaned = np.zeros_like(mask)
+        for region in measure.regionprops(labeled):
+            if region.area >= min_size:
+                cleaned[tuple(region.coords.T)] = 255
+
+        # se encontrou algo, já retorna
+        if np.any(cleaned):
+            return cleaned
+
+    # se nenhum threshold produziu algo, retorna o mais limpo (vazio)
+    return np.zeros_like(sato_uint8)
+
 
 
 if __name__ == "__main__":
