@@ -290,17 +290,18 @@ export default function ImageAnalysis() {
 
       {/* Modal de Detalhes */}
       {selectedImage && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
             <h2 className="text-xl font-semibold mb-4">
               Detalhes da Fissura #{selectedImage.fissuraId}
             </h2>
             
-            <div className="mb-4">
+            <div className="mb-4 flex justify-center">
               <img
                 src={selectedImage.caminho || placeholder}
                 alt={`Fissura ${selectedImage.fissuraId}`}
-                className="max-h-[300px] w-auto mx-auto mb-4 rounded object-contain border"
+                className="rounded object-contain border"
+                style={{ width: '600px', height: '400px' }}
               />
             </div>
 
