@@ -198,6 +198,55 @@ const VisualizarProjeto = () => {
     html2pdf().set(options).from(element).save();
   };
 
+  const handleAprovarFissura = async (fissuraId) => {
+    try {
+      // Buscar informações do usuário logado
+      const token = localStorage.getItem('token');
+      const userResponse = await fetch('http://localhost:8080/auth/@me', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!userResponse.ok) {
+        throw new Error('Usuário não autenticado');
+      }
+      
+      const userData = await userResponse.json();
+      
+      // Aprovar a fissura - corrigido para enviar os campos corretos
+      const response = await fetch(`http://localhost:8080/api/fissura/${fissuraId}/aprovar`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          aprovado: true,
+          aprovadoPor: userData.nome
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao aprovar fissura');
+      }
+
+      const fissuraAtualizada = await response.json();
+
+      // Atualizar a lista de fissuras com os dados retornados do backend
+      const updatedFissuras = fissurasProjeto.map(fissura => 
+        fissura.id === fissuraId 
+          ? { ...fissura, aprovado: fissuraAtualizada.aprovado, aprovadoPor: fissuraAtualizada.aprovadoPor }
+          : fissura
+      );
+      setFissurasProjeto(updatedFissuras);
+
+    } catch (error) {
+      console.error('Erro ao aprovar fissura:', error);
+      alert('Erro ao aprovar fissura: ' + error.message);
+    }
+  };
+
   if (isLoading) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">Carregando...</div>;
   if (error) return <div className="text-center mt-10 text-red-500 font-lato text-2xl">Error: {error}</div>;
   if (!data) return <div className="text-center mt-10 font-lato text-[#010131] text-2xl">No data available</div>;
@@ -449,12 +498,15 @@ const VisualizarProjeto = () => {
                 return (
                   <ImagensCarregadas
                     key={fissura.id}
+                    id={fissura.id}
                     name={fissura.nomeImagem}
                     imgSrc={url}
-                    tipo={fissura.tipo}
-                    confianca={fissura.confianca}
-                    coordenadas={fissura.coordenadas}
+                    tipo={fissura.tipoFissura}
                     gravidade={fissura.gravidade}
+                    confianca={fissura.confianca}
+                    aprovado={fissura.aprovado}
+                    aprovadoPor={fissura.aprovadoPor}
+                    onAprovar={handleAprovarFissura}
                   />
                 );
               })}
