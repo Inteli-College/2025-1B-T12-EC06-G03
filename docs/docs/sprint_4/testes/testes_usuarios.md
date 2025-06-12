@@ -32,3 +32,14 @@ sidebar_position: 4
 | Yasmin  | Engenharia de Software   | 2º  |
 | Sophia  | Administração Tech       | 1º  |
 
+### Procedimento
+
+&emsp;Cada participante foi acompanhado individualmente e orientado a executar quatro testes principais:
+
+* **T08:** Testar o envio automático de imagens via drone ou câmera
+* **T09:** Executar os principais fluxos da interface gráfica e responder ao questionário de usabilidade SUS
+* **T10:** Verificar o comportamento do sistema com diferentes níveis de permissão (admin e operador)
+* **T11:** Realizar a validação, edição ou descarte de detecções feitas automaticamente
+
+&emsp;Todas as interações foram observadas sem interferência ativa, salvo em caso de bloqueio completo. Ao fim dos testes, os dados foram registrados em planilha e as respostas ao questionário SUS foram coletadas.
+
