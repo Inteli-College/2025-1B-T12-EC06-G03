@@ -16,8 +16,19 @@ sidebar_position: 4
 
 &emsp;A realização desses testes permitiu observar, com dados práticos e feedback direto, como o sistema se comporta na interação com pessoas usuárias com níveis variados de conhecimento técnico.
 
+## Metodologia
 
+### Participantes
 
+&emsp;Foram selecionados sete usuários com formações e experiências acadêmicas distintas, permitindo uma análise rica e diversa sobre a interface e os fluxos do sistema:
 
-
+| Nome    | Curso                    | Ano |
+| ------- | ------------------------ | --- |
+| Mariana | Sistemas da Informação   | 2º  |
+| Nataly  | Engenharia de Software   | 2º  |
+| Pablo   | Engenharia da Computação | 2º  |
+| Murilo  | Engenharia da Computação | 2º  |
+| Débora  | Administração Tech       | 1º  |
+| Yasmin  | Engenharia de Software   | 2º  |
+| Sophia  | Administração Tech       | 1º  |
 
