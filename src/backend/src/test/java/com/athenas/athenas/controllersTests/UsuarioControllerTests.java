@@ -199,7 +199,6 @@ public class UsuarioControllerTests {
         usuarioAtualizado.setId(1L);
         usuarioAtualizado.setNome("Usuario Atualizado");
         usuarioAtualizado.setEmail("atualizado@teste.com");
-        usuarioAtualizado.setPassword("novaSenha123");
 
         when(usuarioService.findById(1L)).thenReturn(Optional.of(usuario));
         when(usuarioService.save(any(Usuario.class))).thenReturn(usuarioAtualizado);
