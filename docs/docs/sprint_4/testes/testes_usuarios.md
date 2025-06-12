@@ -43,3 +43,11 @@ sidebar_position: 4
 
 &emsp;Todas as interações foram observadas sem interferência ativa, salvo em caso de bloqueio completo. Ao fim dos testes, os dados foram registrados em planilha e as respostas ao questionário SUS foram coletadas.
 
+## Participação e Contribuição Individual
+
+**Mariana (Sistemas da Informação – 2º ano)**
+&emsp;Demonstrou segurança na navegação pelos fluxos da aplicação. No entanto, identificou que o perfil de operador conseguiu acessar funcionalidades do painel administrativo, evidenciando uma falha no controle de permissões (T10). Também foi a única a perceber a ausência de logs após uma edição manual de detecção (T11), ponto importante para a rastreabilidade. Sugeriu melhorias no feedback visual das ações e reforçou a clareza geral da interface.
+
+**Nataly (Engenharia de Software – 2º ano)**
+&emsp;Mostrou domínio técnico ao navegar de forma eficiente e crítica. Percebeu um atraso de cerca de 14 segundos na visualização da imagem enviada automaticamente (T08), o que gerou uma leve incerteza quanto à finalização da ação. Ressaltou a boa organização dos fluxos, pontuou positivamente a coerência da interface e deu sugestões visuais pontuais. Sua avaliação SUS ficou entre as mais altas, reforçando o bom nível de usabilidade.
+
