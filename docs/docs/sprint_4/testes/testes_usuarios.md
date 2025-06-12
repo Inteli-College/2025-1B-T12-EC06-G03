@@ -51,3 +51,9 @@ sidebar_position: 4
 **Nataly (Engenharia de Software – 2º ano)**
 &emsp;Mostrou domínio técnico ao navegar de forma eficiente e crítica. Percebeu um atraso de cerca de 14 segundos na visualização da imagem enviada automaticamente (T08), o que gerou uma leve incerteza quanto à finalização da ação. Ressaltou a boa organização dos fluxos, pontuou positivamente a coerência da interface e deu sugestões visuais pontuais. Sua avaliação SUS ficou entre as mais altas, reforçando o bom nível de usabilidade.
 
+**Pablo (Engenharia da Computação – 2º ano)**
+&emsp;Executou os testes de forma ágil e sem dificuldade. Ressaltou que o botão de “Nova Edificação” poderia ser mais evidente, pois gerou confusão com a função de criar projeto (T09). Confirmou o correto funcionamento dos acessos por perfil (T10) e elogiou o tempo de resposta do sistema. Reforçou a importância de consistência nos ícones e cores, principalmente para diferenciação de ações críticas.
+
+**Murilo (Engenharia da Computação – 2º ano)**
+&emsp;Apresentou desempenho consistente nos testes. Inicialmente demonstrou dificuldade em localizar o menu lateral e compreender sua estrutura (T09), o que levou a uma pontuação SUS ligeiramente abaixo da média. Após a ambientação, concluiu os fluxos com autonomia. Reconheceu o bom comportamento do sistema de permissões e a fluidez na validação das fissuras detectadas.
+
