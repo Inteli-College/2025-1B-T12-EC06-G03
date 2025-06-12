@@ -98,7 +98,10 @@ Trouxe contribuições importantes sobre a usabilidade geral. Apontou que, embor
 
 &emsp;Esses ajustes fazem parte do processo de refinamento contínuo da plataforma e serão priorizados na próxima sprint com foco em usabilidade, segurança e controle das ações críticas.
 
+---
 
+# Bibliografia
+- CARVALHO, Ana Amélia Amorim. Testes de Usabilidade: exigência supérflua ou necessidade. In: Actas do 5º Congresso da Sociedade Portuguesa de Ciências da Educação. 2002. p. 235-242.
 
 
 
