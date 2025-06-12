@@ -66,3 +66,21 @@ Trouxe contribuições importantes sobre a usabilidade geral. Apontou que, embor
 **Sophia (Administração Tech – 1º ano)**
 &emsp;Conseguiu executar todos os fluxos sem ajuda, mas teve dificuldade para localizar o botão de criação de edificação, que estava fora do campo de visão principal (T09). Essa dificuldade impactou sua avaliação no questionário SUS, com nota ligeiramente abaixo da média. No restante dos testes, executou ações de forma tranquila e destacou a clareza das opções no processo de validação manual.
 
+## Questionário SUS (System Usability Scale)
+
+&emsp;Ao final dos testes, foi aplicado o questionário padrão de usabilidade SUS com as seguintes 10 perguntas, respondidas em escala de 1 (discordo totalmente) a 5 (concordo totalmente):
+
+1. Eu acho que gostaria de usar esse sistema com frequência.
+2. Eu achei o sistema desnecessariamente complexo.
+3. Eu achei o sistema fácil de usar.
+4. Eu acho que precisaria de ajuda técnica para usar esse sistema.
+5. Eu achei que as várias funções do sistema estão bem integradas.
+6. Eu achei que há muita inconsistência no sistema.
+7. Eu acredito que as pessoas aprenderão a usar este sistema rapidamente.
+8. Eu achei o sistema confuso de usar.
+9. Eu me senti confiante ao usar o sistema.
+10. Precisei aprender muitas coisas novas antes de conseguir usar o sistema.
+
+&emsp;As respostas foram transformadas em pontuações normalizadas (0 a 100). A média geral obtida foi **74**, o que representa **bom nível de usabilidade segundo os critérios internacionais**.
+
+
