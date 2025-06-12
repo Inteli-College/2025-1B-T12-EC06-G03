@@ -57,3 +57,12 @@ sidebar_position: 4
 **Murilo (Engenharia da Computação – 2º ano)**
 &emsp;Apresentou desempenho consistente nos testes. Inicialmente demonstrou dificuldade em localizar o menu lateral e compreender sua estrutura (T09), o que levou a uma pontuação SUS ligeiramente abaixo da média. Após a ambientação, concluiu os fluxos com autonomia. Reconheceu o bom comportamento do sistema de permissões e a fluidez na validação das fissuras detectadas.
 
+**Débora (Administração Tech – 1º ano)**
+&emsp;Mesmo com menor familiaridade com sistemas técnicos, conseguiu executar todos os fluxos com sucesso. Reportou insegurança no momento do envio automático da imagem (T08), devido à ausência de feedback imediato indicando que a ação havia sido concluída. Considerou os ícones autoexplicativos e o processo de revisão das fissuras muito direto. A interface foi bem avaliada, especialmente pelo layout limpo e funcional.
+
+**Yasmin (Engenharia de Software – 2º ano)**
+Trouxe contribuições importantes sobre a usabilidade geral. Apontou que, embora o envio automático tenha funcionado corretamente, a ausência de confirmação visual (ex: mensagem de sucesso ou animação) pode gerar confusão (T08). Sugeriu a adição de uma etapa de confirmação no botão de exclusão de detecção. Teve boa experiência nos testes de permissão e considerou a navegação rápida e intuitiva.
+
+**Sophia (Administração Tech – 1º ano)**
+&emsp;Conseguiu executar todos os fluxos sem ajuda, mas teve dificuldade para localizar o botão de criação de edificação, que estava fora do campo de visão principal (T09). Essa dificuldade impactou sua avaliação no questionário SUS, com nota ligeiramente abaixo da média. No restante dos testes, executou ações de forma tranquila e destacou a clareza das opções no processo de validação manual.
+
