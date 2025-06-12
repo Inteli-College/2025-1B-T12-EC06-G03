@@ -32,3 +32,13 @@ sidebar_position: 5
 
 &emsp;Os testes foram realizados pelos sete membros do grupo: **Carolina, Caio, Cecília Galvão, Sophia, Heitor, Gabriel e Matheus Jorge**, cada um executando os testes com instâncias reais do sistema e cenários variados, registrando métricas, capturas e comentários técnicos para posterior análise.
 
+## Resultados e Observações
+
+&emsp;Os testes permitiram identificar os seguintes pontos:
+
+### Funcionalidades bem validadas:
+
+* **T02 – Acurácia do Modelo:** Em todos os testes realizados, a acurácia do modelo superou 70%, com casos acima de 90%. O comportamento foi consistente e a variação entre execuções foi pequena, reforçando a confiabilidade do classificador.
+* **T04 – Histórico:** A navegação e o armazenamento das imagens processadas funcionaram corretamente para todos os testadores. Logs de alteração foram registrados de forma clara, e o sistema manteve os dados organizados mesmo após múltiplas interações.
+* **T07 – Registro de Logs:** Todos os logs de ações críticas (geração de relatório, edição, validação manual etc.) foram registrados corretamente com ID, data e hora, permitindo rastreabilidade adequada.
+
