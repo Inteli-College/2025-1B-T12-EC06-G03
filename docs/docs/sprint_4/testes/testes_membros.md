@@ -48,3 +48,7 @@ sidebar_position: 5
 * **T05 – Precisão da Localização:** Embora alguns testes tenham alcançado 100% de sobreposição, outros revelaram **detecções incompletas ou caixas desalinhadas**, geralmente associadas a **qualidade baixa da imagem de entrada** ou ao tempo de resposta da renderização.
 * **T06 – Segurança da Base de Dados:** Dois desenvolvedores relataram que **as senhas digitadas aparecem visivelmente no terminal**, representando um problema grave de confidencialidade. Este ponto foi classificado como **reprovado**.
 
+### Testes não executados:
+
+* **T01 – Transmissão de vídeo:** Alguns membros (Caio, Gabriel, Matheus Jorge) não conseguiram realizar este teste por limitações técnicas locais (sem acesso ao hardware de câmera em tempo real ou à simulação de rede).
+
