@@ -42,3 +42,9 @@ sidebar_position: 5
 * **T04 – Histórico:** A navegação e o armazenamento das imagens processadas funcionaram corretamente para todos os testadores. Logs de alteração foram registrados de forma clara, e o sistema manteve os dados organizados mesmo após múltiplas interações.
 * **T07 – Registro de Logs:** Todos os logs de ações críticas (geração de relatório, edição, validação manual etc.) foram registrados corretamente com ID, data e hora, permitindo rastreabilidade adequada.
 
+### Pontos parcialmente atendidos ou com falhas:
+
+* **T03 – Relatórios Automáticos:** Diversos usuários relataram que os relatórios estão sendo gerados com campos corretos, mas **as imagens não são inseridas no PDF final**. Isso compromete a compreensão visual dos resultados.
+* **T05 – Precisão da Localização:** Embora alguns testes tenham alcançado 100% de sobreposição, outros revelaram **detecções incompletas ou caixas desalinhadas**, geralmente associadas a **qualidade baixa da imagem de entrada** ou ao tempo de resposta da renderização.
+* **T06 – Segurança da Base de Dados:** Dois desenvolvedores relataram que **as senhas digitadas aparecem visivelmente no terminal**, representando um problema grave de confidencialidade. Este ponto foi classificado como **reprovado**.
+
