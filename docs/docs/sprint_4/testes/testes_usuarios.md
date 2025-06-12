@@ -83,4 +83,23 @@ Trouxe contribuições importantes sobre a usabilidade geral. Apontou que, embor
 
 &emsp;As respostas foram transformadas em pontuações normalizadas (0 a 100). A média geral obtida foi **74**, o que representa **bom nível de usabilidade segundo os critérios internacionais**.
 
+## Conclusão
+&emsp;A realização dos testes com usuários durante a Sprint 4 foi essencial para validar a experiência prática da plataforma de detecção de fissuras. Os sete participantes, com perfis acadêmicos variados, conseguiram executar com sucesso os principais fluxos do sistema, como envio automático de imagens, navegação pela interface, controle de permissões e validação manual das detecções.
+
+&emsp;A média de usabilidade aferida pelo questionário SUS foi de **74 pontos**, indicando boa aceitação da interface e compreensão funcional por parte dos usuários. Os resultados reforçam a maturidade da solução até o momento, mas também evidenciam **duas oportunidades de melhoria prioritárias**, que serão abordadas na Sprint 5:
+
+1. **Correção de caixas quebradas na visualização de imagens com detecções**
+&emsp;Alguns usuários relataram que, ao abrir imagens muito grandes, as caixas delimitadoras aparecem distorcidas, com o card cortado. Isso compromete a clareza visual e pode gerar confusão durante a revisão manual.
+
+2. **Inserção de confirmação antes de ações irreversíveis (como excluir detecções)**
+&emsp;Durante os testes de validação, participantes apontaram que a exclusão de uma detecção ocorre imediatamente, sem confirmação. Isso pode gerar exclusões acidentais. A solução será a inclusão de uma caixa de confirmação para qualquer ação que envolva perda ou modificação de dados.
+
+&emsp;Além desses pontos, também foi sugerida a **possibilidade de reabrir e editar fissuras após o relatório final já ter sido gerado**, especialmente em casos em que uma detecção importante tenha sido validada por engano. Essa funcionalidade será avaliada com atenção para garantir integridade histórica sem comprometer a rastreabilidade do sistema.
+
+&emsp;Esses ajustes fazem parte do processo de refinamento contínuo da plataforma e serão priorizados na próxima sprint com foco em usabilidade, segurança e controle das ações críticas.
+
+
+
+
+
 
