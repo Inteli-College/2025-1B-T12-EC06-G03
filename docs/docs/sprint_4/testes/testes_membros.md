@@ -52,3 +52,16 @@ sidebar_position: 5
 
 * **T01 – Transmissão de vídeo:** Alguns membros (Caio, Gabriel, Matheus Jorge) não conseguiram realizar este teste por limitações técnicas locais (sem acesso ao hardware de câmera em tempo real ou à simulação de rede).
 
+## Conclusão
+
+&emsp;A execução dos testes técnicos pelos próprios membros do grupo durante a Sprint 4 foi fundamental para consolidar a robustez da solução desenvolvida. Os resultados demonstram que os principais requisitos funcionais já estão implementados de forma sólida e confiável. O modelo de detecção se mostrou eficaz, o histórico funciona corretamente, e o sistema de logs está bem estruturado.
+
+&emsp;No entanto, os testes também revelaram pontos críticos a serem priorizados na Sprint 5:
+
+1. **Correção da falha de segurança que expõe senhas no terminal.**
+2. **Melhoria na geração dos relatórios automáticos, garantindo a inclusão das imagens processadas.**
+3. **Refinamento na renderização das caixas de detecção em imagens de baixa qualidade.**
+
+&emsp;Além disso, é importante concluir os testes pendentes de transmissão de vídeo (T01) com suporte completo de hardware e rede, garantindo que a performance da aplicação seja mantida mesmo em condições adversas.
+
+&emsp;Os testes técnicos agregaram confiabilidade ao processo de validação e reforçaram a capacidade do grupo em manter uma postura crítica e responsável sobre as soluções que desenvolvem.
