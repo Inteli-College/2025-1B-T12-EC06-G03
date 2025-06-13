@@ -1,4 +1,9 @@
 {
     "label": "Testes",
-    "position": 2
-}
+    "position": 2,
+    "link": {
+      "type": "generated-index",
+      "description": "Nesta seção, você encontrará informações detalhadas sobre os testes realizados durante a Sprint 4. Esses testes foram fundamentais para validar a experiência do usuário e garantir que a solução atenda às necessidades dos usuários finais. A seção inclui metodologias, resultados e análises dos testes, além de recomendações para melhorias futuras."
+    }
+  }
+

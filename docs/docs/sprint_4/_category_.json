@@ -1,4 +1,8 @@
 {
     "label": "Sprint 4",
-    "position": 5
+    "position": 5,
+    "link": {
+      "type": "generated-index",
+      "description": "Durante a Sprint 4, focamos no aprofundamento do problema relacionado à detecção de fissuras em edificações e estruturamos o projeto em três frentes: compreensão do perfil dos usuários finais, análise das necessidades do parceiro de negócio e definição dos requisitos técnicos iniciais da solução baseada em visão computacional e inteligência artificial. Paralelamente, avançamos com a integração do sistema e com o desenvolvimento do modelo de detecção de fissuras, além de realizarmos os primeiros testes de usabilidade e a análise financeira da proposta."
+    }
 }
