@@ -5,7 +5,7 @@ from pathlib import Path
 from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score
 
 from utils.preprocessing import enhance_image
-from utils.segmentation import sato_segmentation
+from utils.segmentation2 import generate_mask
 from utils.crack_extraction import extract_cracks
 from classifier import load_classifier, classify_crop
 
@@ -52,11 +52,11 @@ def run_crack_extraction():
             print(f"  ✖ Failed to load {img_path.name}")
             continue
 
-        # Enhancement
+        # Enhancement for classification
         enhanced = enhance_image(image)
 
-        # Segmentation
-        mask, _ = sato_segmentation(enhanced)
+        # Segmentation using modular mask generator
+        mask = generate_mask(image)
 
         # Save mask
         mask_filename = MASKS_FOLDER / f"{img_path.stem}_mask.png"

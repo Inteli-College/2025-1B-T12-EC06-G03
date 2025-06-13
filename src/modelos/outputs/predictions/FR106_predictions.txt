@@ -1,7 +1,0 @@
-retraction bbox: 228,232,63,22
-retraction bbox: 224,168,31,38
-retraction bbox: 113,132,64,43
-retraction bbox: 260,131,46,26
-retraction bbox: 39,125,56,33
-retraction bbox: 210,92,48,38
-retraction bbox: 123,79,56,50

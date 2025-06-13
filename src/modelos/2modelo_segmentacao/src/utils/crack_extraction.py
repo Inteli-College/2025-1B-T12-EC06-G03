@@ -8,9 +8,9 @@ from skimage import io
 # ------------------------------
 # Parameters
 # ------------------------------
-MASK_FOLDER = 'data/masks'
-ENHANCED_FOLDER = 'data/preprocessed'
-OUTPUT_FOLDER = 'data/crack_crops'
+MASK_FOLDER = '../outputs/segmentation_results/masks'
+ENHANCED_FOLDER = '../outputs/segmentation_results/bounding_boxes'
+OUTPUT_FOLDER = '../src/data/crack_crops'
 
 # Minimum area to consider a valid crack (filter small noise)
 MIN_AREA = 200  
