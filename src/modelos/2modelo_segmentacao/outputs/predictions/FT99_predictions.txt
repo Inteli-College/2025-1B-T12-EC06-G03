@@ -1,2 +1,0 @@
-thermal bbox: 0,182,200,37
-thermal bbox: 0,49,200,97
