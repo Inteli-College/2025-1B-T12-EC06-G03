@@ -70,4 +70,12 @@ public class ViewProjetoResponseDTO {
     public void setLogs(List<String> logs) {
         this.logs = logs;
     }
+
+    public Long getIdProjeto() {
+        throw new UnsupportedOperationException("Unimplemented method 'getIdProjeto'");
+    }
+
+    public void setIdProjeto(int i) {
+        throw new UnsupportedOperationException("Unimplemented method 'setIdProjeto'");
+    }
 }
