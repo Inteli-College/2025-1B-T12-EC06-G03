@@ -1,11 +1,11 @@
 import torch
 import torch.nn as nn
 import json
+import cv2
 import numpy as np
 from pathlib import Path
 from PIL import Image
 from torchvision import transforms
-import cv2
 
 
 def load_class_map():
@@ -19,9 +19,6 @@ def load_class_map():
 
 
 class CrackClassifierCNN(nn.Module):
-    """
-    CNN architecture matching the pretrained classifier from modeloB.
-    """
     def __init__(self, num_classes):
         super(CrackClassifierCNN, self).__init__()
         # Two conv layers as used in modeloB
@@ -49,11 +46,6 @@ class CrackClassifierCNN(nn.Module):
 
 
 def load_classifier(device=None):
-    """
-    Loads the pretrained classifier and class mapping from the modeloB directory.
-    Returns:
-        model (nn.Module), idx_to_class (dict), device (torch.device)
-    """
     if device is None:
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -84,18 +76,6 @@ cnn_transform = transforms.Compose([
 
 
 def classify_crop(crop_image, model, idx_to_class, device):
-    """
-    Classify a single crop image using the pretrained CNN.
-
-    Args:
-        crop_image: np.ndarray (grayscale or BGR) or PIL.Image
-        model: loaded PyTorch model
-        idx_to_class: dict mapping index->class name
-        device: torch.device
-
-    Returns:
-        class_name (str)
-    """
     # Convert numpy array to PIL.Image if needed
     if not isinstance(crop_image, Image.Image):
         if crop_image.ndim == 3:

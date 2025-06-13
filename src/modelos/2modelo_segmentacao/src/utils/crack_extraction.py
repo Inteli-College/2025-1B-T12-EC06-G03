@@ -47,6 +47,7 @@ def extract_cracks(mask, enhanced, output_folder, image_stem="image"):
         output_path = output_folder / f"{image_stem}_crack{crack_id}.png"
         cv2.imwrite(str(output_path), crop)
 
+        print(f"✅ Saved crack {crack_id} from {image_stem} → {output_path.name}")
         crack_id += 1
 
     return crack_bboxes

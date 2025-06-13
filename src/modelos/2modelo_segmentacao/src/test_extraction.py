@@ -15,7 +15,7 @@ from classifier import load_classifier, classify_crop
 # Base project directory
 BASE_DIR = Path(__file__).resolve().parents[2]
 INPUT_FOLDER = BASE_DIR / '2modelo_segmentacao' / 'src' / 'data' / 'test_images'
-OUTPUT_FOLDER = BASE_DIR / 'outputs'
+OUTPUT_FOLDER = BASE_DIR / '2modelo_segmentacao' / 'outputs'
 
 # Segmentation subfolders
 SEGMENT_FOLDER = OUTPUT_FOLDER / 'segmentation_results'
