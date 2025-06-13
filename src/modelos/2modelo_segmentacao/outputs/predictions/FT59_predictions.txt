@@ -1,0 +1,1 @@
+retraction bbox: 19,226,204,28

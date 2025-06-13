@@ -1,0 +1,2 @@
+retraction bbox: 43,34,46,39
+retraction bbox: 12,0,43,32

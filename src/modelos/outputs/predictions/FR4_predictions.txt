@@ -1,0 +1,4 @@
+thermal bbox: 97,109,35,25
+thermal bbox: 133,56,43,101
+thermal bbox: 184,53,66,48
+thermal bbox: 34,0,63,79

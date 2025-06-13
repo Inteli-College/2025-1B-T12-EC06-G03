@@ -1,0 +1,6 @@
+thermal bbox: 118,230,59,58
+retraction bbox: 175,188,85,130
+retraction bbox: 0,148,21,26
+retraction bbox: 55,144,51,81
+retraction bbox: 45,86,28,49
+retraction bbox: 108,9,137,219
