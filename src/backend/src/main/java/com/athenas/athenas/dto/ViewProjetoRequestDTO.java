@@ -9,7 +9,6 @@ public class ViewProjetoRequestDTO {
     public Integer getIdProjeto() {
         return idProjeto;
     }
-
     public void setIdProjeto(Integer idProjeto) {
         this.idProjeto = idProjeto;
     }
