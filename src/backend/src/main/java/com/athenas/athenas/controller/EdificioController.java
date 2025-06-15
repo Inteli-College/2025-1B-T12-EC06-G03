@@ -37,6 +37,17 @@ public class EdificioController {
     @PostMapping
     public ResponseEntity<Edificio> createEdificio(@RequestBody Edificio edificio) {
         try {
+            // Configurar as fachadas corretamente
+            if (edificio.getFachadas() != null) {
+                for (var fachada : edificio.getFachadas()) {
+                    fachada.setEdificio(edificio);
+                    // Se o nome está vazio, usar a descrição como nome
+                    if (fachada.getNome() == null || fachada.getNome().trim().isEmpty()) {
+                        fachada.setNome(fachada.getDescricao());
+                    }
+                }
+            }
+            
             Edificio savedEdificio = edificioRepository.save(edificio);
             return new ResponseEntity<>(savedEdificio, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -55,6 +66,18 @@ public class EdificioController {
             }
             
             edificio.setProjeto(projetoOpt.get());
+            
+            // Configurar as fachadas corretamente
+            if (edificio.getFachadas() != null) {
+                for (var fachada : edificio.getFachadas()) {
+                    fachada.setEdificio(edificio);
+                    // Se o nome está vazio, usar a descrição como nome
+                    if (fachada.getNome() == null || fachada.getNome().trim().isEmpty()) {
+                        fachada.setNome(fachada.getDescricao());
+                    }
+                }
+            }
+            
             Edificio savedEdificio = edificioRepository.save(edificio);
             return new ResponseEntity<>(savedEdificio, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -73,6 +96,18 @@ public class EdificioController {
             }
             
             edificio.setProjeto(projetoOpt.get());
+            
+            // Configurar as fachadas corretamente
+            if (edificio.getFachadas() != null) {
+                for (var fachada : edificio.getFachadas()) {
+                    fachada.setEdificio(edificio);
+                    // Se o nome está vazio, usar a descrição como nome
+                    if (fachada.getNome() == null || fachada.getNome().trim().isEmpty()) {
+                        fachada.setNome(fachada.getDescricao());
+                    }
+                }
+            }
+            
             Edificio savedEdificio = edificioRepository.save(edificio);
             return new ResponseEntity<>(savedEdificio, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -149,6 +184,18 @@ public class EdificioController {
             Optional<Edificio> existingEdificio = edificioRepository.findById(id);
             if (existingEdificio.isPresent()) {
                 edificio.setId(id);
+                
+                // Configurar as fachadas corretamente
+                if (edificio.getFachadas() != null) {
+                    for (var fachada : edificio.getFachadas()) {
+                        fachada.setEdificio(edificio);
+                        // Se o nome está vazio, usar a descrição como nome
+                        if (fachada.getNome() == null || fachada.getNome().trim().isEmpty()) {
+                            fachada.setNome(fachada.getDescricao());
+                        }
+                    }
+                }
+                
                 Edificio updatedEdificio = edificioRepository.save(edificio);
                 return new ResponseEntity<>(updatedEdificio, HttpStatus.OK);
             } else {

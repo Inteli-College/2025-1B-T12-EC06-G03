@@ -11,5 +11,9 @@ import com.athenas.athenas.model.Fachada;
 @Repository
 public interface FachadaRepository extends JpaRepository<Fachada, Long> {
     List<Fachada> findByEdificio(Edificio edificio);
-    Fachada findByEdificioAndNome(Edificio edificio, String nome);
+    Fachada findByEdificioAndDescricao(Edificio edificio, String descricao);
+    // Manter para compatibilidade, mas agora usa descrição
+    default Fachada findByEdificioAndNome(Edificio edificio, String nome) {
+        return findByEdificioAndDescricao(edificio, nome);
+    }
 }

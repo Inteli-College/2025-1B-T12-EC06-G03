@@ -12,6 +12,8 @@ public class FissuraDetalheDTO {
     private String nomeImagem;
     private Map<String, Integer> porcentagemPorTipo;
     private Boolean processada;
+    private Boolean aprovado;
+    private String aprovadoPor;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -31,4 +33,8 @@ public class FissuraDetalheDTO {
     public void setPorcentagemPorTipo(Map<String, Integer> porcentagemPorTipo) { this.porcentagemPorTipo = porcentagemPorTipo; }
     public Boolean getProcessada() { return processada; }
     public void setProcessada(Boolean processada) { this.processada = processada; }
+    public Boolean getAprovado() { return aprovado; }
+    public void setAprovado(Boolean aprovado) { this.aprovado = aprovado; }
+    public String getAprovadoPor() { return aprovadoPor; }
+    public void setAprovadoPor(String aprovadoPor) { this.aprovadoPor = aprovadoPor; }
 }

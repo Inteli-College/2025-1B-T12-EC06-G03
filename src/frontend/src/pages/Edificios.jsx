@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Pencil, Trash2, AlertCircle } from 'lucide-react';
+import EdificioForm from '../components/EdificioForm';
 
 const Edificios = () => {
   const getProjetoFromUrl = () => {
@@ -10,15 +11,7 @@ const Edificios = () => {
   const projetoAtivo = getProjetoFromUrl();
 
   const [edificios, setEdificios] = useState([]);
-  const [formulario, setFormulario] = useState({ 
-    nome: '', 
-    localizacao: '', 
-    tipo: '', 
-    pavimentos: '', 
-    fachadas: [] 
-  });
-  const [novaFachada, setNovaFachada] = useState({ area: '', descricao: '' });
-  const [editandoId, setEditandoId] = useState(null);
+  const [editandoEdificio, setEditandoEdificio] = useState(null);
   const [busca, setBusca] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -35,14 +28,15 @@ const Edificios = () => {
       
       const response = await fetch(url);
       
-      if (response.ok) {
-        const data = await response.json();
-        setEdificios(data || []);
-      } else if (response.status === 204) {
+      if (response.status === 204) {
+        // No content - lista vazia
         setEdificios([]);
       } else if (response.status === 404) {
         setError(`Projeto "${projetoAtivo}" não encontrado`);
         setEdificios([]);
+      } else if (response.ok) {
+        const data = await response.json();
+        setEdificios(data || []);
       } else {
         throw new Error(`Error loading edificios: ${response.status}`);
       }
@@ -60,31 +54,7 @@ const Edificios = () => {
     }
   }, [projetoAtivo, loadEdificios]);
 
-  const handleChange = (e) => {
-    setFormulario({ ...formulario, [e.target.name]: e.target.value });
-  };
-
-  const handleFachadaChange = (e) => {
-    setNovaFachada({ ...novaFachada, [e.target.name]: e.target.value });
-  };
-
-  const adicionarFachada = () => {
-    if (!novaFachada.area || !novaFachada.descricao) return;
-    setFormulario({ 
-      ...formulario, 
-      fachadas: [...formulario.fachadas, { ...novaFachada, area: Number(novaFachada.area) }] 
-    });
-    setNovaFachada({ area: '', descricao: '' });
-  };
-
-  const removerFachada = (index) => {
-    setFormulario({
-      ...formulario,
-      fachadas: formulario.fachadas.filter((_, i) => i !== index)
-    });
-  };
-
-  const handleSubmit = async () => {
+  const handleFormSubmit = async (formData) => {
     if (!projetoAtivo) {
       setError("Projeto não encontrado na URL");
       return;
@@ -94,20 +64,14 @@ const Edificios = () => {
     setError('');
 
     try {
-
       let response;
       
-      if (editandoId) {
-        const edificioAtual = edificios.find(e => e.id === editandoId);
+      if (editandoEdificio) {
         const edificioData = {
-          nome: formulario.nome,
-          localizacao: formulario.localizacao,
-          tipo: formulario.tipo,
-          pavimentos: Number(formulario.pavimentos),
-          fachadas: formulario.fachadas,
-          projeto: edificioAtual.projeto
+          ...formData,
+          projeto: editandoEdificio.projeto
         };
-        response = await fetch(`${API_BASE_URL}/${editandoId}`, {
+        response = await fetch(`${API_BASE_URL}/${editandoEdificio.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -115,28 +79,18 @@ const Edificios = () => {
           body: JSON.stringify(edificioData)
         });
       } else {
-        const edificioData = {
-          nome: formulario.nome,
-          localizacao: formulario.localizacao,
-          tipo: formulario.tipo,
-          pavimentos: Number(formulario.pavimentos),
-          fachadas: formulario.fachadas
-        };
-
         response = await fetch(`${API_BASE_URL}/projeto-nome/${encodeURIComponent(projetoAtivo)}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(edificioData)
+          body: JSON.stringify(formData)
         });
       }
 
       if (response.ok) {
         await loadEdificios();
-        setFormulario({ nome: '', localizacao: '', tipo: '', pavimentos: '', fachadas: [] });
-        setNovaFachada({ area: '', descricao: '' });
-        setEditandoId(null);
+        setEditandoEdificio(null);
       } else if (response.status === 404) {
         setError(`Projeto "${projetoAtivo}" não encontrado`);
       } else {
@@ -151,14 +105,11 @@ const Edificios = () => {
   };
 
   const handleEditar = (edificio) => {
-    setFormulario({
-      nome: edificio.nome,
-      localizacao: edificio.localizacao,
-      tipo: edificio.tipo,
-      pavimentos: edificio.pavimentos.toString(),
-      fachadas: edificio.fachadas || []
-    });
-    setEditandoId(edificio.id);
+    setEditandoEdificio(edificio);
+  };
+
+  const handleCancelarEdicao = () => {
+    setEditandoEdificio(null);
   };
 
   const handleExcluir = async (id) => {
@@ -176,6 +127,10 @@ const Edificios = () => {
 
       if (response.ok) {
         await loadEdificios();
+        // Se estava editando o edifício excluído, cancelar edição
+        if (editandoEdificio && editandoEdificio.id === id) {
+          setEditandoEdificio(null);
+        }
       } else {
         throw new Error(`Error deleting edificio: ${response.status}`);
       }
@@ -185,12 +140,6 @@ const Edificios = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const cancelarEdicao = () => {
-    setFormulario({ nome: '', localizacao: '', tipo: '', pavimentos: '', fachadas: [] });
-    setNovaFachada({ area: '', descricao: '' });
-    setEditandoId(null);
   };
 
   const filtrados = edificios.filter((e) =>
@@ -239,117 +188,16 @@ const Edificios = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-100 p-6 rounded-md mb-8">
-        <input 
-          name="nome" 
-          value={formulario.nome} 
-          onChange={handleChange} 
-          placeholder="Nome" 
-          required 
-          className="p-2 border border-gray-300 rounded"
-          disabled={loading}
-        />
-        <input 
-          name="localizacao" 
-          value={formulario.localizacao} 
-          onChange={handleChange} 
-          placeholder="Localização" 
-          required 
-          className="p-2 border border-gray-300 rounded"
-          disabled={loading}
-        />
-        <input 
-          name="tipo" 
-          value={formulario.tipo} 
-          onChange={handleChange} 
-          placeholder="Tipo" 
-          required 
-          className="p-2 border border-gray-300 rounded"
-          disabled={loading}
-        />
-        <input 
-          name="pavimentos" 
-          type="number" 
-          value={formulario.pavimentos} 
-          onChange={handleChange} 
-          placeholder="Pavimentos" 
-          required 
-          min="1"
-          className="p-2 border border-gray-300 rounded"
-          disabled={loading}
-        />
-
-        <div className="col-span-full border-t border-gray-300 pt-4">
-          <h3 className="text-lg font-semibold mb-2">Fachadas</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-            <input 
-              name="area" 
-              type="number" 
-              value={novaFachada.area} 
-              onChange={handleFachadaChange} 
-              placeholder="Área (m²)" 
-              min="0"
-              step="0.01"
-              className="p-2 border border-gray-300 rounded"
-              disabled={loading}
-            />
-            <input 
-              name="descricao" 
-              value={novaFachada.descricao} 
-              onChange={handleFachadaChange} 
-              placeholder="Descrição" 
-              className="p-2 border border-gray-300 rounded"
-              disabled={loading}
-            />
-            <button 
-              onClick={adicionarFachada} 
-              className="bg-blue-600 text-white rounded px-4 hover:bg-blue-700 disabled:opacity-50"
-              disabled={loading}
-            >
-              Adicionar Fachada
-            </button>
-          </div>
-
-          {formulario.fachadas.length > 0 && (
-            <div className="bg-white p-3 rounded border">
-              <p className="font-medium mb-2">Fachadas adicionadas:</p>
-              <ul className="space-y-1">
-                {formulario.fachadas.map((f, i) => (
-                  <li key={i} className="flex justify-between items-center text-sm bg-gray-50 p-2 rounded">
-                    <span>Área: {f.area} m² – {f.descricao}</span>
-                    <button
-                      onClick={() => removerFachada(i)}
-                      className="text-red-600 hover:text-red-800 ml-2"
-                      disabled={loading}
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-
-        <div className="col-span-full flex gap-3">
-          <button 
-            onClick={handleSubmit}
-            className="flex-1 bg-blue-800 text-white py-2 rounded hover:bg-blue-900 disabled:opacity-50"
-            disabled={loading}
-          >
-            {loading ? 'Salvando...' : (editandoId ? 'Salvar Alterações' : 'Cadastrar Edifício')}
-          </button>
-          {editandoId && (
-            <button 
-              onClick={cancelarEdicao}
-              className="px-6 bg-gray-500 text-white py-2 rounded hover:bg-gray-600 disabled:opacity-50"
-              disabled={loading}
-            >
-              Cancelar
-            </button>
-          )}
-        </div>
-      </div>
+      {/* Formulário de Edifício usando o componente */}
+      <EdificioForm
+        initialData={editandoEdificio}
+        onSubmit={handleFormSubmit}
+        onCancel={handleCancelarEdicao}
+        loading={loading}
+        error=""
+        isEditing={!!editandoEdificio}
+        className="mb-8"
+      />
 
       {loading && !error && (
         <div className="text-center py-4">
