@@ -185,3 +185,4 @@ As classes detectadas são anotadas diretamente nas imagens, e as segmentações
 
 ## Conclusão
 
+&emsp; As melhorias implementadas no script de geração de máscaras e no fluxo de segmentação elevaram a precisão e a verossimilhança do modelo YOLOv8-seg. Com uma abordagem mais adaptativa e modular, o novo pipeline oferece segmentações mais confiáveis, maior fidelidade na geração de labels e um desempenho consistente mesmo em imagens com diferentes condições visuais. Esses avanços consolidam a base para futuras otimizações e aplicações práticas do modelo.
