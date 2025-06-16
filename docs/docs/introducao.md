@@ -41,6 +41,11 @@ O projeto Athena é desenvolvido por uma equipe multidisciplinar de estudantes d
 
 &emsp;A seguir, são apresentados os links para as apresentações das sprints realizadas pela equipe do projeto Athena. Cada sprint corresponde a um ciclo de desenvolvimento do projeto, com atividades específicas e entregáveis definidos.
 
-## Sprint 1
-
+### Sprint 1
 - [Apresentação Sprint Review 1](https://www.canva.com/design/DAGll_G221g/aTCXDS9PbqYvJSSz5un9gg/edit)
+### Sprint 2
+- [Apresentação Sprint Review 2](https://www.canva.com/design/DAGnWzsDDIE/4tOlfCTfZXlSC4t-6Payug/edit?ui=eyJEIjp7IlAiOnsiQiI6ZmFsc2V9fX0)
+### Sprint 3
+- [Apresentação Sprint Review 3](https://www.canva.com/design/DAGll_G221g/aTCXDS9PbqYvJSSz5un9gg/edit)
+### Sprint 4
+- [Apresentação Sprint Review 4](https://www.canva.com/design/DAGqFIHeQ7I/PgN49dDkJF5xGS64GlYJbA/edit)
