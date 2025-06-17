@@ -7,9 +7,9 @@ sidebar_position: 0
 
 ## Introdução
 
-A Sprint 1 do projeto Athena teve como foco o entendimento aprofundado do problema enfrentado pelo IPT e a definição inicial dos requisitos técnicos e de usabilidade do sistema. Nesta etapa, foram desenvolvidos documentos fundamentais como o Business Model Canvas, a Matriz de Riscos, a Análise de Stakeholders, as Personas e os Wireframes, com o objetivo de alinhar toda a equipe em relação à visão do projeto e garantir um direcionamento estratégico sólido para as próximas fases de desenvolvimento.
+&emsp;A Sprint 1 do projeto Athena teve como foco o entendimento aprofundado do problema enfrentado pelo IPT e a definição inicial dos requisitos técnicos e de usabilidade do sistema. Nesta etapa, foram desenvolvidos documentos fundamentais como o Business Model Canvas, a Matriz de Riscos, a Análise de Stakeholders, as Personas e os Wireframes, com o objetivo de alinhar toda a equipe em relação à visão do projeto e garantir um direcionamento estratégico sólido para as próximas fases de desenvolvimento.
 
-Também foi iniciada a proposta de arquitetura da solução, incluindo os requisitos funcionais e não funcionais, além da estruturação da arquitetura da informação, que servirá como base para o desenvolvimento da interface do sistema.
+&emsp;Também foi iniciada a proposta de arquitetura da solução, incluindo os requisitos funcionais e não funcionais, além da estruturação da arquitetura da informação, que servirá como base para o desenvolvimento da interface do sistema.
 
 ## Entregas da Sprint 1
 
@@ -53,4 +53,4 @@ Também foi iniciada a proposta de arquitetura da solução, incluindo os requis
 
 ## Conclusão
 
-A Sprint 1 foi essencial para alinhar a equipe sobre a visão, os objetivos e os desafios do projeto Athena. Os documentos produzidos servem como base para as próximas sprints, garantindo que as decisões de desenvolvimento estejam alinhadas com as reais necessidades dos usuários e com as possibilidades técnicas da equipe.
+&emsp;A Sprint 1 foi essencial para alinhar a equipe sobre a visão, os objetivos e os desafios do projeto Athena. Os documentos produzidos servem como base para as próximas sprints, garantindo que as decisões de desenvolvimento estejam alinhadas com as reais necessidades dos usuários e com as possibilidades técnicas da equipe.

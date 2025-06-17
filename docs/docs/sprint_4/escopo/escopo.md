@@ -7,9 +7,9 @@ sidebar_position: 0
 
 ## Introdução
 
-A Sprint 4 do projeto Athena foi dedicada à validação da solução desenvolvida até o momento por meio de testes sistemáticos, além da expansão do escopo do projeto com a introdução de uma aplicação em realidade virtual (VR). Também foi realizada a primeira análise financeira do projeto, estimando sua viabilidade em escala. Esta sprint teve como prioridade a robustez técnica e a experiência do usuário, garantindo que o sistema fosse testado em múltiplas camadas: unitária, com desenvolvedores e com usuários reais.
+&emsp;A Sprint 4 do projeto Athena foi dedicada à validação da solução desenvolvida até o momento por meio de testes sistemáticos, além da expansão do escopo do projeto com a introdução de uma aplicação em realidade virtual (VR). Também foi realizada a primeira análise financeira do projeto, estimando sua viabilidade em escala. Esta sprint teve como prioridade a robustez técnica e a experiência do usuário, garantindo que o sistema fosse testado em múltiplas camadas: unitária, com desenvolvedores e com usuários reais.
 
-Simultaneamente, iniciamos o desenvolvimento da aplicação de visualização em VR, que visa aumentar a imersão e facilitar a interpretação espacial das fissuras detectadas.
+&emsp;Simultaneamente, iniciamos o desenvolvimento da aplicação de visualização em VR, que visa aumentar a imersão e facilitar a interpretação espacial das fissuras detectadas.
 
 ## Funcionalidades e Atividades Realizadas
 
@@ -43,4 +43,4 @@ Simultaneamente, iniciamos o desenvolvimento da aplicação de visualização em
 
 ## Conclusão
 
-A Sprint 4 foi essencial para garantir a confiabilidade da aplicação Athena por meio de testes abrangentes e para explorar novas possibilidades de interação com os dados através da realidade virtual. Os aprendizados obtidos com os testes alimentarão as melhorias da Sprint 5, enquanto a base da aplicação VR representa um novo passo na inovação da interface e na apresentação dos resultados ao IPT.
+&emsp;A Sprint 4 foi essencial para garantir a confiabilidade da aplicação Athena por meio de testes abrangentes e para explorar novas possibilidades de interação com os dados através da realidade virtual. Os aprendizados obtidos com os testes alimentarão as melhorias da Sprint 5, enquanto a base da aplicação VR representa um novo passo na inovação da interface e na apresentação dos resultados ao IPT.

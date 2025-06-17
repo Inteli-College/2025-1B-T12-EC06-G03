@@ -7,7 +7,7 @@ sidebar_position: 0
 
 ## Introdução
 
-A Sprint 2 do projeto Athenas foca na implementação de funcionalidades essenciais para o controle remoto de drones, incluindo a configuração do aplicativo, a arquitetura técnica e o sistema de comunicação. Além disso, também criamos o modelo e o front-end do sistema. O objetivo é garantir uma experiência de usuário fluida e responsiva, permitindo o controle eficiente dos drones em tempo real.
+&emsp;A Sprint 2 do projeto Athenas foca na implementação de funcionalidades essenciais para o controle remoto de drones, incluindo a configuração do aplicativo, a arquitetura técnica e o sistema de comunicação. Além disso, também criamos o modelo e o front-end do sistema. O objetivo é garantir uma experiência de usuário fluida e responsiva, permitindo o controle eficiente dos drones em tempo real.
 A seguir, apresentamos uma visão geral das principais funcionalidades e componentes desenvolvidos nesta sprint.
 
 ## Funcionalidades Implementadas
@@ -141,4 +141,4 @@ flutter run
 5. **Conecte-se ao servidor**: Insira o IP e a porta do servidor do drone na tela de configuração.
 
 ## Conclusão
-A Sprint 2 do projeto Athenas trouxe avanços significativos na implementação de funcionalidades essenciais para o controle remoto de drones. Com a integração do modelo de aprendizado de máquina, o front-end responsivo e o back-end robusto, estamos um passo mais perto de alcançar nossos objetivos. As próximas etapas envolverão testes adicionais e melhorias com base no feedback dos usuários.
+&emsp;A Sprint 2 do projeto Athenas trouxe avanços significativos na implementação de funcionalidades essenciais para o controle remoto de drones. Com a integração do modelo de aprendizado de máquina, o front-end responsivo e o back-end robusto, estamos um passo mais perto de alcançar nossos objetivos. As próximas etapas envolverão testes adicionais e melhorias com base no feedback dos usuários.

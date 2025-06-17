@@ -1,0 +1,8 @@
+{
+    "label": "Refinamento do VR",
+    "position": 4,
+    "link": {
+      "type": "generated-index",
+      "description": "Nesta seção, iremos explorar o refinamento do VR, que é uma etapa crucial para garantir que o sistema de realidade virtual esteja funcionando corretamente e atenda a todos os requisitos estabelecidos. Durante esta fase, realizamos ajustes na integração do VR com o controle de drone, avaliamos a experiência do usuário e implementamos melhorias com base no feedback recebido. A seguir, apresentaremos os detalhes técnicos e as principais atividades realizadas durante o refinamento do VR."
+    }
+  }

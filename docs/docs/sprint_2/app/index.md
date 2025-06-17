@@ -1,13 +1,13 @@
 ---
 title: Visão Geral do App Athenas
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 # Visão Geral do App Athenas
 
 ## Introdução
 
-O App Athenas é uma aplicação móvel desenvolvida em Flutter para o controle remoto de drones. Este aplicativo foi projetado para fornecer uma interface de usuário intuitiva e responsiva que permite aos operadores controlar drones em tempo real, receber feedback visual através de streaming de vídeo e monitorar telemetria.
+&emsp;O App Athenas é uma aplicação móvel desenvolvida em Flutter para o controle remoto de drones. Este aplicativo foi projetado para fornecer uma interface de usuário intuitiva e responsiva que permite aos operadores controlar drones em tempo real, receber feedback visual através de streaming de vídeo e monitorar telemetria.
 
 ## Características Principais
 
@@ -21,7 +21,7 @@ O App Athenas é uma aplicação móvel desenvolvida em Flutter para o controle 
 
 ## Arquitetura do App
 
-O aplicativo Athenas segue o padrão de arquitetura BLoC (Business Logic Component) para gerenciamento de estado, separando claramente:
+&emsp;O aplicativo Athenas segue o padrão de arquitetura BLoC (Business Logic Component) para gerenciamento de estado, separando claramente:
 
 - **UI (Interface do Usuário)**: Widgets Flutter reativos
 - **BLoC**: Componentes de lógica de negócios que processam eventos e emitem estados
@@ -45,7 +45,7 @@ O aplicativo Athenas segue o padrão de arquitetura BLoC (Business Logic Compone
 
 ## Navegação na Documentação
 
-Para informações detalhadas sobre componentes específicos do aplicativo, consulte:
+&emsp;Para informações detalhadas sobre componentes específicos do aplicativo, consulte:
 
 - [Sistema de Controle](controle): Detalhes sobre o sistema de controle do drone
 - [Configuração do App](config): Instruções para configurar o aplicativo

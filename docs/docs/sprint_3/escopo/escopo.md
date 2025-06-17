@@ -7,9 +7,9 @@ sidebar_position: 0
 
 ## Introdução
 
-A Sprint 3 do projeto Athena teve como objetivo consolidar os primeiros módulos funcionais do sistema completo. Nesta fase, a equipe concentrou esforços em conectar os diferentes subsistemas da solução — incluindo o front-end, o back-end da aplicação web e o backend dos modelos de inteligência artificial. Também foram realizadas melhorias na usabilidade da interface, adição de autenticação e autorização de usuários, bem como avanços significativos na implementação dos modelos de classificação e segmentação de fissuras.
+&emsp;A Sprint 3 do projeto Athena teve como objetivo consolidar os primeiros módulos funcionais do sistema completo. Nesta fase, a equipe concentrou esforços em conectar os diferentes subsistemas da solução — incluindo o front-end, o back-end da aplicação web e o backend dos modelos de inteligência artificial. Também foram realizadas melhorias na usabilidade da interface, adição de autenticação e autorização de usuários, bem como avanços significativos na implementação dos modelos de classificação e segmentação de fissuras.
 
-Essa sprint marca o início da integração plena entre as partes técnicas da solução, preparando o terreno para testes e simulações de uso real nos ciclos seguintes.
+&emsp;Essa sprint marca o início da integração plena entre as partes técnicas da solução, preparando o terreno para testes e simulações de uso real nos ciclos seguintes.
 
 ## Funcionalidades Implementadas
 
@@ -51,4 +51,4 @@ Essa sprint marca o início da integração plena entre as partes técnicas da s
 
 ## Conclusão
 
-A Sprint 3 representou um avanço técnico importante para o projeto Athena, com a primeira integração real entre o front-end, o back-end e os modelos de IA. A partir dessa base funcional integrada, o projeto está mais próximo de se tornar uma ferramenta completa de apoio à inspeção de fissuras, capaz de gerar relatórios confiáveis e análises automatizadas para os profissionais do IPT. A próxima sprint focará em testes de robustez, melhorias na interface e início da geração automatizada de relatórios.
+&emsp;A Sprint 3 representou um avanço técnico importante para o projeto Athena, com a primeira integração real entre o front-end, o back-end e os modelos de IA. A partir dessa base funcional integrada, o projeto está mais próximo de se tornar uma ferramenta completa de apoio à inspeção de fissuras, capaz de gerar relatórios confiáveis e análises automatizadas para os profissionais do IPT. A próxima sprint focará em testes de robustez, melhorias na interface e início da geração automatizada de relatórios.

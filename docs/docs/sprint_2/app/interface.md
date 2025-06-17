@@ -1,17 +1,17 @@
 ---
 title: Interface do Usuário
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 # Interface do Usuário
 
 ## Layout Geral
 
-A interface do aplicativo Athenas foi projetada com foco na usabilidade durante operações de voo, seguindo princípios de design minimalista e funcional. O layout é organizado em regiões estratégicas para facilitar o acesso rápido aos comandos mais importantes durante o voo.
+&emsp;A interface do aplicativo Athenas foi projetada com foco na usabilidade durante operações de voo, seguindo princípios de design minimalista e funcional. O layout é organizado em regiões estratégicas para facilitar o acesso rápido aos comandos mais importantes durante o voo.
 
 ### Organização da Tela Principal
 
-A tela principal do aplicativo é dividida em várias regiões funcionais:
+&emsp;A tela principal do aplicativo é dividida em várias regiões funcionais:
 
 1. **Stream de Vídeo**: Região central e predominante, exibindo o feed da câmera do drone em tempo real
 2. **Painel de Controle**: Localizado na lateral direita, contém botões para comandos principais
@@ -24,7 +24,7 @@ A tela principal do aplicativo é dividida em várias regiões funcionais:
 
 ### VideoStreamWidget
 
-Este componente central exibe o feed da câmera do drone em tempo real, utilizando técnicas de baixa latência para garantir resposta visual imediata.
+&emsp;Este componente central exibe o feed da câmera do drone em tempo real, utilizando técnicas de baixa latência para garantir resposta visual imediata.
 
 ```dart
 VideoStreamWidget(
@@ -33,18 +33,18 @@ VideoStreamWidget(
 )
 ```
 
-Características:
+&emsp;Características:
 - Modo de tela cheia com gestos para zoom
 - Sobreposição de telemetria (altitude, velocidade, distância)
 - Indicadores visuais para orientação do drone
 
 ### DroneControlPanel
 
-Painel que contém os principais controles de voo:
+&emsp;Painel que contém os principais controles de voo:
 
 ![Painel de Controle](../../../static/img/controle_app.jpg)
 
-Funções principais:
+&emsp;Funções principais:
 - **Decolagem Automática**: Inicia o procedimento de decolagem controlada
 - **Pouso Automático**: Inicia o procedimento de pouso seguro
 - **Retorno ao Ponto Inicial (RTH)**: Comando para o drone retornar automaticamente ao ponto de decolagem
@@ -53,7 +53,7 @@ Funções principais:
 
 ### StatusNotification
 
-Componente que exibe notificações e alertas importantes durante o voo:
+&emsp;Componente que exibe notificações e alertas importantes durante o voo:
 
 ```dart
 StatusNotification(
@@ -63,7 +63,7 @@ StatusNotification(
 )
 ```
 
-Tipos de notificação:
+&emsp;Tipos de notificação:
 - **Info**: Informações gerais sobre o status do sistema
 - **Success**: Confirmações de comandos bem-sucedidos
 - **Warning**: Alertas de baixa prioridade (bateria abaixo de 30%, proximidade de limite de alcance)
@@ -71,7 +71,7 @@ Tipos de notificação:
 
 ### SplashScreen
 
-Tela de inicialização que é exibida durante o carregamento do aplicativo:
+&emsp;Tela de inicialização que é exibida durante o carregamento do aplicativo:
 
 ```dart
 SplashScreen(
@@ -83,7 +83,7 @@ SplashScreen(
 
 ### Telemetria e Indicadores
 
-A interface inclui diversos indicadores que fornecem informações em tempo real:
+&emsp;A interface inclui diversos indicadores que fornecem informações em tempo real:
 
 - **Indicador de Bateria**: Exibe o nível atual de carga da bateria do drone com código de cores
 - **Indicador de Sinal**: Mostra a intensidade da conexão Wi-Fi com o drone
@@ -94,7 +94,7 @@ A interface inclui diversos indicadores que fornecem informações em tempo real
 
 ## Responsividade
 
-O aplicativo foi projetado para se adaptar a diferentes tamanhos de tela, desde smartphones (em modo paisagem) até tablets. Os elementos da interface redimensionam-se automaticamente para manter a proporcionalidade e funcionalidade em diferentes dispositivos.
+&emsp;O aplicativo foi projetado para se adaptar a diferentes tamanhos de tela, desde smartphones (em modo paisagem) até tablets. Os elementos da interface redimensionam-se automaticamente para manter a proporcionalidade e funcionalidade em diferentes dispositivos.
 
 ### Breakpoints de Responsividade
 
@@ -109,7 +109,7 @@ O aplicativo foi projetado para se adaptar a diferentes tamanhos de tela, desde 
 
 ## Acessibilidade
 
-O aplicativo incorpora recursos de acessibilidade:
+&emsp;O aplicativo incorpora recursos de acessibilidade:
 
 - **Alto Contraste**: Opção para melhorar a visibilidade em condições de luz solar direta
 - **Feedback Sonoro Aumentado**: Opção para intensificar alertas sonoros
@@ -117,7 +117,7 @@ O aplicativo incorpora recursos de acessibilidade:
 
 ## Temas e Personalização
 
-Embora o tema escuro seja o padrão, o aplicativo permite personalização limitada:
+&emsp;Embora o tema escuro seja o padrão, o aplicativo permite personalização limitada:
 
 - **Cores de Destaque**: Possibilidade de alterar a cor de destaque da interface
 - **Opacidade dos Controles**: Ajuste da transparência dos elementos flutuantes

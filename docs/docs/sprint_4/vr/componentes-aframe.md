@@ -5,15 +5,15 @@ sidebar_position: 2
 
 # Componentes A-Frame Customizados
 
-Esta documentação detalha os componentes personalizados desenvolvidos para a aplicação VR de controle de drone.
+&emsp;Esta documentação detalha os componentes personalizados desenvolvidos para a aplicação VR de controle de drone.
 
 ## Visão Geral
 
-A aplicação utiliza componentes A-Frame customizados para implementar funcionalidades específicas de interação VR e controle de drone. Cada componente é responsável por uma funcionalidade específica e pode ser reutilizado em diferentes entidades.
+&emsp;A aplicação utiliza componentes A-Frame customizados para implementar funcionalidades específicas de interação VR e controle de drone. Cada componente é responsável por uma funcionalidade específica e pode ser reutilizado em diferentes entidades.
 
 ## moveable-screen
 
-Componente responsável por tornar a tela de vídeo interativa e movível no espaço VR.
+&emsp;Componente responsável por tornar a tela de vídeo interativa e movível no espaço VR.
 
 ### Schema
 
@@ -139,7 +139,7 @@ animatePress: function () {
 
 ## keyboard-controls
 
-Componente para controle via teclado (fallback para desktop).
+&emsp;Componente para controle via teclado (fallback para desktop).
 
 ### Teclas Suportadas
 
@@ -175,7 +175,7 @@ bindEvents: function () {
 
 ## vr-debug
 
-Componente de debug para desenvolvimento e diagnóstico.
+&emsp;Componente de debug para desenvolvimento e diagnóstico.
 
 ### Funcionalidades
 
@@ -215,7 +215,7 @@ logControllerStatus: function () {
 
 ## simple-vr-interaction
 
-Componente simplificado para interações básicas VR.
+&emsp;Componente simplificado para interações básicas VR.
 
 ### Eventos Mapeados
 
@@ -249,7 +249,7 @@ init: function () {
 
 ### 1. Classes CSS
 
-Sempre adicionar classes apropriadas para seletores:
+&emsp;Sempre adicionar classes apropriadas para seletores:
 
 ```html
 <a-entity class="interactive grabbable hoverable clickable">
@@ -257,7 +257,7 @@ Sempre adicionar classes apropriadas para seletores:
 
 ### 2. Configuração de Raycaster
 
-Configurar raycaster para detectar objetos interativos:
+&emsp;Configurar raycaster para detectar objetos interativos:
 
 ```html
 <a-entity raycaster="objects: .interactive; showLine: true; far: 20">
@@ -265,7 +265,7 @@ Configurar raycaster para detectar objetos interativos:
 
 ### 3. Hierarquia de Componentes
 
-Ordem recomendada de componentes:
+&emsp;Ordem recomendada de componentes:
 
 ```html
 <a-entity 
@@ -285,7 +285,7 @@ Ordem recomendada de componentes:
 
 ### 5. Debug
 
-Sempre incluir `vr-debug` durante desenvolvimento:
+&emsp;Sempre incluir `vr-debug` durante desenvolvimento:
 
 ```html
 <a-entity vr-debug id="debug-info"></a-entity>
@@ -324,7 +324,7 @@ AFRAME.registerComponent('meu-componente', {
 
 ### Integração com Sistema Existente
 
-Para integrar novos componentes:
+&emsp;Para integrar novos componentes:
 
 1. Registrar o componente antes do `<a-scene>`
 2. Adicionar à classe `.interactive` se aplicável

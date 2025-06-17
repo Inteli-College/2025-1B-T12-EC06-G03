@@ -5,7 +5,7 @@ sidebar_position: 3
 
 # Backend Drone
 
-O backend do drone é responsável por estabelecer a comunicação entre a interface do usuário e o drone Tello da DJI, facilitando o controle das operações do drone e o streaming de vídeo em tempo real.
+&emsp;O backend do drone é responsável por estabelecer a comunicação entre a interface do usuário e o drone Tello da DJI, facilitando o controle das operações do drone e o streaming de vídeo em tempo real.
 
 ## Tecnologias Utilizadas
 
@@ -20,7 +20,7 @@ O backend do drone é responsável por estabelecer a comunicação entre a inter
 
 ### 1. Servidor Web Flask
 
-O aplicativo Flask serve como ponto central de comunicação, fornecendo:
+&emsp;O aplicativo Flask serve como ponto central de comunicação, fornecendo:
 
 ```python
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -34,7 +34,7 @@ socketio = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
 
 ### 2. VideoStreamManager
 
-Classe responsável pelo gerenciamento do streaming de vídeo do drone:
+&emsp;Classe responsável pelo gerenciamento do streaming de vídeo do drone:
 
 ```python
 class VideoStreamManager:
@@ -45,7 +45,7 @@ class VideoStreamManager:
         # ...
 ```
 
-Principais funcionalidades:
+&emsp;Principais funcionalidades:
 - Conexão com o drone Tello
 - Captura contínua de frames em thread separada
 - Processamento e otimização de imagens para streaming
@@ -54,7 +54,7 @@ Principais funcionalidades:
 
 ### 3. Controlador de Eventos WebSocket
 
-Interface de WebSocket para comunicação bidirecional em tempo real:
+&emsp;Interface de WebSocket para comunicação bidirecional em tempo real:
 
 ```python
 @socketio.on('connect')
@@ -69,7 +69,7 @@ def takeoff(data=None):
 
 ## Comandos do Drone
 
-O backend implementa os seguintes comandos para controle do drone:
+&emsp;O backend implementa os seguintes comandos para controle do drone:
 
 | Comando | Descrição | Parâmetros |
 |---------|-----------|------------|
@@ -84,21 +84,21 @@ O backend implementa os seguintes comandos para controle do drone:
 
 ## Streaming de Vídeo
 
-O streaming de vídeo é implementado através de:
+&emsp;O streaming de vídeo é implementado através de:
 
 1. Captura contínua dos frames da câmera do drone
 2. Processamento e otimização para transmissão web
 3. Conversão para formato MJPEG
 4. Streaming via protocolo HTTP
 
-Configurações padrão:
+&emsp;Configurações padrão:
 - Resolução: 640x480 pixels
 - FPS alvo: 30 frames por segundo
 - Qualidade JPEG: 70%
 
 ## Sistema de Log
 
-O backend possui um sistema de log que registra todas as operações e possíveis erros:
+&emsp;O backend possui um sistema de log que registra todas as operações e possíveis erros:
 
 ```python
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -107,7 +107,7 @@ logger = logging.getLogger('tello_app')
 
 ## Inicialização do Servidor
 
-O servidor é iniciado com as seguintes configurações:
+&emsp;O servidor é iniciado com as seguintes configurações:
 
 ```python
 socketio.run(app, host='0.0.0.0', port=5000, debug=True, use_reloader=False, allow_unsafe_werkzeug=True)
@@ -129,7 +129,7 @@ socketio.run(app, host='0.0.0.0', port=5000, debug=True, use_reloader=False, all
 
 ## Otimização e Performance
 
-O código implementa várias otimizações para melhorar a performance:
+&emsp;O código implementa várias otimizações para melhorar a performance:
 
 - Redimensionamento dos frames para reduzir o consumo de banda
 - Controle de FPS para estabilizar a taxa de quadros
@@ -139,7 +139,7 @@ O código implementa várias otimizações para melhorar a performance:
 
 ## Tratamento de Erros
 
-Cada comando e operação possui tratamento de erros específico para:
+&emsp;Cada comando e operação possui tratamento de erros específico para:
 - Falha na conexão com o drone
 - Problemas durante a captura de vídeo
 - Parâmetros inválidos em comandos
@@ -147,7 +147,7 @@ Cada comando e operação possui tratamento de erros específico para:
 
 ## Requisitos
 
-Para executar este backend, é necessário:
+&emsp;Para executar este backend, é necessário:
 
 1. Python 3.7+
 2. Bibliotecas listadas em `requirements.txt`:
@@ -169,4 +169,4 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Após iniciar o servidor, o drone deve estar ligado e conectado à mesma rede Wi-Fi que o computador executando o backend.
+&emsp;Após iniciar o servidor, o drone deve estar ligado e conectado à mesma rede Wi-Fi que o computador executando o backend.
