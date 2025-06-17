@@ -2,6 +2,7 @@ package com.athenas.athenas.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ViewProjetoResponseDTO {
@@ -71,10 +72,12 @@ public class ViewProjetoResponseDTO {
         this.logs = logs;
     }
 
+    @JsonIgnore
     public Long getIdProjeto() {
         throw new UnsupportedOperationException("Unimplemented method 'getIdProjeto'");
     }
 
+    @JsonIgnore
     public void setIdProjeto(int i) {
         throw new UnsupportedOperationException("Unimplemented method 'setIdProjeto'");
     }

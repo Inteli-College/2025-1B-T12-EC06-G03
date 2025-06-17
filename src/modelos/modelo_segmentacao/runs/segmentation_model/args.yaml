@@ -13,7 +13,7 @@ cache: false
 device: null
 workers: 8
 project: ../runs
-name: segmentation_model
+name: segmentation_model2
 exist_ok: false
 pretrained: true
 optimizer: auto
@@ -102,4 +102,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: botsort.yaml
-save_dir: ../runs/segmentation_model
+save_dir: ../runs/segmentation_model2
