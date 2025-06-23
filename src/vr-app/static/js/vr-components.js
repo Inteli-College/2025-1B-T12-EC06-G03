@@ -1,36 +1,5 @@
 // VR Drone App JavaScript Components
 
-// Moveable Screen Component
-AFRAME.registerComponent('moveable-screen', {
-  onGripDown: function (evt) {
-    console.log('Screen grabbed!');
-  },
-
-  onGripUp: function (evt) {
-    console.log('Screen released!');
-  },
-
-  onMouseDown: function (evt) {
-    this.el.setAttribute('material', 'color', '#88ff88');
-  },
-
-  onMouseUp: function (evt) {
-    this.el.setAttribute('material', 'color', '#ffffff');
-  },
-
-  onTrackpadDown: function (evt) {
-    this.currentScale = 1;
-  },
-
-  addGrabHandles: function () {
-    this.el.appendChild(border);
-  },
-
-  tick: function () {
-    // Movement logic can be added here
-  }
-});
-
 // Keyboard Controls Component
 AFRAME.registerComponent('keyboard-controls', {
   init: function () {
@@ -90,340 +59,315 @@ AFRAME.registerComponent('keyboard-controls', {
     }
   }
 });
-
-// Interactive Button Component
-AFRAME.registerComponent('interactive-button', {
-  schema: {
-    action: { type: 'string', default: 'default' },
-    url: { type: 'string', default: 'http://10.140.0.11:5000' },
-    label: { type: 'string', default: 'Button' }
-  },
-
+AFRAME.registerComponent('gamepad-listener', {
   init: function () {
-    this.isGrabbed = false;
-    this.originalPosition = this.el.getAttribute('position');
-    this.originalRotation = this.el.getAttribute('rotation');
-    this.originalScale = this.el.getAttribute('scale') || { x: 1, y: 1, z: 1 };
-    this.isPressed = false;
+    this.statusText = null;
+    this.lastUpdate = 0;
+    this.updateInterval = 50; // Atualiza a cada 50ms
+    this.speed = 0.05;
 
-    // VR Events - Super Hands
-    this.el.addEventListener('grab-start', this.onGrabStart.bind(this));
-    this.el.addEventListener('grab-end', this.onGrabEnd.bind(this));
-    this.el.addEventListener('drag-move', this.onDragMove.bind(this));
-    this.el.addEventListener('hover-start', this.onHoverStart.bind(this));
-    this.el.addEventListener('hover-end', this.onHoverEnd.bind(this));
-
-    // Direct controller events
-    this.el.addEventListener('triggerdown', this.onTriggerDown.bind(this));
-    this.el.addEventListener('triggerup', this.onTriggerUp.bind(this));
-
-    // Interaction events
-    this.el.addEventListener('click', this.onClick.bind(this));
-    this.el.addEventListener('mousedown', this.onMouseDown.bind(this));
-    this.el.addEventListener('mouseup', this.onMouseUp.bind(this));
-    this.el.addEventListener('gripdown', this.onGripDown.bind(this));
-    this.el.addEventListener('gripup', this.onGripUp.bind(this));
-
-    // Visual feedback colors
-    this.defaultColor = '#4CAF50';
-    this.hoverColor = '#45a049';
-    this.pressedColor = '#3d8b40';
-    this.grabbedColor = '#2196F3';
-
-    this.el.setAttribute('material', 'color', this.defaultColor);
-  },
-
-  onGrabStart: function (evt) {
-    this.isGrabbed = true;
-    this.grabbingController = evt.detail.hand;
-    this.el.setAttribute('material', 'color', this.grabbedColor);
-    console.log('Button grabbed with VR controller!');
-  },
-
-  onGrabEnd: function (evt) {
-    this.isGrabbed = false;
-    this.grabbingController = null;
-    this.el.setAttribute('material', 'color', this.defaultColor);
-    this.executeAction();
-    this.animatePress();
-  },
-
-  onDragMove: function (evt) {
-    if (this.isGrabbed && evt.detail.position) {
-      this.el.setAttribute('position', evt.detail.position);
-    }
-  },
-
-  onHoverStart: function (evt) {
-    if (!this.isGrabbed) {
-      this.el.setAttribute('material', 'color', this.hoverColor);
-    }
-  },
-
-  onHoverEnd: function (evt) {
-    if (!this.isGrabbed) {
-      this.el.setAttribute('material', 'color', this.defaultColor);
-    }
-  },
-
-  onTriggerDown: function (evt) {
-    console.log('Trigger down on button!');
-    this.isGrabbed = true;
-    this.grabbingController = evt.target.id;
-    this.el.setAttribute('material', 'color', this.grabbedColor);
-  },
-
-  onTriggerUp: function (evt) {
-    console.log('Trigger up on button!');
-    this.isGrabbed = false;
-    this.grabbingController = null;
-    this.el.setAttribute('material', 'color', this.defaultColor);
-    this.executeAction();
-    this.animatePress();
-  },
-
-  onVRGrabStart: function (evt) {
-    console.log('VR Grab Start on button!');
-    this.isGrabbed = true;
-    this.el.setAttribute('material', 'color', this.grabbedColor);
-  },
-
-  onVRGrabEnd: function (evt) {
-    console.log('VR Grab End on button!');
-    this.isGrabbed = false;
-    this.el.setAttribute('material', 'color', this.defaultColor);
-    this.executeAction();
-    this.animatePress();
-  },
-
-  onVRClick: function (evt) {
-    console.log('VR Click on button!');
-    if (!this.isGrabbed) {
-      this.executeAction();
-      this.animatePress();
-    }
-  },
-
-  onClick: function (evt) {
-    if (!this.isGrabbed) {
-      this.executeAction();
-      this.animatePress();
-    }
-  },
-
-  onMouseDown: function (evt) {
-    this.isGrabbed = true;
-    this.el.setAttribute('material', 'color', this.grabbedColor);
-  },
-
-  onMouseUp: function (evt) {
-    this.isGrabbed = false;
-    this.el.setAttribute('material', 'color', this.defaultColor);
-  },
-
-  onGripDown: function (evt) {
-    this.isGrabbed = true;
-    this.grabbingHand = evt.detail.hand;
-    this.el.setAttribute('material', 'color', this.grabbedColor);
-  },
-
-  onGripUp: function (evt) {
-    this.isGrabbed = false;
-    this.grabbingHand = null;
-    this.el.setAttribute('material', 'color', this.defaultColor);
-  },
-
-  animatePress: function () {
-    this.isPressed = true;
-    this.el.setAttribute('material', 'color', this.pressedColor);
-    this.el.setAttribute('animation', {
-      property: 'scale',
-      to: '0.9 0.9 0.9',
-      dur: 100,
-      dir: 'alternate',
-      loop: 1
+    this.el.addEventListener('loaded', () => {
+      this.setupComponent();
     });
 
     setTimeout(() => {
-      this.isPressed = false;
-      this.el.setAttribute('material', 'color', this.defaultColor);
-    }, 200);
-  },
-
-  executeAction: function () {
-    const action = this.data.action;
-    const url = this.data.url;
-    const label = this.data.label;
-
-    console.log(`Executando ação: ${action} (${label})`);
-
-    this.showNotification(`Executando: ${label}`);
-
-    switch (action) {
-      case 'takeoff':
-        this.sendDroneCommand('takeoff');
-        break;
-      case 'land':
-        this.sendDroneCommand('land');
-        break;
-      case 'battery':
-        this.sendDroneCommand('battery');
-        break;
-      case 'flip':
-        this.sendDroneCommand('flip', { direction: 'f' });
-        break;
-      default:
-        console.log('Ação não reconhecida:', action);
-    }
-  },
-
-  sendDroneCommand: function (command, data = {}) {
-    if (typeof io !== 'undefined') {
-      const socket = io(this.data.url);
-      socket.emit(command, data);
-      socket.on('response', (response) => {
-        console.log('Resposta do drone:', response);
-        this.showNotification(`${command}: ${response.status}`);
-      });
-    } else {
-      fetch(`${this.data.url}/api/${command}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      })
-        .then(response => response.json())
-        .then(data => {
-          this.showNotification(`${command}: ${data.status || 'OK'}`);
-        })
-        .catch(error => {
-          this.showNotification(`Erro: ${error.message}`);
-        });
-    }
-  },
-
-  showNotification: function (message) {
-    const notification = document.createElement('a-entity');
-    const buttonPos = this.el.getAttribute('position');
-
-    notification.setAttribute('position', {
-      x: buttonPos.x,
-      y: buttonPos.y + 0.5,
-      z: buttonPos.z
-    });
-    notification.setAttribute('text', {
-      value: message,
-      align: 'center',
-      color: '#ffffff',
-      width: 6
-    });
-    notification.setAttribute('geometry', {
-      primitive: 'plane',
-      width: 2,
-      height: 0.3
-    });
-    notification.setAttribute('material', {
-      color: '#333333',
-      opacity: 0.8,
-      transparent: true
-    });
-
-    this.el.sceneEl.appendChild(notification);
-
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.parentNode.removeChild(notification);
+      if (!this.statusText) {
+        this.setupComponent();
       }
-    }, 3000);
+    }, 1000);
+
+    console.log('Gamepad listener initializing...');
   },
 
-  tick: function () {
-    if (this.isGrabbed && this.grabbingHand) {
-      const handEl = document.querySelector(`#${this.grabbingHand}Hand`);
-      if (handEl) {
-        const handPosition = handEl.getAttribute('position');
-        if (handPosition) {
-          this.el.setAttribute('position', {
-            z: handPosition.z - 0.5
-          });
+  setupComponent: function () {
+    this.statusText = document.querySelector('#statusText');
+
+    if (this.statusText) {
+      this.updateStatusText('Sistema de gamepad carregado - conecte um controle VR');
+    }
+
+    console.log('Gamepad listener ready');
+  },
+
+  updateStatusText: function (message) {
+    if (this.statusText) {
+      this.statusText.setAttribute('value', message);
+    } else {
+      this.statusText = document.querySelector('#statusText');
+      if (this.statusText) {
+        this.statusText.setAttribute('value', message);
+      } else {
+        console.log('Status text element not found:', message);
+      }
+    }
+  },
+
+  formatAnalogValue: function (value) {
+    return Math.round(value * 100) / 100;
+  },
+
+  tick: function (time) {
+    if (time - this.lastUpdate < this.updateInterval) {
+      return;
+    }
+    this.lastUpdate = time;
+
+    const gamepad = this.el.components["tracked-controls"]?.controller;
+
+    if (!gamepad) {
+      this.updateStatusText('Aguardando conexão do controle VR...');
+      return;
+    }
+
+    try {
+      let x = 0, y = 0;
+      if (Array.isArray(gamepad.axes) && gamepad.axes.length >= 2) {
+        [x, y] = gamepad.axes;
+      }
+
+      const leftX = this.formatAnalogValue(x || 0);
+      const leftY = this.formatAnalogValue(y || 0);
+
+      const pressedButtons = [];
+      if (Array.isArray(gamepad.buttons)) {
+        gamepad.buttons.forEach((button, index) => {
+          if (button.pressed) {
+            console.log(`Botão ${index} pressionado`);
+            pressedButtons.push(index);
+          }
+        });
+      }
+
+      let statusMessage = 'Controle VR Ativo\n';
+      statusMessage += `Joystick: (${leftX}, ${leftY})\n`;
+
+      if (pressedButtons.length > 0) {
+        statusMessage += `Botões: ${pressedButtons.join(', ')}\n`;
+      }
+
+      this.updateStatusText(statusMessage);
+
+      const controlledElement =
+        document.querySelector('#videoScreen') ||
+        document.querySelector('#cube') ||
+        document.querySelector('a-box');
+
+      if (controlledElement && (Math.abs(x) > 0.1 || Math.abs(y) > 0.1)) {
+        const position = controlledElement.getAttribute('position');
+        if (position) {
+          const newPosition = {
+            x: position.x + (x * this.speed),
+            y: position.y,
+            z: position.z + (y * this.speed)
+          };
+          controlledElement.setAttribute('position', newPosition);
         }
       }
+
+      if (Array.isArray(gamepad.axes) && gamepad.axes.length > 2) {
+        const rightX = this.formatAnalogValue(gamepad.axes[2] || 0);
+        const rightY = this.formatAnalogValue(gamepad.axes[3] || 0);
+
+        const camera = document.querySelector('a-camera');
+        if (camera && (Math.abs(rightX) > 0.1 || Math.abs(rightY) > 0.1)) {
+          const currentRotation = camera.getAttribute('rotation');
+          if (currentRotation) {
+            const newRotation = {
+              x: currentRotation.x + (rightY * -1),
+              y: currentRotation.y + rightX,
+              z: currentRotation.z
+            };
+            camera.setAttribute('rotation', newRotation);
+          }
+        }
+      }
+
+    } catch (error) {
+      console.error('Erro ao ler dados do controle VR:', error);
+      this.updateStatusText('Erro ao ler dados do controle VR:\n' + error.message);
     }
   }
 });
 
-// VR Debug Component
-AFRAME.registerComponent('vr-debug', {
+
+// Simple VR Interaction Component (simplified for non-VR use)
+AFRAME.registerComponent('simple-vr-interaction', {
   init: function () {
-    console.log('DEBUG: vr-debug component initialized on', this.el.id);
-    
-    this.el.addEventListener('triggerdown', function(evt) {
-      console.log('DEBUG: triggerdown event detected on', evt.target.id);
-    });
-    
-    this.el.addEventListener('triggerup', function(evt) {
-      console.log('DEBUG: triggerup event detected on', evt.target.id);
-    });
-
-    this.el.addEventListener('gripdown', function(evt) {
-      console.log('DEBUG: gripdown event detected on', evt.target.id);
-    });
-
-    this.el.addEventListener('gripup', function(evt) {
-      console.log('DEBUG: gripup event detected on', evt.target.id);
-    });
-
-    this.el.addEventListener('raycaster-intersection', function(evt) {
-      console.log('DEBUG: laser intersection with', evt.target.id || 'unnamed object');
-    });
-
-    this.el.addEventListener('raycaster-intersection-cleared', function(evt) {
-      console.log('DEBUG: laser intersection cleared with', evt.target.id || 'unnamed object');
-    });
+    console.log('Simple interaction component initialized on', this.el.id);
   }
 });
 
-// Simple VR Interaction Component
-AFRAME.registerComponent('simple-vr-interaction', {
+// Joystick Debug Display Component
+AFRAME.registerComponent('joystick-debug-display', {
   init: function () {
-    this.isHovered = false;
-    this.isGrabbed = false;
+    this.gamepadIndex = -1;
+    this.lastUpdate = 0;
+    this.updateInterval = 50; // Update every 50ms for smooth display
+    this.debugElement = null;
+    this.isReady = false;
     
-    this.el.addEventListener('mouseenter', this.onMouseEnter.bind(this));
-    this.el.addEventListener('mouseleave', this.onMouseLeave.bind(this));
-    this.el.addEventListener('click', this.onClick.bind(this));
+    // Wait for scene to be ready
+    this.el.addEventListener('loaded', () => {
+      this.setupComponent();
+    });
     
-    this.el.addEventListener('triggerdown', this.onTriggerDown.bind(this));
-    this.el.addEventListener('triggerup', this.onTriggerUp.bind(this));
+    // Fallback - try to setup after a delay
+    setTimeout(() => {
+      if (!this.isReady) {
+        this.setupComponent();
+      }
+    }, 1000);
+    
+    console.log('Joystick debug display initializing...');
   },
 
-  onMouseEnter: function(evt) {
-    console.log('Mouse enter (laser hover) on', this.el.id);
-    this.isHovered = true;
-    this.el.emit('hover-start');
+  setupComponent: function () {
+    // Create debug display element if it doesn't exist
+    this.debugElement = document.querySelector('#joystickDebug');
+    if (!this.debugElement) {
+      this.createDebugElement();
+    }
+    
+    this.bindGamepadEvents();
+    this.isReady = true;
+    
+    this.updateDebugDisplay('Aguardando conexão do joystick...');
+    console.log('Joystick debug display ready');
   },
 
-  onMouseLeave: function(evt) {
-    console.log('Mouse leave (laser unhover) on', this.el.id);
-    this.isHovered = false;
-    this.el.emit('hover-end');
+  createDebugElement: function () {
+    // Create a text element for debug info
+    const debugText = document.createElement('a-text');
+    debugText.setAttribute('id', 'joystickDebug');
+    debugText.setAttribute('position', '-2 3 -3');
+    debugText.setAttribute('color', '#00ff00');
+    debugText.setAttribute('font', 'monoid');
+    debugText.setAttribute('width', '8');
+    debugText.setAttribute('value', 'Carregando debug do joystick...');
+    debugText.setAttribute('align', 'left');
+    
+    // Add to scene
+    const scene = document.querySelector('a-scene');
+    if (scene) {
+      scene.appendChild(debugText);
+      this.debugElement = debugText;
+    }
   },
 
-  onClick: function(evt) {
-    console.log('Click on', this.el.id);
-    this.el.emit('vr-click');
+  bindGamepadEvents: function () {
+    window.addEventListener('gamepadconnected', (e) => {
+      console.log('Gamepad connected for debug:', e.gamepad);
+      this.gamepadIndex = e.gamepad.index;
+      this.updateDebugDisplay('Joystick conectado: ' + e.gamepad.id);
+    });
+
+    window.addEventListener('gamepaddisconnected', (e) => {
+      console.log('Gamepad disconnected for debug:', e.gamepad);
+      this.gamepadIndex = -1;
+      this.updateDebugDisplay('Joystick desconectado - reconecte o controle');
+    });
   },
 
-  onTriggerDown: function(evt) {
-    console.log('Trigger down on', this.el.id);
-    this.isGrabbed = true;
-    this.el.emit('vr-grab-start');
+  updateDebugDisplay: function (message) {
+    if (this.debugElement) {
+      this.debugElement.setAttribute('value', message);
+    } else {
+      // Try to find the element again
+      this.debugElement = document.querySelector('#joystickDebug');
+      if (this.debugElement) {
+        this.debugElement.setAttribute('value', message);
+      } else {
+        console.log('Debug element not found:', message);
+      }
+    }
   },
 
-  onTriggerUp: function(evt) {
-    console.log('Trigger up on', this.el.id);
-    this.isGrabbed = false;
-    this.el.emit('vr-grab-end');
+  getGamepadState: function () {
+    if (!navigator.getGamepads) {
+      return null;
+    }
+    
+    const gamepads = navigator.getGamepads();
+    if (this.gamepadIndex >= 0 && gamepads[this.gamepadIndex]) {
+      return gamepads[this.gamepadIndex];
+    }
+    return null;
+  },
+
+  formatValue: function (value) {
+    return (Math.round(value * 1000) / 1000).toFixed(3);
+  },
+
+  tick: function (time) {
+    if (!this.isReady) {
+      return;
+    }
+    
+    // Only update at specified intervals
+    if (time - this.lastUpdate < this.updateInterval) {
+      return;
+    }
+    this.lastUpdate = time;
+
+    const gamepad = this.getGamepadState();
+    if (!gamepad) {
+      this.updateDebugDisplay('Nenhum joystick detectado\nConecte um controle para ver os valores');
+      return;
+    }
+
+    try {
+      // Get all axis values
+      const axes = gamepad.axes;
+      const buttons = gamepad.buttons;
+
+      // Create detailed debug message
+      let debugMessage = `=== JOYSTICK DEBUG ===\n`;
+      debugMessage += `Nome: ${gamepad.id}\n`;
+      debugMessage += `Index: ${gamepad.index}\n\n`;
+      
+      // Show axes values
+      debugMessage += `EIXOS (${axes.length}):\n`;
+      for (let i = 0; i < axes.length; i++) {
+        const axisName = this.getAxisName(i);
+        debugMessage += `${axisName}: ${this.formatValue(axes[i])}\n`;
+      }
+      
+      // Show pressed buttons
+      const pressedButtons = [];
+      for (let i = 0; i < buttons.length; i++) {
+        if (buttons[i].pressed) {
+          pressedButtons.push(`${i}(${this.formatValue(buttons[i].value)})`);
+        }
+      }
+      
+      debugMessage += `\nBOTÕES PRESSIONADOS:\n`;
+      if (pressedButtons.length > 0) {
+        debugMessage += pressedButtons.join(', ');
+      } else {
+        debugMessage += 'Nenhum';
+      }
+      
+      debugMessage += `\n\nTOTAL BOTÕES: ${buttons.length}`;
+
+      this.updateDebugDisplay(debugMessage);
+
+    } catch (error) {
+      console.error('Error in joystick debug tick:', error);
+      this.updateDebugDisplay('Erro ao ler dados do joystick:\n' + error.message);
+    }
+  },
+
+  getAxisName: function (index) {
+    const axisNames = {
+      0: 'Esq X  ',
+      1: 'Esq Y  ',
+      2: 'Dir X  ',
+      3: 'Dir Y  ',
+      4: 'L2/LT  ',
+      5: 'R2/RT  ',
+      6: 'D-Pad X',
+      7: 'D-Pad Y'
+    };
+    return axisNames[index] || `Eixo ${index}`;
   }
 });

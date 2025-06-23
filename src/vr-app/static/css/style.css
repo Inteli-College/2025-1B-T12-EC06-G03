@@ -1,4 +1,4 @@
-/* VR Drone App Styles */
+/* Drone App Styles - Joystick Version */
 
 body {
   margin: 0;
@@ -34,16 +34,8 @@ a-scene {
   transition: transform 0.2s ease;
 }
 
-.grabbable {
-  /* Will be styled via A-Frame components */
-}
-
-.button {
-  /* Button specific styles handled in JavaScript */
-}
-
-.grab-handle {
-  /* Grab handles for visual feedback */
+/* Joystick status text animations */
+.joystick-status {
   animation: pulse 2s infinite;
 }
 
@@ -69,21 +61,19 @@ a-scene {
   100% { transform: rotate(360deg); }
 }
 
-/* Notification styles */
-.notification {
+/* Text display styles */
+.status-display {
   background: rgba(51, 51, 51, 0.9);
   border-radius: 5px;
   padding: 10px;
   color: white;
   font-size: 14px;
-  animation: fadeInOut 3s ease-in-out;
+  animation: fadeIn 0.5s ease-in;
 }
 
-@keyframes fadeInOut {
+@keyframes fadeIn {
   0% { opacity: 0; transform: translateY(-20px); }
-  20% { opacity: 1; transform: translateY(0); }
-  80% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 /* Responsive design for different screen sizes */

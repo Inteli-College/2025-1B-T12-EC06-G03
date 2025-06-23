@@ -6,23 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="https://glitch.com/favicon.ico" />
   <title>Drone Stream VR</title>
-  
+
   <!-- A-Frame core -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 
   <!-- WebXR AR support -->
   <script src="https://unpkg.com/aframe-xrweb@latest/dist/aframe-xrweb.min.js"></script>
-
-  <!-- Super Hands (grabbable, draggable, hoverable) -->
-  <script src="https://unpkg.com/aframe-super-hands-component@4.0.3/dist/aframe-super-hands.min.js"></script>
-
-  <!-- Hand Tracking + Grab Controls -->
-  <script src="https://unpkg.com/aframe-hand-tracking-controls@3.0.0/dist/aframe-hand-tracking-controls.min.js"></script>
-  <script src="https://unpkg.com/aframe-hand-tracking-grab-controls@3.0.0/dist/aframe-hand-tracking-grab-controls.min.js"></script>
-
-  <!-- Laser Controls -->
-  <script src="https://unpkg.com/aframe-laser-controls-component@3.0.0/dist/aframe-laser-controls-component.min.js"></script>
-  <script src="https://unpkg.com/super-hands@^3.0.5/dist/super-hands.min.js"></script>
 
   <!-- Custom Styles -->
   <link rel="stylesheet" href="../static/css/style.css">
@@ -34,14 +23,14 @@
 <body>
   <div id="overlay" style="display: none;"></div>
 
-  <a-scene
-    xrweb="mode: immersive-ar; requiredFeatures: hit-test; optionalFeatures: dom-overlay; overlayElement: #overlay"
-    xr-mode-ui="enabled: true; enterAREnabled: true; XRMode: xr;"
-    renderer="colorManagement: true; antialias: true; foveationLevel: 1" embedded>
-    
+  <a-scene renderer="colorManagement: true; antialias: true" webxr="optionalFeatures: local-floor;"
+    vr-mode-ui="enabled: true"
+    xrweb="mode: immersive-ar; requiredFeatures: hit-test; optionalFeatures: dom-overlay; overlayElement: #overlay; hand-tracking;"
+    xr-mode-ui="enabled: true; enterAREnabled: true; XRMode: xr;" joystick-controller joystick-debug-display embedded>
+
     <!-- Assets management section -->
     <a-assets>
-      <video id="videoStream" autoplay loop muted crossorigin="anonymous" playsinline>
+      <video id="videoStream" autoplay loop muted crossorigin="anonymous" playsinline preload="none">
         <source src="http://10.140.0.11:5556/video" type="video/mp4">
         Your browser does not support the video tag.
       </video>
@@ -51,165 +40,60 @@
     <a-camera position="0 1.6 0" look-controls="enabled: true; pointerLockEnabled: true"
       wasd-controls="acceleration: 50"></a-camera>
 
-    <!-- VR Controllers with simplified configuration -->
-    <a-entity id="leftController" 
-      hand-controls="hand: left"
-      laser-controls="hand: left"
-      raycaster="objects: .interactive; showLine: true; far: 20; lineColor: red; lineOpacity: 0.8"
-      super-hands="colliderEvent: raycaster-intersection; 
-                   colliderEventProperty: els; 
-                   colliderEndEvent: raycaster-intersection-cleared; 
-                   colliderEndEventProperty: clearedEls"
-      vr-debug>
-    </a-entity>
-
-    <a-entity id="rightController" 
-      hand-controls="hand: right"
-      laser-controls="hand: right"
-      raycaster="objects: .interactive; showLine: true; far: 20; lineColor: blue; lineOpacity: 0.8"
-      super-hands="colliderEvent: raycaster-intersection; 
-                   colliderEventProperty: els; 
-                   colliderEndEvent: raycaster-intersection-cleared; 
-                   colliderEndEventProperty: clearedEls"
-      vr-debug>
-    </a-entity>
-
-    <!-- Hand Tracking (fallback for devices without controllers) -->
-    <a-entity id="leftHand"
-      hand-tracking-controls="hand: left; modelColor: #ffffff; modelOpacity: 0.8; modelStyle: mesh"
-      hand-tracking-grab-controls="hand: left; hoverEnabled: true; hoverColor: #538df1"
-      super-hands
-      raycaster="objects: .interactive; showLine: false; far: 5">
-    </a-entity>
-    
-    <a-entity id="rightHand"
-      hand-tracking-controls="hand: right; modelColor: #ffffff; modelOpacity: 0.8; modelStyle: mesh"
-      hand-tracking-grab-controls="hand: right; hoverEnabled: true; hoverColor: #538df1"
-      super-hands
-      raycaster="objects: .interactive; showLine: false; far: 5">
-    </a-entity>
-
     <!-- Lights to illuminate objects -->
     <a-light type="ambient" color="#ffffff" intensity="0.7"></a-light>
     <a-light type="directional" position="1 3 1" color="#ffffff" intensity="0.6"></a-light>
 
     <!-- Interactive Video Stream Screen -->
-    <a-entity id="videoScreen" position="0 2 -2" rotation="0 0 0" 
-      moveable-screen keyboard-controls 
-      grabbable draggable droppable hoverable clickable 
-      class="interactive grabbable"
-      simple-vr-interaction
-      vr-debug>
+    <a-entity id="videoScreen" position="0 2 -2" rotation="0 0 0" keyboard-controls class="interactive"
+      simple-vr-interaction>
       <a-plane width="1.5" height="1.125" material="src: #videoStream; transparent: false; shader: flat"
         geometry="primitive: plane">
       </a-plane>
-
-      <!-- Visual controls to indicate interactivity -->
-      <a-box position="0.8 0.6 0.01" width="0.1" height="0.1" depth="0.02" color="#00ff00" opacity="0.7"
-        class="grab-handle" visible="true">
-      </a-box>
-      <a-box position="-0.8 0.6 0.01" width="0.1" height="0.1" depth="0.02" color="#00ff00" opacity="0.7"
-        class="grab-handle" visible="true">
-      </a-box>
-      <a-box position="0.8 -0.6 0.01" width="0.1" height="0.1" depth="0.02" color="#00ff00" opacity="0.7"
-        class="grab-handle" visible="true">
-      </a-box>
-      <a-box position="-0.8 -0.6 0.01" width="0.1" height="0.1" depth="0.02" color="#00ff00" opacity="0.7"
-        class="grab-handle" visible="true">
-      </a-box>
     </a-entity>
 
-    <!-- Button 1: TAKEOFF -->
-    <a-entity id="takeoffButton" position="2.5 1.5 -1.5" rotation="0 -20 0"
-      interactive-button="action: takeoff; label: TAKEOFF; url: http://10.140.0.11:5000" 
-      grabbable draggable droppable hoverable clickable 
-      class="interactive grabbable button"
-      simple-vr-interaction
-      vr-debug>
-      <a-cylinder radius="0.2" height="0.1" color="#4CAF50" opacity="0.9">
-        <a-text value="TAKEOFF" position="0 0 0.06" align="center" color="white" font="roboto" width="8"></a-text>
-        <a-text value="🚁" position="0 0.15 0.06" align="center" color="white" font="roboto" width="12"></a-text>
-      </a-cylinder>
-      <!-- Interactivity indicator -->
-      <a-ring radius-inner="0.22" radius-outer="0.25" color="#00ff00" opacity="0.5" position="0 0 0.06"></a-ring>
+    <!-- Joystick Status Text -->
+    <a-entity id="joystickStatusText" position="0 3.5 -2">
+      <a-text id="statusText" value="Aguardando entrada do joystick..." position="0 0 0" align="center" color="white"
+        font="roboto" width="8">
+      </a-text>
     </a-entity>
 
-    <!-- Button 2: LAND -->
-    <a-entity id="landButton" position="3.5 1.5 -1.5" rotation="0 -20 0"
-      interactive-button="action: land; label: LAND; url: http://10.140.0.11:5000" 
-      grabbable draggable droppable hoverable clickable 
-      class="interactive grabbable button"
-      simple-vr-interaction>
-      <a-cylinder radius="0.2" height="0.1" color="#f44336" opacity="0.9">
-        <a-text value="LAND" position="0 0 0.06" align="center" color="white" font="roboto" width="8"></a-text>
-        <a-text value="⬇️" position="0 0.15 0.06" align="center" color="white" font="roboto" width="12"></a-text>
-      </a-cylinder>
-      <!-- Interactivity indicator -->
-      <a-ring radius-inner="0.22" radius-outer="0.25" color="#00ff00" opacity="0.5" position="0 0 0.06"></a-ring>
-    </a-entity>
+    <!-- Hand Tracking Controls with VR Gamepad Support -->
+    <a-entity id="left-controller" oculus-touch-controls="hand: left" position="-0.5 1.6 -0.5"
+      joystick-controls="hand: left; debugDisplay: true"></a-entity>
 
-    <!-- Button 3: BATTERY -->
-    <a-entity id="batteryButton" position="2.5 0.8 -1.5" rotation="0 -20 0"
-      interactive-button="action: battery; label: BATTERY; url: http://10.140.0.11:5000" 
-      grabbable draggable droppable hoverable clickable 
-      class="interactive grabbable button"
-      simple-vr-interaction>
-      <a-cylinder radius="0.2" height="0.1" color="#FF9800" opacity="0.9">
-        <a-text value="BATTERY" position="0 0 0.06" align="center" color="white" font="roboto" width="6"></a-text>
-        <a-text value="🔋" position="0 0.15 0.06" align="center" color="white" font="roboto" width="12"></a-text>
-      </a-cylinder>
-      <!-- Interactivity indicator -->
-      <a-ring radius-inner="0.22" radius-outer="0.25" color="#00ff00" opacity="0.5" position="0 0 0.06"></a-ring>
-    </a-entity>
+    <!-- Controle direito com acesso ao gamepad (baseado no exemplo fornecido) -->
+    <a-entity id="right-controller" oculus-touch-controls="hand: right" gamepad-listener tracked-controls></a-entity>
 
-    <!-- Button 4: FLIP -->
-    <a-entity id="flipButton" position="3.5 0.8 -1.5" rotation="0 -20 0"
-      interactive-button="action: flip; label: FLIP; url: http://10.140.0.11:5000" 
-      grabbable draggable droppable hoverable clickable 
-      class="interactive grabbable button"
-      simple-vr-interaction>
-      <a-cylinder radius="0.2" height="0.1" color="#9C27B0" opacity="0.9">
-        <a-text value="FLIP" position="0 0 0.06" align="center" color="white" font="roboto" width="8"></a-text>
-        <a-text value="🔄" position="0 0.15 0.06" align="center" color="white" font="roboto" width="12"></a-text>
-      </a-cylinder>
-      <!-- Interactivity indicator -->
-      <a-ring radius-inner="0.22" radius-outer="0.25" color="#00ff00" opacity="0.5" position="0 0 0.06"></a-ring>
-    </a-entity>
+    <!-- Cubo que vai se mover com o joystick (similar ao exemplo) -->
+    <a-box id="cube" position="2 1.5 -3" color="#4CC3D9" width="0.5" height="0.5" depth="0.5"></a-box>
 
     <!-- Instructions panel -->
     <a-entity id="instructionsPanel" position="-3 1.5 -1" rotation="0 30 0">
-      <a-plane width="2.5" height="2.5" color="#333333" opacity="0.8">
-        <a-text value="CONTROLES:" position="-1.15 1.1 0.01" color="white" font="roboto" width="6"></a-text>
+      <a-plane width="2.5" height="2.2" color="#333333" opacity="0.8">
+        <a-text value="CONTROLES:" position="-1.15 0.6 0.01" color="white" font="roboto" width="6"></a-text>
 
-        <!-- VR Controls -->
-        <a-text value="VR CONTROLLERS:" position="-1.15 0.9 0.01" color="#ff6600" font="roboto" width="5"></a-text>
-        <a-text value="Laser vermelho/azul" position="-1.15 0.7 0.01" color="white" font="roboto" width="4"></a-text>
-        <a-text value="Trigger: Pegar/Soltar" position="-1.15 0.5 0.01" color="white" font="roboto" width="4"></a-text>
-        <a-text value="Grip: Mover objetos" position="-1.15 0.3 0.01" color="white" font="roboto" width="4"></a-text>
+        <!-- VR Gamepad Controls -->
+        <a-text value="CONTROLE VR:" position="-1.15 0.4 0.01" color="#ff6600" font="roboto" width="5"></a-text>
+        <a-text value="Joystick: Mover objetos" position="-1.15 0.2 0.01" color="white" font="roboto"
+          width="4"></a-text>
+        <a-text value="Botões: Ações diversas" position="-1.15 0.0 0.01" color="white" font="roboto" width="4"></a-text>
+
+        <!-- Legacy Joystick Controls -->
+        <a-text value="JOYSTICK PADRÃO:" position="-1.15 -0.1 0.01" color="#ff9900" font="roboto" width="5"></a-text>
+        <a-text value="Analógico E: Mover objetos" position="-1.15 -0.3 0.01" color="white" font="roboto"
+          width="4"></a-text>
+        <a-text value="Analógico D: Mover câmera" position="-1.15 -0.45 0.01" color="white" font="roboto"
+          width="4"></a-text>
 
         <!-- Screen Controls -->
-        <a-text value="TELÃO:" position="-1.15 0.0 0.01" color="#00ff00" font="roboto" width="5"></a-text>
-        <a-text value="VR: Segure e arraste" position="-1.15 -0.2 0.01" color="white" font="roboto" width="4"></a-text>
-        <a-text value="Teclado: WASD + Q/E" position="-1.15 -0.4 0.01" color="white" font="roboto" width="4"></a-text>
-        <a-text value="Setas: Rotacionar" position="-1.15 -0.6 0.01" color="white" font="roboto" width="4"></a-text>
-        <a-text value="+/-: Zoom In/Out" position="-1.15 -0.8 0.01" color="white" font="roboto" width="4"></a-text>
-
-        <!-- Button Controls -->
-        <a-text value="BOTÕES:" position="-1.15 -1.1 0.01" color="#ff9800" font="roboto" width="5"></a-text>
-        <a-text value="VR: Pegar para ativar" position="-1.15 -1.3 0.01" color="white" font="roboto" width="4"></a-text>
-      </a-plane>
-    </a-entity>
-
-    <!-- Button status panel -->
-    <a-entity id="buttonStatusPanel" position="3 2.5 -1" rotation="0 -20 0">
-      <a-plane width="2" height="1" color="#222222" opacity="0.9">
-        <a-text value="BOTÕES DE CONTROLE:" position="-0.9 0.4 0.01" color="white" font="roboto" width="5"></a-text>
-        <a-text value="🚁 TAKEOFF - Decolar" position="-0.9 0.2 0.01" color="#4CAF50" font="roboto" width="4"></a-text>
-        <a-text value="⬇️ LAND - Pousar" position="-0.9 0.0 0.01" color="#f44336" font="roboto" width="4"></a-text>
-        <a-text value="🔋 BATTERY - Bateria" position="-0.9 -0.2 0.01" color="#FF9800" font="roboto" width="4"></a-text>
-        <a-text value="🔄 FLIP - Manobra" position="-0.9 -0.4 0.01" color="#9C27B0" font="roboto" width="4"></a-text>
+        <a-text value="TECLADO:" position="-1.15 -0.6 0.01" color="#00ff00" font="roboto" width="5"></a-text>
+        <a-text value="WASD + Q/E: Movimento" position="-1.15 -0.8 0.01" color="white" font="roboto" width="4"></a-text>
+        <a-text value="Setas: Rotação" position="-1.15 -1.0 0.01" color="white" font="roboto" width="4"></a-text>
       </a-plane>
     </a-entity>
   </a-scene>
 </body>
+
 </html>
