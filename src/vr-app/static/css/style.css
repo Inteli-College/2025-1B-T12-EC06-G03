@@ -1,0 +1,109 @@
+/* VR Drone App Styles */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', Arial, sans-serif;
+  background: #000;
+}
+
+#overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+}
+
+/* A-Frame specific styles */
+a-scene {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Interactive elements styling */
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+.grabbable {
+  /* Will be styled via A-Frame components */
+}
+
+.button {
+  /* Button specific styles handled in JavaScript */
+}
+
+.grab-handle {
+  /* Grab handles for visual feedback */
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1.0;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* Loading states */
+.loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Notification styles */
+.notification {
+  background: rgba(51, 51, 51, 0.9);
+  border-radius: 5px;
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  20% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* Responsive design for different screen sizes */
+@media (max-width: 768px) {
+  a-scene {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+
+/* Debug styles */
+.debug-info {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: monospace;
+  font-size: 12px;
+  z-index: 999;
+}
