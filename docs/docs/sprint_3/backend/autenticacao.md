@@ -3,7 +3,7 @@ title: Autenticação e Autorização
 sidebar_position: 3
 ---
 
-A presente seção documenta a implementação do mecanismo de autenticação e autorização na aplicação, baseada na utilização de JWT (JSON Web Tokens). Essa abordagem provê um modelo de autenticação stateless, no qual, após a autenticação inicial, um token assinado digitalmente é fornecido ao cliente e utilizado em requisições subsequentes, conferindo a segurança e a rastreabilidade necessárias às operações em áreas protegidas da aplicação.
+&emsp;A presente seção documenta a implementação do mecanismo de autenticação e autorização na aplicação, baseada na utilização de JWT (JSON Web Tokens). Essa abordagem provê um modelo de autenticação stateless, no qual, após a autenticação inicial, um token assinado digitalmente é fornecido ao cliente e utilizado em requisições subsequentes, conferindo a segurança e a rastreabilidade necessárias às operações em áreas protegidas da aplicação.
 
 ## Overview
 
@@ -13,14 +13,14 @@ A presente seção documenta a implementação do mecanismo de autenticação e 
 
 ## Variáveis de Ambiente
 
-A seguir, estão listadas as variáveis de ambiente essenciais à operação segura do componente de autenticação:
+&emsp;A seguir, estão listadas as variáveis de ambiente essenciais à operação segura do componente de autenticação:
 
 ```properties
 # JWT
 JWT_SECRET=chaveBase64de256bitsGerada
 ```
 
-No ambiente do cliente (front-end), recomenda-se a configuração da seguinte variável para determinar a origem das chamadas:
+&emsp;No ambiente do cliente (front-end), recomenda-se a configuração da seguinte variável para determinar a origem das chamadas:
 
 ```properties
 REACT_APP_API_URL=http://localhost:8080
@@ -52,7 +52,7 @@ REACT_APP_API_URL=http://localhost:8080
 
 ### 1. Fluxo de Login
 
-O procedimento de login inicia-se com o envio, por parte do cliente, de um payload JSON contendo as credenciais de acesso:
+&emsp;O procedimento de login inicia-se com o envio, por parte do cliente, de um payload JSON contendo as credenciais de acesso:
 
 ```json
 {
@@ -61,7 +61,7 @@ O procedimento de login inicia-se com o envio, por parte do cliente, de um paylo
 }
 ```
 
-O backend procede com a validação dessas credenciais utilizando a camada de serviço `AuthService.java`. Quando as credenciais são validadas com sucesso, o servidor emite uma resposta contendo o JWT e um objeto simplificado com as informações públicas do usuário autenticado:
+&emsp;O backend procede com a validação dessas credenciais utilizando a camada de serviço `AuthService.java`. Quando as credenciais são validadas com sucesso, o servidor emite uma resposta contendo o JWT e um objeto simplificado com as informações públicas do usuário autenticado:
 
 ```json
 {
@@ -74,11 +74,11 @@ O backend procede com a validação dessas credenciais utilizando a camada de se
 }
 ```
 
-O token JWT é então persistido no `localStorage` pelo front-end e utilizado em todas as requisições subsequentes como forma de autenticação.
+&emsp;O token JWT é então persistido no `localStorage` pelo front-end e utilizado em todas as requisições subsequentes como forma de autenticação.
 
 ### 2. Proteção de Rotas no Front-End
 
-No front-end, o componente `PrivateRoute` é responsável por encapsular as rotas que exigem autenticação. Ele executa a validação do token presente no `localStorage` mediante chamada ao endpoint `/auth/@me`. A lógica de verificação é ilustrada no exemplo abaixo:
+&emsp;No front-end, o componente `PrivateRoute` é responsável por encapsular as rotas que exigem autenticação. Ele executa a validação do token presente no `localStorage` mediante chamada ao endpoint `/auth/@me`. A lógica de verificação é ilustrada no exemplo abaixo:
 
 ```jsx
 useEffect(() => {
@@ -97,7 +97,7 @@ useEffect(() => {
 }, []);
 ```
 
-Se o token for considerado inválido ou expirado, o usuário é redirecionado automaticamente à interface de login para revalidação de suas credenciais.
+&emsp;Se o token for considerado inválido ou expirado, o usuário é redirecionado automaticamente à interface de login para revalidação de suas credenciais.
 
 ### 3. Fluxo Geral de Autenticação
 

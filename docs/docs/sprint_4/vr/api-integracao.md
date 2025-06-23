@@ -5,11 +5,11 @@ sidebar_position: 5
 
 # API e Integração com Drone
 
-Documentação da integração entre a aplicação VR e o sistema de controle de drone.
+&emsp;Documentação da integração entre a aplicação VR e o sistema de controle de drone.
 
 ## Visão Geral da Integração
 
-A aplicação VR comunica-se com o drone através de uma API REST, enviando comandos e recebendo dados de telemetria e stream de vídeo.
+&emsp;A aplicação VR comunica-se com o drone através de uma API REST, enviando comandos e recebendo dados de telemetria e stream de vídeo.
 
 ### Arquitetura de Comunicação
 
@@ -496,7 +496,7 @@ AFRAME.registerComponent('api-logger', {
 
 ## Conclusão
 
-A integração com a API do drone é fundamental para o funcionamento da aplicação VR. O sistema implementa:
+&emsp;A integração com a API do drone é fundamental para o funcionamento da aplicação VR. O sistema implementa:
 
 - **Comunicação robusta** com retry logic
 - **Tratamento de erros** abrangente  
@@ -504,4 +504,4 @@ A integração com a API do drone é fundamental para o funcionamento da aplica�
 - **Feedback visual** para o usuário
 - **Logging** para diagnóstico
 
-A arquitetura permite escalabilidade e manutenção fácil, com separação clara entre a lógica de comunicação e a interface VR.
+&emsp;A arquitetura permite escalabilidade e manutenção fácil, com separação clara entre a lógica de comunicação e a interface VR.

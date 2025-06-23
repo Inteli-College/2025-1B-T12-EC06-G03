@@ -5,7 +5,7 @@ sidebar_position: 3
 
 # Problemas de Integração VR - Análise Detalhada
 
-Esta documentação específica analisa os problemas encontrados na integração com controles VR e apresenta estratégias para resolução.
+&emsp;Esta documentação específica analisa os problemas encontrados na integração com controles VR e apresenta estratégias para resolução.
 
 ## 🚨 Status Atual dos Problemas
 
@@ -20,7 +20,7 @@ Esta documentação específica analisa os problemas encontrados na integração
 
 ### Descrição Técnica
 
-Os controladores VR não são detectados de forma consistente, especialmente na inicialização da aplicação.
+&emsp;Os controladores VR não são detectados de forma consistente, especialmente na inicialização da aplicação.
 
 ### Análise do Código Atual
 
@@ -163,7 +163,7 @@ AFRAME.registerComponent('event-based-controller', {
 
 ### Descrição do Problema
 
-Quando hand tracking e controladores estão ativos simultaneamente, ocorrem conflitos de interação.
+&emsp;Quando hand tracking e controladores estão ativos simultaneamente, ocorrem conflitos de interação.
 
 ### Manifestação
 
@@ -252,7 +252,7 @@ AFRAME.registerComponent('input-priority-manager', {
 
 ### Análise do Problema
 
-O raycasting atual não está otimizado para interações precisas com elementos pequenos.
+&emsp;O raycasting atual não está otimizado para interações precisas com elementos pequenos.
 
 ### Configuração Atual
 
@@ -474,11 +474,11 @@ AFRAME.registerComponent('vr-diagnostics', {
 
 ## Conclusão
 
-Os problemas de integração VR são complexos mas solucionáveis. A abordagem atual foca em:
+&emsp;Os problemas de integração VR são complexos mas solucionáveis. A abordagem atual foca em:
 
 1. **Detecção robusta**: Sistemas de retry e fallback
 2. **Gestão de conflitos**: Priorização de inputs
 3. **Experiência do usuário**: Feedback visual e háptico
 4. **Debugging**: Ferramentas de diagnóstico
 
-O desenvolvimento continua com testes em dispositivos reais e implementação gradual das soluções propostas.
+&emsp;O desenvolvimento continua com testes em dispositivos reais e implementação gradual das soluções propostas.

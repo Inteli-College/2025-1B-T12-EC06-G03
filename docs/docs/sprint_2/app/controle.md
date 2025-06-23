@@ -1,13 +1,13 @@
 ---
 title: Sistema de Controle
-sidebar_position: 1
+sidebar_position: 3
 ---
 
 # Sistema de Controle
 
 ## Arquitetura de Controle
 
-O sistema de controle do aplicativo Athenas é baseado em uma arquitetura cliente-servidor, onde o aplicativo Flutter atua como cliente enviando comandos para o servidor que está conectado diretamente ao drone. Esta seção descreve os componentes principais do sistema de controle.
+&emsp;O sistema de controle do aplicativo Athenas é baseado em uma arquitetura cliente-servidor, onde o aplicativo Flutter atua como cliente enviando comandos para o servidor que está conectado diretamente ao drone. Esta seção descreve os componentes principais do sistema de controle.
 
 ### Componentes Principais
 
@@ -29,7 +29,7 @@ O sistema de controle do aplicativo Athenas é baseado em uma arquitetura client
 
 ## Fluxo de Controle
 
-O fluxo de controle segue o seguinte padrão:
+&emsp;O fluxo de controle segue o seguinte padrão:
 
 1. O usuário interage com um controle na interface
 2. A interação gera um `DroneEvent`
@@ -55,7 +55,7 @@ O fluxo de controle segue o seguinte padrão:
 
 ### Controles RC (Remote Control)
 
-Os controles RC permitem o movimento preciso do drone em todos os eixos:
+&emsp;Os controles RC permitem o movimento preciso do drone em todos os eixos:
 
 ```dart
 RCControlCommand(
@@ -68,11 +68,11 @@ RCControlCommand(
 
 ## Implementação dos Joysticks
 
-O aplicativo utiliza dois joysticks virtuais para controle preciso do drone:
+&emsp;O aplicativo utiliza dois joysticks virtuais para controle preciso do drone:
 
 ### Joystick Direcional (DroneJoystickControl)
 
-Este joystick controla os movimentos horizontais do drone:
+&emsp;Este joystick controla os movimentos horizontais do drone:
 - Eixo X: Movimento lateral (roll)
 - Eixo Y: Movimento frente/trás (pitch)
 
@@ -88,7 +88,7 @@ JoystickView(
 
 ### Joystick de Altitude (AltitudeJoystickControl)
 
-Este joystick controla:
+&emsp;Este joystick controla:
 - Eixo Y: Subida/descida (throttle)
 - Eixo X: Rotação (yaw)
 
@@ -102,14 +102,14 @@ Este joystick controla:
 
 ### Feedback Tátil
 
-Em dispositivos que suportam, o aplicativo fornece feedback haptico para:
+&emsp;Em dispositivos que suportam, o aplicativo fornece feedback haptico para:
 - Confirmação de comandos
 - Alertas de bateria baixa
 - Avisos de perda de conexão
 
 ## Tratamento de Erros
 
-O sistema de controle implementa mecanismos robustos de tratamento de erros:
+&emsp;O sistema de controle implementa mecanismos robustos de tratamento de erros:
 
 - **Perda de Conexão**: Detecção automática e tentativas de reconexão
 - **Timeout de Comandos**: Monitoramento do tempo de resposta e cancelamento automático de comandos pendentes
@@ -117,9 +117,9 @@ O sistema de controle implementa mecanismos robustos de tratamento de erros:
 
 ## Simulação e Testes
 
-Para facilitar testes sem um drone físico, o aplicativo inclui um modo de simulação onde:
+&emsp;Para facilitar testes sem um drone físico, o aplicativo inclui um modo de simulação onde:
 - Os comandos são processados localmente
 - Os estados do drone são simulados
 - O feedback visual é gerado sinteticamente
 
-Este modo é crucial para desenvolvimento e testes de novas funcionalidades antes da implantação em drones reais.
+&emsp;Este modo é crucial para desenvolvimento e testes de novas funcionalidades antes da implantação em drones reais.

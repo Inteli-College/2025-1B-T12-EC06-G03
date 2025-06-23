@@ -1,4 +1,8 @@
 {
     "label": "Sprint 2",
-    "position": 3
+    "position": 2,
+    "link": {
+      "type": "generated-index",
+      "description": "Durante a Sprint 2 focamos em no aplicativo do drone, no modelo de classificação e no escopo inicial da aplicação web, estabelecendo as funcionalidades principais e os objetivos a serem alcançados. Essa etapa é crucial para garantir que todos os membros da equipe estejam alinhados e que o desenvolvimento siga uma direção clara.",
+    }
 }

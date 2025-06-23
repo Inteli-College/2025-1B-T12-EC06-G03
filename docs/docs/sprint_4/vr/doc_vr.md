@@ -5,11 +5,11 @@ sidebar_position: 4
 
 # Aplicação VR para Controle de Drone
 
-A aplicação VR desenvolvida permite controlar drones através de uma interface imersiva em realidade virtual, utilizando A-Frame como framework principal para criar experiências WebXR.
+&emsp;A aplicação VR desenvolvida permite controlar drones através de uma interface imersiva em realidade virtual, utilizando A-Frame como framework principal para criar experiências WebXR.
 
 ## Visão Geral
 
-O sistema VR consiste em uma aplicação web que utiliza tecnologias WebXR para criar uma interface de controle de drone em ambiente de realidade virtual e realidade aumentada. A aplicação permite visualizar o stream de vídeo do drone e executar comandos básicos através de interações VR.
+&emsp;O sistema VR consiste em uma aplicação web que utiliza tecnologias WebXR para criar uma interface de controle de drone em ambiente de realidade virtual e realidade aumentada. A aplicação permite visualizar o stream de vídeo do drone e executar comandos básicos através de interações VR.
 
 ### Tecnologias Utilizadas
 
@@ -36,7 +36,7 @@ src/vr-app/
 
 #### 1. Servidor Flask (`app.py`)
 
-O servidor Flask serve como backend da aplicação, fornecendo:
+&emsp;O servidor Flask serve como backend da aplicação, fornecendo:
 - Rota principal (`/`) que renderiza a interface VR
 - Rota de vídeo (`/video`) para streaming (placeholder)
 - Rota simplificada (`/simple`) para testes
@@ -103,7 +103,7 @@ A aplicação estará disponível em `http://localhost:5000`
 
 ### moveable-screen
 
-Componente que permite interagir com a tela de vídeo:
+&emsp;Componente que permite interagir com a tela de vídeo:
 - Movimento no espaço 3D
 - Rotação
 - Redimensionamento
@@ -111,14 +111,14 @@ Componente que permite interagir com a tela de vídeo:
 
 ### interactive-button
 
-Componente para botões de comando:
+&emsp;Componente para botões de comando:
 - Estados visuais (normal, hover, pressionado)
 - Integração com comandos de drone
 - Feedback tátil e visual
 
 ### vr-debug
 
-Sistema de debug para desenvolvimento:
+&emsp;Sistema de debug para desenvolvimento:
 - Logging de eventos VR
 - Monitoramento de interações
 - Diagnóstico de problemas
@@ -127,7 +127,7 @@ Sistema de debug para desenvolvimento:
 
 ### ⚠️ Problemas de Integração com Controles VR
 
-Atualmente, estamos enfrentando alguns desafios na integração completa com os controles VR:
+&emsp;Atualmente, estamos enfrentando alguns desafios na integração completa com os controles VR:
 
 #### 1. Detecção Inconsistente de Controladores
 
@@ -198,7 +198,7 @@ Atualmente, estamos enfrentando alguns desafios na integração completa com os 
 
 ### Endpoints de Comunicação
 
-A aplicação VR se comunica com o backend do drone através de:
+&emsp;A aplicação VR se comunica com o backend do drone através de:
 - **URL Base**: `http://10.140.0.11:5000`
 - **Comandos**: Enviados via requisições HTTP
 - **Stream de Vídeo**: Recebido via WebRTC ou HTTP streaming
@@ -227,7 +227,7 @@ A aplicação VR se comunica com o backend do drone através de:
 
 ## Conclusão
 
-A aplicação VR representa um avanço significativo na interface de controle de drones, oferecendo uma experiência imersiva única. Embora existam desafios técnicos com a integração de controles VR, a base está sólida e as funcionalidades core estão operacionais.
+&emsp;A aplicação VR representa um avanço significativo na interface de controle de drones, oferecendo uma experiência imersiva única. Embora existam desafios técnicos com a integração de controles VR, a base está sólida e as funcionalidades core estão operacionais.
 
-O foco atual deve ser na resolução dos problemas de integração com controladores VR para garantir uma experiência de usuário consistente e profissional.
+&emsp;O foco atual deve ser na resolução dos problemas de integração com controladores VR para garantir uma experiência de usuário consistente e profissional.
 
