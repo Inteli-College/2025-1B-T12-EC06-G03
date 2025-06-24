@@ -1,16 +1,16 @@
 # Atualização da Análise Financeira
 
 
-&emsp; Após revisão detalhada da análise financeira apresentada anteriormente, foi identificado um erro no cálculo dos impostos, que foram aplicados antes da inclusão da margem de lucros, o que resultaria em um valor final do projeto incorreto, prejudicando o equilíbrio financeiro do projeto. 
+&emsp; Após revisão detalhada da análise financeira apresentada anteriormente, foi identificado um erro no cálculo dos impostos, que foram aplicados antes da inclusão da margem de lucro, o que resultaria em um valor final do projeto incorreto, prejudicando o equilíbrio financeiro do projeto. 
 
-&emsp; Para garantir a sustentabilidade da proposta, atualizamos a documentação considerando que os impostos incidem também sobre o valor do lucro. Assim, o novo cáĺculo aplica corretamente a carga tributária sobre o valor total, garantindo que a margem de lucro seja de fato recebida, após o pagamento de todos os tributos.
+&emsp; Para garantir a sustentabilidade da proposta, atualizamos a documentação considerando que os impostos incidem também sobre o valor do lucro. Assim, o novo cálculo aplica corretamente a carga tributária sobre o valor total, garantindo que a margem de lucro seja de fato recebida, após o pagamento de todos os tributos.
 
-&emsp; A seguir está apresentado os valores corrigidos
+&emsp; A seguir são apresentados os valores corrigidos.
 
 
 # Atualização da Análise Financeira- Solução final
 
-&emsp; A solução final tem como propósito realizar uma aplicação completa e viável para uso cotidiano pelo IPT. Dessa forma, é necessário levar em conta uma série de fatores que influenciam o custo de implementação e operação da solução. Assim, esta documentação apresenta uam estimativa financeira detalhada de todos os custos envolvidos no projeto. O drone e infraestrutura física do IPT não foram incluídos na análise por já fazerem parte do ambiente e do projeto.
+&emsp; A solução final tem como propósito realizar uma aplicação completa e viável para uso cotidiano pelo IPT. Dessa forma, é necessário levar em conta uma série de fatores que influenciam o custo de implementação e operação da solução. Assim, esta documentação apresenta uma estimativa financeira detalhada de todos os custos envolvidos no projeto. O drone e infraestrutura física do IPT não foram incluídos na análise por já fazerem parte do ambiente e do projeto.
 
 
 ## Profissionais envolvidos 
@@ -63,7 +63,7 @@ Trello | Organização de tarefas | Gratuito | R$ 0,00 | 6 | 10 semanas | R$ 0,0
 VS Code | Editor de código | Gratuito | R$ 0,00 | 6 | 10 semanas | R$ 0,00
 Slack | Comunicação da equipe | Gratuito | R$ 0,00 | 6 | 10 semanas | R$ 0,00
 
-Considerando R$75,00 por mês para o desginer, único que necessitará o plano plano Pro do Figma.
+Considerando R$75,00 por mês para o designer, único que necessitará o plano plano Pro do Figma.
 
 **Total estimado com ferramentas e softwares: R$ 1.447,50**
 
@@ -84,7 +84,7 @@ Roteador de campo 4G | Conexão em áreas externas | 2.500
 
 ## Custos operacionais 
 
-&emsp; Estimamos os custos indiretos com  energia, internet, alimentação, comunicação, suporte jurídico e contábil foram estimados como 25% do total dos custos fixos (pessoal + equipamentos + ferramentas/softwares):
+&emsp; Estimamos os custos indiretos com  energia, internet, alimentação, comunicação, suporte jurídico e contábil foram estimados em 25% do total dos custos fixos (pessoal + equipamentos + ferramentas/softwares):
 
 **Custo base = R$ 152.500 + 1.447,50 + 43.500 = R$ 197.447,50**  
 
@@ -119,4 +119,4 @@ Licenças anuais | Figma Pro + GitHub Pro (1 ano) | 1.200
 
 # Conclusão 
 
-&emsp; A solução proposta representa um investimento de aproximadamente R$ 541 mil e engloba o desenvolvimento completo da aplicação (backend, frontend web/mobile e IA), um suporte técnico e manutenção anual e uma margem de lucro sustentável para a continuidade do projeto.  Este valor garante a entrega de uma solução funcional e adaptada à realidade do IPT, com potencial para expansão futura e reaproveitamento em outras campos que enfrentem desafios semelhantes. 
+&emsp; A solução proposta representa um investimento de aproximadamente R$ 541 mil e engloba o desenvolvimento completo da aplicação (backend, frontend web/mobile e IA), um suporte técnico e manutenção anual e uma margem de lucro sustentável para a continuidade do projeto.  Este valor garante a entrega de uma solução funcional e adaptada à realidade do IPT, com potencial para expansão futura e reaproveitamento em outros campos que enfrentem desafios semelhantes. 
