@@ -50,4 +50,6 @@ Revisão e aprofundamento dos fatores que influenciam o design da solução Athe
 - Finalização do `README.md` com todas as seções atualizadas e link para o vídeo de apresentação.
 - Publicação do vídeo da solução no YouTube e incorporação no material de documentação.
 
+## Conclusão
 
+A Sprint 5 concluiu o ciclo de desenvolvimento do Athena com entregas refinadas, consistentes e bem documentadas. A equipe consolidou a solução como uma plataforma funcional e escalável para o monitoramento automatizado de fissuras, entregando um sistema robusto ao IPT, acompanhado de documentação completa, vídeo demonstrativo e uma base sólida para evoluções futuras.
