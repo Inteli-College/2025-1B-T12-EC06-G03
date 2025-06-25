@@ -1,21 +1,21 @@
 ---
 title: Sistema de Comunicação
-sidebar_position: 5
+sidebar_position: 6
 ---
 
 # Sistema de Comunicação
 
 ## Visão Geral
 
-O sistema de comunicação do aplicativo Athenas é responsável por estabelecer e manter a conexão entre o app Flutter e o servidor de controle do drone. A arquitetura de comunicação foi projetada para ser robusta, eficiente e capaz de lidar com conexões de baixa qualidade, comuns em operações de campo.
+&emsp;O sistema de comunicação do aplicativo Athenas é responsável por estabelecer e manter a conexão entre o app Flutter e o servidor de controle do drone. A arquitetura de comunicação foi projetada para ser robusta, eficiente e capaz de lidar com conexões de baixa qualidade, comuns em operações de campo.
 
 ## Protocolos Utilizados
 
-O app utiliza dois protocolos principais para comunicação:
+&emsp;O app utiliza dois protocolos principais para comunicação:
 
 ### 1. Socket.IO
 
-Socket.IO é utilizado para comunicação em tempo real e bidirecional entre o aplicativo e o servidor. Este protocolo é especialmente adequado para:
+&emsp;Socket.IO é utilizado para comunicação em tempo real e bidirecional entre o aplicativo e o servidor. Este protocolo é especialmente adequado para:
 
 - **Controles RC**: Comandos de joystick que precisam ser enviados com alta frequência
 - **Bateria**: Atualizações em tempo real sobre o nível de bateria do drone
@@ -58,7 +58,7 @@ void _setupSocket(String host, int port) {
 
 ### 2. HTTP REST API
 
-Para comandos menos frequentes e que necessitam de confirmação explícita, o aplicativo utiliza chamadas HTTP REST:
+&emsp;Para comandos menos frequentes e que necessitam de confirmação explícita, o aplicativo utiliza chamadas HTTP REST:
 
 - **Video Streaming**: Transmissão contínua do feed de vídeo da câmera do drone
 
@@ -85,7 +85,7 @@ Future<DroneResponse> _sendHttpCommand(DroneCommand command) async {
 
 ### Estabelecimento de Conexão
 
-O processo de conexão com o servidor segue estas etapas:
+&emsp;O processo de conexão com o servidor segue estas etapas:
 
 1. **Handshake Inicial**: Estabelecimento da conexão Socket.IO
 2. **Sincronização**: Solicitação do estado atual do drone
@@ -93,7 +93,7 @@ O processo de conexão com o servidor segue estas etapas:
 
 ### Manutenção da Conexão
 
-Para manter a conexão estável durante operações prolongadas:
+&emsp;Para manter a conexão estável durante operações prolongadas:
 
 - **Heartbeat**: Mensagens periódicas para verificar a conectividade
 - **Reconexão Automática**: Tentativas automáticas de reconexão em caso de perda de sinal
@@ -110,7 +110,7 @@ final options = IO.OptionBuilder()
 
 ## Streaming de Vídeo
 
-O streaming de vídeo da câmera do drone é implementado utilizando:
+&emsp;O streaming de vídeo da câmera do drone é implementado utilizando:
 
 - **MJPEG Streaming**: Para compatibilidade máxima em diferentes plataformas
 - **WebRTC**: Quando disponível, para menor latência e melhor qualidade
@@ -144,7 +144,7 @@ class VideoStreamWidget extends StatelessWidget {
 
 ### Adaptação de Qualidade
 
-O sistema ajusta dinamicamente a qualidade do streaming com base em:
+&emsp;O sistema ajusta dinamicamente a qualidade do streaming com base em:
 
 - Qualidade da conexão de rede
 - Capacidade de processamento do dispositivo
@@ -154,7 +154,7 @@ O sistema ajusta dinamicamente a qualidade do streaming com base em:
 
 ### Detecção de Erros
 
-O sistema está equipado para detectar uma variedade de erros de comunicação:
+&emsp;O sistema está equipado para detectar uma variedade de erros de comunicação:
 
 - **Timeout**: Sem resposta do servidor após um período definido
 - **Erros de Socket**: Falhas na conexão WebSocket
@@ -163,7 +163,7 @@ O sistema está equipado para detectar uma variedade de erros de comunicação:
 
 ### Recuperação de Erros
 
-Para cada tipo de erro, estratégias específicas de recuperação são implementadas:
+&emsp;Para cada tipo de erro, estratégias específicas de recuperação são implementadas:
 
 - **Retry Logic**: Repetição automática de comandos críticos
 - **Degradação Graciosa**: Redução da qualidade do streaming em vez de interrupção

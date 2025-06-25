@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="https://glitch.com/favicon.ico" />
+  <title>Drone Stream VR</title>
+  <!-- A-Frame core -->
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+
+  <!-- WebXR AR support -->
+  <script src="https://unpkg.com/aframe-xrweb@latest/dist/aframe-xrweb.min.js"></script>
+
+  <!-- Super Hands (grabbable, draggable, hoverable) -->
+  <script src="https://unpkg.com/aframe-super-hands-component@4.0.3/dist/aframe-super-hands.min.js"></script>
+
+  <!-- Hand Tracking + Grab Controls -->
+  <script
+    src="https://unpkg.com/aframe-hand-tracking-controls@3.0.0/dist/aframe-hand-tracking-controls.min.js"></script>
+  <script
+    src="https://unpkg.com/aframe-hand-tracking-grab-controls@3.0.0/dist/aframe-hand-tracking-grab-controls.min.js"></script>
+
+  <!-- Laser Controls -->
+  <script
+    src="https://unpkg.com/aframe-laser-controls-component@3.0.0/dist/aframe-laser-controls-component.min.js"></script>
+  <script src="https://unpkg.com/super-hands@^3.0.5/dist/super-hands.min.js"></script>
+
+  <!-- The website stylesheet -->
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+  </style>
+
+  <script>
+    // Script para garantir que o video stream seja inicializado corretamente
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(() => {
+        const video = document.getElementById('videoStream');
+        if (video) {
+          video.play().catch(error => {
+            console.log('Video autoplay failed:', error);
+          });
+        }
+      }, 1000);
+    });
+
+    // Componente personalizado para movimento do telão
+    AFRAME.registerComponent('moveable-screen', {
+      schema: {
+        moveSpeed: { type: 'number', default: 0.1 },
+        rotateSpeed: { type: 'number', default: 1.0 },
+        scaleSpeed: { type: 'number', default: 0.1 },
+        minScale: { type: 'number', default: 0.5 },
+        maxScale: { type: 'number', default: 3.0 }
+      },
+
+      init: function () {
+        this.isGrabbed = false;
+        this.originalPosition = this.el.getAttribute('position');
+        this.originalRotation = this.el.getAttribute('rotation');
+        this.originalScale = this.el.getAttribute('scale') || { x: 1, y: 1, z: 1 };
+        this.currentScale = 1;
+
+        // Eventos VR - Super Hands
+        this.el.addEventListener('grab-start', this.onGrabStart.bind(this));
+        this.el.addEventListener('grab-end', this.onGrabEnd.bind(this));
+        this.el.addEventListener('drag-move', this.onDragMove.bind(this));
+        this.el.addEventListener('hover-start', this.onHoverStart.bind(this));
+        this.el.addEventListener('hover-end', this.onHoverEnd.bind(this));
+
+        // Eventos simplificados VR
+        this.el.addEventListener('vr-grab-start', this.onVRGrabStart.bind(this));
+        this.el.addEventListener('vr-grab-end', this.onVRGrabEnd.bind(this));
+        this.el.addEventListener('vr-click', this.onVRClick.bind(this));
+
+        // Eventos diretos dos controllers
+        this.el.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+        this.el.addEventListener('triggerup', this.onTriggerUp.bind(this));
+
+        // Eventos de mão (hand tracking)
+        this.el.addEventListener('gripdown', this.onGripDown.bind(this));
+        this.el.addEventListener('gripup', this.onGripUp.bind(this));
+        this.el.addEventListener('trackpaddown', this.onTrackpadDown.bind(this));
+
+        // Eventos de mouse para desktop
+        this.el.addEventListener('mousedown', this.onMouseDown.bind(this));
+        this.el.addEventListener('mouseup', this.onMouseUp.bind(this));
+
+        // Adicionar visual feedback
+        this.addGrabHandles();
+      },
+
+      onGrabStart: function (evt) {
+        this.isGrabbed = true;
+        this.grabbingController = evt.detail.hand;
+        this.el.setAttribute('material', 'color', '#88ff88');
+        console.log('Screen grabbed with VR controller!');
+      },
+
+      onGrabEnd: function (evt) {
+        this.isGrabbed = false;
+        this.grabbingController = null;
+        this.el.setAttribute('material', 'color', '#ffffff');
+        console.log('Screen released!');
+      },
+
+      onDragMove: function (evt) {
+        if (this.isGrabbed && evt.detail.position) {
+          this.el.setAttribute('position', evt.detail.position);
+        }
+      },
+
+      onHoverStart: function (evt) {
+        if (!this.isGrabbed) {
+          this.el.setAttribute('material', 'color', '#ccffcc');
+        }
+      },
+
+      onHoverEnd: function (evt) {
+        if (!this.isGrabbed) {
+          this.el.setAttribute('material', 'color', '#ffffff');
+        }
+      },
+
+      onTriggerDown: function (evt) {
+        console.log('Trigger down on screen!');
+        this.isGrabbed = true;
+        this.grabbingController = evt.target.id;
+        this.el.setAttribute('material', 'color', '#88ff88');
+      },
+
+      onTriggerUp: function (evt) {
+        console.log('Trigger up on screen!');
+        this.isGrabbed = false;
+        this.grabbingController = null;
+        this.el.setAttribute('material', 'color', '#ffffff');
+      },
+
+      onVRGrabStart: function (evt) {
+        console.log('VR Grab Start on screen!');
+        this.isGrabbed = true;
+        this.el.setAttribute('material', 'color', '#88ff88');
+      },
+
+      onVRGrabEnd: function (evt) {
+        console.log('VR Grab End on screen!');
+        this.isGrabbed = false;
+        this.el.setAttribute('material', 'color', '#ffffff');
+      },
+
+      onVRClick: function (evt) {
+        console.log('VR Click on screen!');
+        // Pode ser usado para outras funcionalidades
+      },
+
+      onGripDown: function (evt) {
+        this.isGrabbed = true;
+        this.grabbingHand = evt.detail.hand;
+        this.el.setAttribute('material', 'color', '#88ff88');
+        console.log('Screen grabbed!');
+      },
+
+      onGripUp: function (evt) {
+        this.isGrabbed = false;
+        this.grabbingHand = null;
+        this.el.setAttribute('material', 'color', '#ffffff');
+        console.log('Screen released!');
+      },
+
+      onMouseDown: function (evt) {
+        this.isGrabbed = true;
+        this.el.setAttribute('material', 'color', '#88ff88');
+      },
+
+      onMouseUp: function (evt) {
+        this.isGrabbed = false;
+        this.el.setAttribute('material', 'color', '#ffffff');
+      },
+
+      onTrackpadDown: function (evt) {
+        // Reset posição
+        this.el.setAttribute('position', this.originalPosition);
+        this.el.setAttribute('rotation', this.originalRotation);
+        this.el.setAttribute('scale', this.originalScale);
+        this.currentScale = 1;
+      },
+
+      addGrabHandles: function () {
+        // Adiciona bordas visuais para indicar que é interativo
+        const border = document.createElement('a-entity');
+        border.setAttribute('geometry', {
+          primitive: 'ring',
+          radiusInner: 0.75,
+          radiusOuter: 0.8,
+          segmentsTheta: 32
+        });
+        border.setAttribute('material', {
+          color: '#00ff00',
+          opacity: 0.3,
+          transparent: true
+        });
+        border.setAttribute('position', '0 0 0.01');
+        this.el.appendChild(border);
+      },
+
+      tick: function () {
+        if (this.isGrabbed && this.grabbingHand) {
+          // Movimento baseado na posição da mão
+          const handEl = document.querySelector(`#${this.grabbingHand}Hand`);
+          if (handEl) {
+            const handPosition = handEl.getAttribute('position');
+            if (handPosition) {
+              this.el.setAttribute('position', {
+                x: handPosition.x,
+                y: handPosition.y + 0.5,
+                z: handPosition.z - 1
+              });
+            }
+          }
+        }
+      }
+    });
+
+    // Componente para controle por teclado (para desktop)
+    AFRAME.registerComponent('keyboard-controls', {
+      init: function () {
+        this.keys = {};
+        this.bindEvents();
+      },
+
+      bindEvents: function () {
+        document.addEventListener('keydown', (evt) => {
+          this.keys[evt.code] = true;
+        });
+
+        document.addEventListener('keyup', (evt) => {
+          this.keys[evt.code] = false;
+        });
+      },
+
+      tick: function () {
+        const position = this.el.getAttribute('position');
+        const rotation = this.el.getAttribute('rotation');
+        const scale = this.el.getAttribute('scale');
+
+        let moved = false;
+
+        // Movimento
+        if (this.keys['KeyW']) { position.z -= 0.05; moved = true; }
+        if (this.keys['KeyS']) { position.z += 0.05; moved = true; }
+        if (this.keys['KeyA']) { position.x -= 0.05; moved = true; }
+        if (this.keys['KeyD']) { position.x += 0.05; moved = true; }
+        if (this.keys['KeyQ']) { position.y += 0.05; moved = true; }
+        if (this.keys['KeyE']) { position.y -= 0.05; moved = true; }
+
+        // Rotação
+        if (this.keys['ArrowLeft']) { rotation.y += 2; moved = true; }
+        if (this.keys['ArrowRight']) { rotation.y -= 2; moved = true; }
+        if (this.keys['ArrowUp']) { rotation.x += 2; moved = true; }
+        if (this.keys['ArrowDown']) { rotation.x -= 2; moved = true; }
+
+        // Escala
+        if (this.keys['Equal']) {
+          scale.x = scale.y = scale.z = Math.min(scale.x + 0.02, 3);
+          moved = true;
+        }
+        if (this.keys['Minus']) {
+          scale.x = scale.y = scale.z = Math.max(scale.x - 0.02, 0.3);
+          moved = true;
+        }
+
+        if (moved) {
+          this.el.setAttribute('position', position);
+          this.el.setAttribute('rotation', rotation);
+          this.el.setAttribute('scale', scale);
+        }
+      }
+    });
+
+    // Componente para botões interativos
+    AFRAME.registerComponent('interactive-button', {
+      schema: {
+        action: { type: 'string', default: 'default' },
+        url: { type: 'string', default: 'http://10.140.0.11:5000' },
+        label: { type: 'string', default: 'Button' }
+      },
+
+      init: function () {
+        this.isGrabbed = false;
+        this.originalPosition = this.el.getAttribute('position');
+        this.originalRotation = this.el.getAttribute('rotation');
+        this.originalScale = this.el.getAttribute('scale') || { x: 1, y: 1, z: 1 };
+        this.isPressed = false;
+
+        // Eventos VR - Super Hands
+        this.el.addEventListener('grab-start', this.onGrabStart.bind(this));
+        this.el.addEventListener('grab-end', this.onGrabEnd.bind(this));
+        this.el.addEventListener('drag-move', this.onDragMove.bind(this));
+        this.el.addEventListener('hover-start', this.onHoverStart.bind(this));
+        this.el.addEventListener('hover-end', this.onHoverEnd.bind(this));
+
+        // Eventos diretos dos controllers
+        this.el.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+        this.el.addEventListener('triggerup', this.onTriggerUp.bind(this));
+
+        // Eventos de interação
+        this.el.addEventListener('click', this.onClick.bind(this));
+        this.el.addEventListener('mousedown', this.onMouseDown.bind(this));
+        this.el.addEventListener('mouseup', this.onMouseUp.bind(this));
+        this.el.addEventListener('gripdown', this.onGripDown.bind(this));
+        this.el.addEventListener('gripup', this.onGripUp.bind(this));
+
+        // Visual feedback
+        this.defaultColor = '#4CAF50';
+        this.hoverColor = '#45a049';
+        this.pressedColor = '#3d8b40';
+        this.grabbedColor = '#2196F3';
+
+        this.el.setAttribute('material', 'color', this.defaultColor);
+      },
+
+      onGrabStart: function (evt) {
+        this.isGrabbed = true;
+        this.grabbingController = evt.detail.hand;
+        this.el.setAttribute('material', 'color', this.grabbedColor);
+        console.log('Button grabbed with VR controller!');
+      },
+
+      onGrabEnd: function (evt) {
+        this.isGrabbed = false;
+        this.grabbingController = null;
+        this.el.setAttribute('material', 'color', this.defaultColor);
+        // Executar ação quando soltar o botão
+        this.executeAction();
+        this.animatePress();
+      },
+
+      onDragMove: function (evt) {
+        if (this.isGrabbed && evt.detail.position) {
+          this.el.setAttribute('position', evt.detail.position);
+        }
+      },
+
+      onHoverStart: function (evt) {
+        if (!this.isGrabbed) {
+          this.el.setAttribute('material', 'color', this.hoverColor);
+        }
+      },
+
+      onHoverEnd: function (evt) {
+        if (!this.isGrabbed) {
+          this.el.setAttribute('material', 'color', this.defaultColor);
+        }
+      },
+
+      onTriggerDown: function (evt) {
+        console.log('Trigger down on button!');
+        this.isGrabbed = true;
+        this.grabbingController = evt.target.id;
+        this.el.setAttribute('material', 'color', this.grabbedColor);
+      },
+
+      onTriggerUp: function (evt) {
+        console.log('Trigger up on button!');
+        this.isGrabbed = false;
+        this.grabbingController = null;
+        this.el.setAttribute('material', 'color', this.defaultColor);
+        // Executar ação quando soltar o trigger
+        this.executeAction();
+        this.animatePress();
+      },
+
+      onVRGrabStart: function (evt) {
+        console.log('VR Grab Start on button!');
+        this.isGrabbed = true;
+        this.el.setAttribute('material', 'color', this.grabbedColor);
+      },
+
+      onVRGrabEnd: function (evt) {
+        console.log('VR Grab End on button!');
+        this.isGrabbed = false;
+        this.el.setAttribute('material', 'color', this.defaultColor);
+        this.executeAction();
+        this.animatePress();
+      },
+
+      onVRClick: function (evt) {
+        console.log('VR Click on button!');
+        if (!this.isGrabbed) {
+          this.executeAction();
+          this.animatePress();
+        }
+      },
+
+      onClick: function (evt) {
+        if (!this.isGrabbed) {
+          this.executeAction();
+          this.animatePress();
+        }
+      },
+
+      onMouseDown: function (evt) {
+        this.isGrabbed = true;
+        this.el.setAttribute('material', 'color', this.grabbedColor);
+      },
+
+      onMouseUp: function (evt) {
+        this.isGrabbed = false;
+        this.el.setAttribute('material', 'color', this.defaultColor);
+      },
+
+      onGripDown: function (evt) {
+        this.isGrabbed = true;
+        this.grabbingHand = evt.detail.hand;
+        this.el.setAttribute('material', 'color', this.grabbedColor);
+      },
+
+      onGripUp: function (evt) {
+        this.isGrabbed = false;
+        this.grabbingHand = null;
+        this.el.setAttribute('material', 'color', this.defaultColor);
+      },
+
+      animatePress: function () {
+        this.isPressed = true;
+        this.el.setAttribute('material', 'color', this.pressedColor);
+        this.el.setAttribute('animation', {
+          property: 'scale',
+          to: '0.9 0.9 0.9',
+          dur: 100,
+          dir: 'alternate',
+          loop: 1
+        });
+
+        setTimeout(() => {
+          this.isPressed = false;
+          this.el.setAttribute('material', 'color', this.defaultColor);
+        }, 200);
+      },
+
+      executeAction: function () {
+        const action = this.data.action;
+        const url = this.data.url;
+        const label = this.data.label;
+
+        console.log(`Executando ação: ${action} (${label})`);
+
+        // Criar notificação visual
+        this.showNotification(`Executando: ${label}`);
+
+        // Fazer request baseado na ação
+        switch (action) {
+          case 'takeoff':
+            this.sendDroneCommand('takeoff');
+            break;
+          case 'land':
+            this.sendDroneCommand('land');
+            break;
+          case 'battery':
+            this.sendDroneCommand('battery');
+            break;
+          case 'flip':
+            this.sendDroneCommand('flip', { direction: 'f' });
+            break;
+          default:
+            console.log('Ação não reconhecida:', action);
+        }
+      },
+
+      sendDroneCommand: function (command, data = {}) {
+        // Usar Socket.IO se disponível, senão usar fetch
+        if (typeof io !== 'undefined') {
+          const socket = io(this.data.url);
+          socket.emit(command, data);
+          socket.on('response', (response) => {
+            console.log('Resposta do drone:', response);
+            this.showNotification(`${command}: ${response.status}`);
+          });
+        } else {
+          // Fallback para HTTP request
+          fetch(`${this.data.url}/api/${command}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Resposta do drone:', data);
+              this.showNotification(`${command}: ${data.status || 'OK'}`);
+            })
+            .catch(error => {
+              console.error('Erro na requisição:', error);
+              this.showNotification(`Erro: ${error.message}`);
+            });
+        }
+      },
+
+      showNotification: function (message) {
+        // Criar elemento de notificação temporário
+        const notification = document.createElement('a-entity');
+        const buttonPos = this.el.getAttribute('position');
+
+        notification.setAttribute('position', {
+          x: buttonPos.x,
+          y: buttonPos.y + 0.5,
+          z: buttonPos.z
+        });
+        notification.setAttribute('text', {
+          value: message,
+          align: 'center',
+          color: '#ffffff',
+          width: 6
+        });
+        notification.setAttribute('geometry', {
+          primitive: 'plane',
+          width: 2,
+          height: 0.3
+        });
+        notification.setAttribute('material', {
+          color: '#333333',
+          opacity: 0.8,
+          transparent: true
+        });
+
+        this.el.sceneEl.appendChild(notification);
+
+        // Remover após 3 segundos
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 3000);
+      },
+
+      tick: function () {
+        if (this.isGrabbed && this.grabbingHand) {
+          // Movimento baseado na posição da mão
+          const handEl = document.querySelector(`#${this.grabbingHand}Hand`);
+          if (handEl) {
+            const handPosition = handEl.getAttribute('position');
+            if (handPosition) {
+              this.el.setAttribute('position', {
+                x: handPosition.x,
+                y: handPosition.y,
+                z: handPosition.z - 0.5
+              });
+            }
+          }
+        }
+      }
+    });
+
+    // Componente de debug para controles VR
+    AFRAME.registerComponent('vr-debug', {
+      init: function () {
+        console.log('DEBUG: vr-debug component initialized on', this.el.id);
+        
+        // Debug events para controllers
+        this.el.addEventListener('triggerdown', function(evt) {
+          console.log('DEBUG: triggerdown event detected on', evt.target.id);
+        });
+        
+        this.el.addEventListener('triggerup', function(evt) {
+          console.log('DEBUG: triggerup event detected on', evt.target.id);
+        });
+
+        this.el.addEventListener('gripdown', function(evt) {
+          console.log('DEBUG: gripdown event detected on', evt.target.id);
+        });
+
+        this.el.addEventListener('gripup', function(evt) {
+          console.log('DEBUG: gripup event detected on', evt.target.id);
+        });
+
+        // Debug events para objetos
+        this.el.addEventListener('raycaster-intersection', function(evt) {
+          console.log('DEBUG: laser intersection with', evt.target.id || 'unnamed object');
+        });
+
+        this.el.addEventListener('raycaster-intersection-cleared', function(evt) {
+          console.log('DEBUG: laser intersection cleared with', evt.target.id || 'unnamed object');
+        });
+      }
+    });
+
+    // Componente simplificado para interação VR
+    AFRAME.registerComponent('simple-vr-interaction', {
+      init: function () {
+        this.isHovered = false;
+        this.isGrabbed = false;
+        
+        // Eventos básicos
+        this.el.addEventListener('mouseenter', this.onMouseEnter.bind(this));
+        this.el.addEventListener('mouseleave', this.onMouseLeave.bind(this));
+        this.el.addEventListener('click', this.onClick.bind(this));
+        
+        // Eventos VR específicos
+        this.el.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+        this.el.addEventListener('triggerup', this.onTriggerUp.bind(this));
+      },
+
+      onMouseEnter: function(evt) {
+        console.log('Mouse enter (laser hover) on', this.el.id);
+        this.isHovered = true;
+        this.el.emit('hover-start');
+      },
+
+      onMouseLeave: function(evt) {
+        console.log('Mouse leave (laser unhover) on', this.el.id);
+        this.isHovered = false;
+        this.el.emit('hover-end');
+      },
+
+      onClick: function(evt) {
+        console.log('Click on', this.el.id);
+        this.el.emit('vr-click');
+      },
+
+      onTriggerDown: function(evt) {
+        console.log('Trigger down on', this.el.id);
+        this.isGrabbed = true;
+        this.el.emit('vr-grab-start');
+      },
+
+      onTriggerUp: function(evt) {
+        console.log('Trigger up on', this.el.id);
+        this.isGrabbed = false;
+        this.el.emit('vr-grab-end');
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <div id="overlay" style="display: none;"></div>
+
+  <a-scene
+    xrweb="mode: immersive-ar; requiredFeatures: hit-test; optionalFeatures: dom-overlay; overlayElement: #overlay"
+    xr-mode-ui="enabled: true; enterAREnabled: true; XRMode: xr;"
+    renderer="colorManagement: true; antialias: true; foveationLevel: 1" embedded>
+    <!-- Assets management section -->
+    <a-assets>
+      <video id="videoStream" autoplay loop muted crossorigin="anonymous" playsinline>
+        <source src="http://10.140.0.11:5556/video" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </a-assets>
+
+    <!-- Camera setup with hand tracking controls -->
+    <a-camera position="0 1.6 0" look-controls="enabled: true; pointerLockEnabled: true"
+      wasd-controls="acceleration: 50"></a-camera>
+
+    <!-- VR Controllers with simplified configuration -->
+    <a-entity id="leftController" 
+      hand-controls="hand: left"
+      laser-controls="hand: left"
+      raycaster="objects: .interactive; showLine: true; far: 20; lineColor: red; lineOpacity: 0.8"
+      super-hands="colliderEvent: raycaster-intersection; 
+                   colliderEventProperty: els; 
+                   colliderEndEvent: raycaster-intersection-cleared; 
+                   colliderEndEventProperty: clearedEls"
+      vr-debug>
+    </a-entity>
+
+    <a-entity id="rightController" 
+      hand-controls="hand: right"
+      laser-controls="hand: right"
+      raycaster="objects: .interactive; showLine: true; far: 20; lineColor: blue; lineOpacity: 0.8"
+      super-hands="colliderEvent: raycaster-intersection; 
+                   colliderEventProperty: els; 
+                   colliderEndEvent: raycaster-intersection-cleared; 
+                   colliderEndEventProperty: clearedEls"
+      vr-debug>
+    </a-entity>
+
+    <!-- Hand Tracking (fallback for devices without controllers) -->
+    <a-entity id="leftHand"
+      hand-tracking-controls="hand: left; modelColor: #ffffff; modelOpacity: 0.8; modelStyle: mesh"
+      hand-tracking-grab-controls="hand: left; hoverEnabled: true; hoverColor: #538df1"
+      super-hands
+      raycaster="objects: .interactive; showLine: false; far: 5">
+    </a-entity>
+    
+    <a-entity id="rightHand"
+      hand-tracking-controls="hand: right; modelColor: #ffffff; modelOpacity: 0.8; modelStyle: mesh"
+      hand-tracking-grab-controls="hand: right; hoverEnabled: true; hoverColor: #538df1"
+      super-hands
+      raycaster="objects: .interactive; showLine: false; far: 5">
+    </a-entity>
+
+
+    <!-- Lights to illuminate objects (adjust as needed, but no global light to interfere with AR passthrough) -->
+    <a-light type="ambient" color="#ffffff" intensity="0.7"></a-light>
+    <a-light type="directional" position="1 3 1" color="#ffffff" intensity="0.6"></a-light>
+
+    <!-- Interactive Video Stream Screen -->
+    <a-entity id="videoScreen" position="0 2 -2" rotation="0 0 0" 
+      moveable-screen keyboard-controls 
+      grabbable draggable droppable hoverable clickable 
+      class="interactive grabbable"
+      simple-vr-interaction
+      vr-debug>
+      <a-plane width="1.5" height="1.125" material="src: #videoStream; transparent: false; shader: flat"
+        geometry="primitive: plane">
+      </a-plane>
+
+      <!-- Controles visuais para indicar interatividade -->
+      <a-box position="0.8 0.6 0.01" width="0.1" height="0.1" depth="0.02" color="#00ff00" opacity="0.7"
+        class="grab-handle" visible="true">
+      </a-box>
+      <a-box position="-0.8 0.6 0.01" width="0.1" height="0.1" depth="0.02" color="#00ff00" opacity="0.7"
+        class="grab-handle" visible="true">
+      </a-box>
+      <a-box position="0.8 -0.6 0.01" width="0.1" height="0.1" depth="0.02" color="#00ff00" opacity="0.7"
+        class="grab-handle" visible="true">
+      </a-box>
+      <a-box position="-0.8 -0.6 0.01" width="0.1" height="0.1" depth="0.02" color="#00ff00" opacity="0.7"
+        class="grab-handle" visible="true">
+      </a-box>
+    </a-entity>
+
+    <!-- Botão 1: TAKEOFF -->
+    <a-entity id="takeoffButton" position="2.5 1.5 -1.5" rotation="0 -20 0"
+      interactive-button="action: takeoff; label: TAKEOFF; url: http://10.140.0.11:5000" 
+      grabbable draggable droppable hoverable clickable 
+      class="interactive grabbable button"
+      simple-vr-interaction
+      vr-debug>
+      <a-cylinder radius="0.2" height="0.1" color="#4CAF50" opacity="0.9">
+        <a-text value="TAKEOFF" position="0 0 0.06" align="center" color="white" font="roboto" width="8"></a-text>
+        <a-text value="🚁" position="0 0.15 0.06" align="center" color="white" font="roboto" width="12"></a-text>
+      </a-cylinder>
+      <!-- Indicador de interatividade -->
+      <a-ring radius-inner="0.22" radius-outer="0.25" color="#00ff00" opacity="0.5" position="0 0 0.06"></a-ring>
+    </a-entity>
+
+    <!-- Botão 2: LAND -->
+    <a-entity id="landButton" position="3.5 1.5 -1.5" rotation="0 -20 0"
+      interactive-button="action: land; label: LAND; url: http://10.140.0.11:5000" 
+      grabbable draggable droppable hoverable clickable 
+      class="interactive grabbable button"
+      simple-vr-interaction>
+      <a-cylinder radius="0.2" height="0.1" color="#f44336" opacity="0.9">
+        <a-text value="LAND" position="0 0 0.06" align="center" color="white" font="roboto" width="8"></a-text>
+        <a-text value="⬇️" position="0 0.15 0.06" align="center" color="white" font="roboto" width="12"></a-text>
+      </a-cylinder>
+      <!-- Indicador de interatividade -->
+      <a-ring radius-inner="0.22" radius-outer="0.25" color="#00ff00" opacity="0.5" position="0 0 0.06"></a-ring>
+    </a-entity>
+
+    <!-- Botão 3: BATTERY -->
+    <a-entity id="batteryButton" position="2.5 0.8 -1.5" rotation="0 -20 0"
+      interactive-button="action: battery; label: BATTERY; url: http://10.140.0.11:5000" 
+      grabbable draggable droppable hoverable clickable 
+      class="interactive grabbable button"
+      simple-vr-interaction>
+      <a-cylinder radius="0.2" height="0.1" color="#FF9800" opacity="0.9">
+        <a-text value="BATTERY" position="0 0 0.06" align="center" color="white" font="roboto" width="6"></a-text>
+        <a-text value="🔋" position="0 0.15 0.06" align="center" color="white" font="roboto" width="12"></a-text>
+      </a-cylinder>
+      <!-- Indicador de interatividade -->
+      <a-ring radius-inner="0.22" radius-outer="0.25" color="#00ff00" opacity="0.5" position="0 0 0.06"></a-ring>
+    </a-entity>
+
+    <!-- Botão 4: FLIP -->
+    <a-entity id="flipButton" position="3.5 0.8 -1.5" rotation="0 -20 0"
+      interactive-button="action: flip; label: FLIP; url: http://10.140.0.11:5000" 
+      grabbable draggable droppable hoverable clickable 
+      class="interactive grabbable button"
+      simple-vr-interaction>
+      <a-cylinder radius="0.2" height="0.1" color="#9C27B0" opacity="0.9">
+        <a-text value="FLIP" position="0 0 0.06" align="center" color="white" font="roboto" width="8"></a-text>
+        <a-text value="🔄" position="0 0.15 0.06" align="center" color="white" font="roboto" width="12"></a-text>
+      </a-cylinder>
+      <!-- Indicador de interatividade -->
+      <a-ring radius-inner="0.22" radius-outer="0.25" color="#00ff00" opacity="0.5" position="0 0 0.06"></a-ring>
+    </a-entity>
+
+    <!-- Painel de instruções -->
+    <a-entity id="instructionsPanel" position="-3 1.5 -1" rotation="0 30 0">
+      <a-plane width="2.5" height="2.5" color="#333333" opacity="0.8">
+        <a-text value="CONTROLES:" position="-1.15 1.1 0.01" color="white" font="roboto" width="6"></a-text>
+
+        <!-- Controles VR -->
+        <a-text value="VR CONTROLLERS:" position="-1.15 0.9 0.01" color="#ff6600" font="roboto" width="5"></a-text>
+        <a-text value="Laser vermelho/azul" position="-1.15 0.7 0.01" color="white" font="roboto" width="4"></a-text>
+        <a-text value="Trigger: Pegar/Soltar" position="-1.15 0.5 0.01" color="white" font="roboto" width="4"></a-text>
+        <a-text value="Grip: Mover objetos" position="-1.15 0.3 0.01" color="white" font="roboto" width="4"></a-text>
+
+        <!-- Controles do Telão -->
+        <a-text value="TELÃO:" position="-1.15 0.0 0.01" color="#00ff00" font="roboto" width="5"></a-text>
+        <a-text value="VR: Segure e arraste" position="-1.15 -0.2 0.01" color="white" font="roboto" width="4"></a-text>
+        <a-text value="Teclado: WASD + Q/E" position="-1.15 -0.4 0.01" color="white" font="roboto" width="4"></a-text>
+        <a-text value="Setas: Rotacionar" position="-1.15 -0.6 0.01" color="white" font="roboto" width="4"></a-text>
+        <a-text value="+/-: Zoom In/Out" position="-1.15 -0.8 0.01" color="white" font="roboto" width="4"></a-text>
+
+        <!-- Controles dos Botões -->
+        <a-text value="BOTÕES:" position="-1.15 -1.1 0.01" color="#ff9800" font="roboto" width="5"></a-text>
+        <a-text value="VR: Pegar para ativar" position="-1.15 -1.3 0.01" color="white" font="roboto" width="4"></a-text>
+      </a-plane>
+    </a-entity>
+
+    <!-- Painel de status dos botões -->
+    <a-entity id="buttonStatusPanel" position="3 2.5 -1" rotation="0 -20 0">
+      <a-plane width="2" height="1" color="#222222" opacity="0.9">
+        <a-text value="BOTÕES DE CONTROLE:" position="-0.9 0.4 0.01" color="white" font="roboto" width="5"></a-text>
+        <a-text value="🚁 TAKEOFF - Decolar" position="-0.9 0.2 0.01" color="#4CAF50" font="roboto" width="4"></a-text>
+        <a-text value="⬇️ LAND - Pousar" position="-0.9 0.0 0.01" color="#f44336" font="roboto" width="4"></a-text>
+        <a-text value="🔋 BATTERY - Bateria" position="-0.9 -0.2 0.01" color="#FF9800" font="roboto" width="4"></a-text>
+        <a-text value="🔄 FLIP - Manobra" position="-0.9 -0.4 0.01" color="#9C27B0" font="roboto" width="4"></a-text>
+      </a-plane>
+    </a-entity>
+  </a-scene>
+</body>

@@ -68,7 +68,7 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'inicializacao',
+            docId: 'como_rodar',
             position: 'left',
             label: 'Como Executar a Aplicação'
           },

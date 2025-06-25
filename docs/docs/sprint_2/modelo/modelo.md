@@ -9,27 +9,27 @@ sidebar_position: 1
 
 ## Introdução
 
-Este documento descreve o funcionamento de um sistema automatizado para **detecção e classificação de fissuras** em imagens, com foco em aplicações na engenharia civil e inspeção de estruturas. O sistema utiliza dois modelos de aprendizado profundo:
+&emsp;Este documento descreve o funcionamento de um sistema automatizado para **detecção e classificação de fissuras** em imagens, com foco em aplicações na engenharia civil e inspeção de estruturas. O sistema utiliza dois modelos de aprendizado profundo:
 
 * Um modelo **YOLO (You Only Look Once)** para **detecção da fissura** na imagem
 * Um modelo **CNN (Convolutional Neural Network)** para **classificação do tipo da fissura**, entre *térmica* e *de retração*
 
-A abordagem prioriza **especialização modular**, permitindo maior controle e flexibilidade no pipeline.
+&emsp;A abordagem prioriza **especialização modular**, permitindo maior controle e flexibilidade no pipeline.
 
 ---
 
 
 ## Modelo YOLO - Detecção de Fissura
 
-O modelo YOLOv8 é responsável por identificar a presença de **fissuras visíveis** em uma imagem. Ele foi treinado com imagens anotadas com caixas delimitadoras (bounding boxes) marcando a localização da fissura.
+&emsp;O modelo YOLOv8 é responsável por identificar a presença de **fissuras visíveis** em uma imagem. Ele foi treinado com imagens anotadas com caixas delimitadoras (bounding boxes) marcando a localização da fissura.
 
 ### Desenvolvimento:
 
-Antes de serem usadas no treinamento, as imagens passaram por um processo de melhoria visual utilizando o script `preprocess_images.py`. Esse script aplicou técnicas como CLAHE (equalização adaptativa), blur e realce por nitidez. As imagens processadas foram então anotadas manualmente com o aplicativo **LabelImg**, que gerou os arquivos `.txt` contendo as caixas delimitadoras no formato esperado pelo YOLO. Cada linha do `.txt` descreve a classe (sempre "fissura") e as coordenadas normalizadas da bounding box.
+&emsp;Antes de serem usadas no treinamento, as imagens passaram por um processo de melhoria visual utilizando o script `preprocess_images.py`. Esse script aplicou técnicas como CLAHE (equalização adaptativa), blur e realce por nitidez. As imagens processadas foram então anotadas manualmente com o aplicativo **LabelImg**, que gerou os arquivos `.txt` contendo as caixas delimitadoras no formato esperado pelo YOLO. Cada linha do `.txt` descreve a classe (sempre "fissura") e as coordenadas normalizadas da bounding box.
 
-O conjunto de dados utilizado para o treino do YOLO continha **aproximadamente 180 imagens**, além de **10 para validação** e **10 para teste**. As imagens incluíam fissuras térmicas e de retração misturadas, uma vez que o objetivo do YOLO era apenas detectar a presença de uma fissura, independentemente do tipo.
+&emsp;O conjunto de dados utilizado para o treino do YOLO continha **aproximadamente 180 imagens**, além de **10 para validação** e **10 para teste**. As imagens incluíam fissuras térmicas e de retração misturadas, uma vez que o objetivo do YOLO era apenas detectar a presença de uma fissura, independentemente do tipo.
 
-O treinamento foi realizado com a versão YOLOv8n por 30 épocas, utilizando tamanho de imagem 640x640 e batch size de 8. O script de treinamento usou o comando `.train(data='fissure.yaml', ...)`, com os resultados sendo salvos na pasta `runs/detect/fissura-detector`.
+&emsp;O treinamento foi realizado com a versão YOLOv8n por 30 épocas, utilizando tamanho de imagem 640x640 e batch size de 8. O script de treinamento usou o comando `.train(data='fissure.yaml', ...)`, com os resultados sendo salvos na pasta `runs/detect/fissura-detector`.
 
 ### Funcionamento:
 
@@ -45,13 +45,13 @@ O treinamento foi realizado com a versão YOLOv8n por 30 épocas, utilizando tam
 * **mAP\@0.5:0.95:** 0.400
 * **Velocidade de inferência:** \~95ms por imagem
 
-Esses resultados indicam uma boa capacidade do modelo em detectar fissuras com alta confiança, mesmo em cenários variados.
+&emsp;Esses resultados indicam uma boa capacidade do modelo em detectar fissuras com alta confiança, mesmo em cenários variados.
 
 ---
 
 ## Modelo CNN - Classificação da Fissura
 
-A CNN é responsável por **analisar visualmente o recorte da fissura** e classificá-la como:
+&emsp;A CNN é responsável por **analisar visualmente o recorte da fissura** e classificá-la como:
 
 * **Térmica:** geralmente mais grossa, retilínea
 * **Retração:** fina, ramificada ou com bordas irregulares
@@ -66,9 +66,9 @@ A CNN é responsável por **analisar visualmente o recorte da fissura** e classi
 
 ### Desenvolvimento:
 
-O modelo foi treinado com **180 imagens rotuladas** divididas em duas subpastas: `thermal` e `retraction`. As imagens foram recortes manuais da região da fissura (obtidas após anotação do YOLO), organizadas em `train`, `val` e `test`, com 10 imagens para validação e 10 para teste. As imagens foram transformadas para tons de cinza, redimensionadas para 128x128 pixels e normalizadas.
+&emsp;O modelo foi treinado com **180 imagens rotuladas** divididas em duas subpastas: `thermal` e `retraction`. As imagens foram recortes manuais da região da fissura (obtidas após anotação do YOLO), organizadas em `train`, `val` e `test`, com 10 imagens para validação e 10 para teste. As imagens foram transformadas para tons de cinza, redimensionadas para 128x128 pixels e normalizadas.
 
-O modelo foi salvo com seu respectivo `class_to_idx.json`, garantindo correspondência correta entre índices e nomes das classes na inferência.
+&emsp;O modelo foi salvo com seu respectivo `class_to_idx.json`, garantindo correspondência correta entre índices e nomes das classes na inferência.
 
 ### Desempenho:
 
@@ -77,13 +77,13 @@ O modelo foi salvo com seu respectivo `class_to_idx.json`, garantindo correspond
 * **Precision (retraction):** 1.00 | **Recall:** 0.90 | **F1-score:** 0.95
 * **Macro avg / Weighted avg F1-score:** 0.95
 
-Esses números indicam que o modelo consegue generalizar bem para ambas as classes, mesmo com base de teste pequena.
+&emsp;Esses números indicam que o modelo consegue generalizar bem para ambas as classes, mesmo com base de teste pequena.
 
 ---
 
 ## Por que dois modelos? 
 
-A escolha por utilizar **dois modelos distintos e especializados** em vez de um único modelo multitarefa se baseia em princípios técnicos de separação de responsabilidades, complexidade de tarefa e especialização de arquitetura:
+&emsp;A escolha por utilizar **dois modelos distintos e especializados** em vez de um único modelo multitarefa se baseia em princípios técnicos de separação de responsabilidades, complexidade de tarefa e especialização de arquitetura:
 
 1. **Tarefas distintas exigem capacidades diferentes:**
 
@@ -120,13 +120,13 @@ A escolha por utilizar **dois modelos distintos e especializados** em vez de um 
    * O YOLO obteve mAP\@0.5 de 0.709, suficiente para recortar com precisão a fissura.
    * A CNN, com recortes já centrados na fissura, alcançou 95% de acurácia na classificação entre os dois tipos.
 
-Essa abordagem modular representa uma boa prática de engenharia de sistemas de visão computacional, pois equilibra desempenho, flexibilidade e interpretabilidade.
+&emsp;Essa abordagem modular representa uma boa prática de engenharia de sistemas de visão computacional, pois equilibra desempenho, flexibilidade e interpretabilidade.
 
 ---
 
 ## Integração dos Modelos
 
-Essa conexão entre os modelos foi validada por meio de um script integrado chamado `detect_and_classify.py`, que permite realizar a inferência completa a partir de uma única imagem de entrada. Ele executa o pipeline completo:
+&emsp;Essa conexão entre os modelos foi validada por meio de um script integrado chamado `detect_and_classify.py`, que permite realizar a inferência completa a partir de uma única imagem de entrada. Ele executa o pipeline completo:
 
 1. Recebe uma imagem original.
 2. Aplica o pré-processamento para o YOLO.
@@ -139,7 +139,7 @@ Essa conexão entre os modelos foi validada por meio de um script integrado cham
 * `resultado_final.png`: imagem com bounding box e rótulo da classificação da fissura
 * `resultado_yolo_bruto.png`: imagem com apenas o box do YOLO e nível de confiança da fissura selecionada
 
-Esse fluxo permite reaproveitamento modular, validação visual e explicabilidade.
+&emsp;Esse fluxo permite reaproveitamento modular, validação visual e explicabilidade.
 
 ---
 
@@ -166,12 +166,12 @@ Esse fluxo permite reaproveitamento modular, validação visual e explicabilidad
 
 ## Conclusão
 
-A abordagem combinada YOLO + CNN oferece um sistema robusto e modular para inspeção automatizada de fissuras em imagens. Ao dividir as tarefas entre detecção e classificação, o sistema consegue aproveitar o melhor de cada modelo:
+&emsp;A abordagem combinada YOLO + CNN oferece um sistema robusto e modular para inspeção automatizada de fissuras em imagens. Ao dividir as tarefas entre detecção e classificação, o sistema consegue aproveitar o melhor de cada modelo:
 
 * O YOLO foca na localização rápida e eficiente
 * A CNN oferece classificação precisa com base em análise de textura e forma
 
-Essa divisão foi uma escolha técnica estratégica, permitindo maior controle, especialização e refinamento independente de cada componente. O sistema será futuramente integrado à **interface Athena**, permitindo uso direto por engenheiros e técnicos em campo, com foco em agilidade, precisão e aplicabilidade real.
+&emsp;Essa divisão foi uma escolha técnica estratégica, permitindo maior controle, especialização e refinamento independente de cada componente. O sistema será futuramente integrado à **interface Athena**, permitindo uso direto por engenheiros e técnicos em campo, com foco em agilidade, precisão e aplicabilidade real.
 
 ---
 

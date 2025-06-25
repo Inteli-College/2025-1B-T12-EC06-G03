@@ -1,4 +1,8 @@
 {
     "label": "Sprint 5",
-    "position": 6
+    "position": 6,
+    "link": {
+      "type": "generated-index",
+      "description": "Durante a Sprint 5, focamos em finalizar o projeto, focando no refinamento da aplicação, na correção de bugs e na implementação de melhorias com base no feedback recebido. Esta fase foi crucial para garantir que o sistema estivesse pronto para a entrega final, atendendo a todos os requisitos funcionais e não funcionais estabelecidos nas sprints anteriores. A seguir, apresentaremos os detalhes técnicos e as principais atividades realizadas durante esta sprint final."
+    }
 }

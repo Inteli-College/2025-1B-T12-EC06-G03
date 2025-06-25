@@ -3,11 +3,12 @@
 const ImageCard = ({ id, type, imageUrl, onView }) => {
   return (
     <div className="bg-blue-300 rounded-md overflow-hidden shadow-md">
-      <div className="bg-white m-3 h-36 rounded-md flex items-center justify-center">
+      <div className="bg-white m-3 h-36 rounded-md flex items-center justify-center overflow-hidden">
         <img 
           src={imageUrl} 
           alt={`Imagem ${id}`} 
-          className="object-contain h-full max-h-36 rounded" 
+          className="w-full h-full object-contain rounded cursor-pointer" 
+          onClick={() => onView(id)}
         />
       </div>
       <div className="p-4 flex justify-between items-center">

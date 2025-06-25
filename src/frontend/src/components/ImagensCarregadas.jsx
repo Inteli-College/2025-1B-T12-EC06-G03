@@ -60,13 +60,13 @@ const ImagensCarregadas = (props) => {
       <div className="bg-blue-dark rounded-md shadow-md p-2">
         <div
           className="relative bg-gray-light rounded-md overflow-hidden border border-gray-300"
-          style={{ paddingTop: '50%' }} 
+          style={{ paddingTop: '75%' }} 
         >
           <div className="absolute inset-0 flex items-center justify-center">
             <img
               src={props.imgSrc || placeholderIcon}
               alt={props.name || 'Imagem Placeholder'}
-              className="w-full h-full object-contain cursor-pointer" 
+              className="w-full h-full object-contain cursor-pointer rounded" 
               onClick={() => setIsModalOpen(true)} 
             />
           </div>
@@ -93,15 +93,18 @@ const ImagensCarregadas = (props) => {
       {/* Modal com todas as informações */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
           onClick={() => setIsModalOpen(false)} 
         >
-          <div className="relative bg-white rounded-md p-6 max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <img
-              src={props.imgSrc || placeholderIcon}
-              alt={props.name || 'Imagem Ampliada'}
-              className="max-w-full max-h-96 rounded-md mx-auto"
-            />
+          <div className="relative bg-white rounded-md p-6 max-w-4xl w-full max-h-[95vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-center mb-4">
+              <img
+                src={props.imgSrc || placeholderIcon}
+                alt={props.name || 'Imagem Ampliada'}
+                className="rounded-md object-contain"
+                style={{ width: '500px', height: '350px' }}
+              />
+            </div>
             <button
               className="absolute top-2 right-2 bg-white text-black rounded-full p-2"
               onClick={() => setIsModalOpen(false)}
