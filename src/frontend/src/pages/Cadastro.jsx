@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import logo from "../assets/logo.svg";
-//import httpClient from "../httpClient";
+import httpClient from "../httpClient";
 
 const CadastroPage = () => {
   const [nome, setNome] = useState("");
@@ -16,16 +16,18 @@ const CadastroPage = () => {
     setLoading(true);
 
     try {
-      /*const userData = {
+      const userData = {
         nome,
         email,
         senha,
         cargo
-      };*/
+      };
 
-      //const response = await httpClient.post("/auth/register", userData);
-      
-      window.location.href = "/login";
+      const response = await httpClient.post("/auth/register", userData);
+
+      if (response.status === 200) {
+        window.location.href = "/login";
+      }
     } catch (err) {
       console.error("Erro no cadastro:", err);
       if (err.response?.data) {
