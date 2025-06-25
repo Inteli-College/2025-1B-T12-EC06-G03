@@ -105,6 +105,13 @@ A solução Athena tem como objetivo automatizar o processo de identificação e
 Acesse a documentação online do projeto Athena:  
 🔗 [Clique aqui](https://inteli-college.github.io/2025-1B-T12-EC06-G03/)
 
+Caso tenha feito um fork ou colocado o conteúdo deste repositório em outro repositório, você pode fazer o deploy da documentação indo em:
+1. Configurações do repositório;
+2. Vá para a aba "Pages";
+3. Embaixo de "Build and Deploy", coloque "source" como "Github Actions". 
+
+A partir disso, na mesma tela do Pages, será possível ver o link da documentação ao vivo. Ademais, é importante ressaltar que para isso funcionar o repositório deve conter os arquivos .github/workflows/*.yaml (todos os arquivos de extensão .yaml).
+
 #### Rodando localmente:
 
 ```bash
