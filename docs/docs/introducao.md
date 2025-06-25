@@ -25,6 +25,10 @@ sidebar_position: 1
 
 &emsp;  A detecção e monitoramento de fissuras em edificações é uma questão crítica na engenharia civil, pois fissuras podem comprometer a segurança e a integridade estrutural de um edifício. O projeto Athena visa oferecer uma solução inovadora e eficiente para esse problema, utilizando tecnologias avançadas que possibilitam uma análise mais precisa e rápida das condições das edificações. Além disso, o uso de drones ou câmeras de alta resolução para captura de imagens torna o processo mais seguro e acessível.
 
+&emsp; A seguir, é possívrl acessar um vídeo de demonstração do controle do drone e da usabilidade da plataforma web da nossa solução.
+
+[Vídeo de demonstração da solução](https://youtu.be/i9uvU1WtSGA)
+
 # Integrantes do Projeto
 
 O projeto Athena é desenvolvido por uma equipe multidisciplinar de estudantes do Instituto de Tecnologia e Liderança (Inteli). A equipe é composta por estudantes do curso de Engenharia de Computação, sendo eles:

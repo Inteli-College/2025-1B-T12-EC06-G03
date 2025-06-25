@@ -3,7 +3,7 @@
   <img src="docs/static/img/logo_athena_sf.png" alt="Logo Athena" width="300"/>
 </p>
 
-## 🎥 [Acesse o vídeo da nossa solução aqui!](video)
+## 🎥 [Acesse o vídeo da nossa solução aqui!](https://youtu.be/i9uvU1WtSGA)
 
 ## 👨‍🎓 Integrantes:
 - [Caio Santos](https://www.linkedin.com/in/caio-alcantara-santos/)
