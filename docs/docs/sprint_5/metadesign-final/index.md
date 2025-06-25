@@ -4,12 +4,12 @@
 
 &emsp; O metadesign consiste em refletir e documentar os caminhos estratégicos, conceituais e técnicos utilizados no processo de desenvolvimento de uma solução. Nesta seção, são apresentados os principais elementos que fundamentaram o projeto, trazendo fatores de mercado, escolha de tecnologias e preocupações socioculturais e ambientais.[1]
 
-&emsp; A documentação do metadesign busca não apenas registrar o que foi feito, mas também justificar como e por que cada decisão foi tomada, promovendo uma visão crítica e ampla de design.
+&emsp; A documentação do metadesign busca registrar o que foi feito e justificar como e por que cada decisão foi tomada, promovendo uma visão crítica e ampla de design.
 
 
 ## Fatores marcadológicos
 
-&emsp; O projeto foi desenvolvido com foco em atender uam demanda na espeção de prédiso e fachadas, trazendo uma solução eficiente e de baixo custo, principalmente em instituições públicas e centros de pesquisa, como o IPT. O mercado da construção civil e manutenção predial busca soluções que não penas otimizem o tempo mas também reduzam os riscos de inspeção manuale  aumentem a precisão técnica. 
+&emsp; O projeto foi desenvolvido com foco em atender uam demanda na espeção de prédios e fachadas, trazendo uma solução eficiente e de baixo custo, principalmente em instituições públicas e centros de pesquisa, como o IPT. O mercado da construção civil e manutenção predial busca soluções que otimizem o tempo, reduzam os riscos de inspeção manual e  aumentem a precisão técnica. 
 
 &emsp; Além disso, o uso de drones e aprendizado de máquina é uma tendência crescente no setor, e o sistema proposto se posiciona como uma ferramenta escalável e adaptável a diversos  tipos de edificações e ambientes industriais, com potencial de expansão para o setor privado e prefeituras. 
 
