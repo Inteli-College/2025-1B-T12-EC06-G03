@@ -52,17 +52,17 @@ def run_crack_extraction():
             print(f"  ✖ Failed to load {img_path.name}")
             continue
 
-        # Enhancement for classification
+        # Step 1: Enhance the image
         enhanced = enhance_image(image)
 
-        # Segmentation using modular mask generator
-        mask = generate_mask(image)
+        # Step 2: Generate mask using segmentation
+        mask = generate_mask(enhanced)
 
         # Save mask
         mask_filename = MASKS_FOLDER / f"{img_path.stem}_mask.png"
         cv2.imwrite(str(mask_filename), mask)
 
-        # Crack extraction
+        # Step 3: Crack extraction
         bboxes = extract_cracks(mask, enhanced, BBOX_FOLDER, image_stem=img_path.stem)
         print(f"  → Detected {len(bboxes)} cracks")
 
@@ -105,7 +105,13 @@ def run_evaluation():
             img = cv2.imread(str(img_path))
             if img is None:
                 continue
-            pred = classify_crop(img, model, idx_to_class, device)
+
+            # Enhance and generate mask for evaluation
+            enhanced = enhance_image(img)
+            mask = generate_mask(enhanced)
+
+            # Use mask for classification
+            pred = classify_crop(mask, model, idx_to_class, device)
             y_true.append(class_name)
             y_pred.append(pred)
     if not y_true:
