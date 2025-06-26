@@ -53,3 +53,6 @@ O projeto Athena é desenvolvido por uma equipe multidisciplinar de estudantes d
 - [Apresentação Sprint Review 3](https://www.canva.com/design/DAGll_G221g/aTCXDS9PbqYvJSSz5un9gg/edit)
 ### Sprint 4
 - [Apresentação Sprint Review 4](https://www.canva.com/design/DAGqFIHeQ7I/PgN49dDkJF5xGS64GlYJbA/edit)
+### Sprint 5
+- [Apresentação Sprint Review 5 - PITCH FINAL](https://www.canva.com/design/DAGrM_Ac1Dw/car3sovfmVwZ-vS05cNhHQ/edit)
+
