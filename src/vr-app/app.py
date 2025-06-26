@@ -7,10 +7,6 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-@app.route("/simple")
-def simple():
-    return render_template("index_simple.html")
-
 @app.route("/video")
 def video():
     def generate():
