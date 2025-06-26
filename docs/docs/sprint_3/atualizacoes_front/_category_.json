@@ -1,6 +1,6 @@
 {
     "label": "Atualizações do Frontend",
-    "position": 1,
+    "position": 2,
     "link": {
       "type": "generated-index",
       "description": "Nesta seção, iremos explorar as atualizações recentes do frontend do nosso projeto. Essas atualizações incluem melhorias na interface do usuário, otimizações de desempenho e novas funcionalidades que aprimoram a experiência do usuário. A seguir, apresentaremos os detalhes técnicos dessas atualizações, incluindo as tecnologias utilizadas e as mudanças implementadas."

@@ -52,65 +52,59 @@ def handle_upload():
 
 
 # Função de predição de imagens
-def run_prediction(model, uploaded_files):
+def run_prediction(uploaded_files):
     with st.spinner('Rodando modelo, aguarde...'):
-        results = model.predict(
-            source=UPLOAD_FOLDER,
-            conf=0.1,
-            save=False,
-            stream=True
-        )
+        # Ensure output folder exists
+        os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-        st.success('✅ Predição concluída!')
+        # Loop through uploaded files and process them
+        for uploaded_file in uploaded_files:
+            file_path = os.path.join(UPLOAD_FOLDER, uploaded_file.name)
+            image = cv2.imread(file_path)
+            output = image.copy()
 
-        st.subheader('🖼️ Resultados da Segmentação:')
+            # Load YOLO model
+            model = YOLO(MODEL_PATH)
 
-        cols = st.columns(3)
+            # Run prediction
+            results = model(image, conf=0.1)
 
-        for idx, result in enumerate(results):
-            img = result.orig_img.copy()
-            output = img.copy()
-
-            masks = result.masks
+            # Process results
             class_counts = {}
-            image_name = os.path.basename(result.path)
+            for result in results:
+                if result.masks is None:
+                    continue
 
-            if masks is not None:
-                masks_data = masks.data.cpu().numpy()
-
+                masks = result.masks.data.cpu().numpy()
                 class_ids = result.boxes.cls.cpu().numpy()
                 confidences = result.boxes.conf.cpu().numpy()
 
-                combined_mask = np.zeros((img.shape[0], img.shape[1]), dtype=np.uint8)
-
-                for mask, class_id, conf in zip(masks_data, class_ids, confidences):
+                for mask, class_id, conf in zip(masks, class_ids, confidences):
                     cls_name = CLASS_MAP.get(int(class_id), 'Desconhecido')
                     class_counts[cls_name] = class_counts.get(cls_name, 0) + 1
 
-                    mask_resized = cv2.resize(mask, (img.shape[1], img.shape[0]))
+                    # Resize and process mask
+                    mask_resized = cv2.resize(mask, (image.shape[1], image.shape[0]))
                     mask_bin = (mask_resized > 0.5).astype(np.uint8) * 255
 
-                    combined_mask = cv2.bitwise_or(combined_mask, mask_bin)
+                    # Find contours and draw them
+                    contours, _ = cv2.findContours(mask_bin, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                    for contour in contours:
+                        cv2.drawContours(output, [contour], -1, (0, 0, 255), 2)  # Red
 
-                color_mask = np.zeros_like(output, dtype=np.uint8)
-                color_mask[:, :] = (255, 0, 0)  # Vermelho
+            # Save the processed image
+            save_path = os.path.join(OUTPUT_FOLDER, uploaded_file.name)
+            cv2.imwrite(save_path, output)
 
-                mask_rgb = cv2.merge([combined_mask] * 3)
-                overlay = cv2.addWeighted(output, 1, cv2.bitwise_and(color_mask, mask_rgb), 0.4, 0)
+        st.success('✅ Predição concluída!')
 
-                if class_counts:
-                    most_predicted_class = max(class_counts, key=class_counts.get)
-                    caption = f"Resultado {idx + 1} - {most_predicted_class} - {image_name}"
-                else:
-                    caption = f"Resultado {idx + 1} - Sem fissura detectada - {image_name}"
-
-                cols[idx % 3].image(overlay, caption=caption)
-
-            else:
-                cols[idx % 3].image(
-                    output,
-                    caption=f"Resultado {idx + 1} - Sem fissura detectada - {image_name}"
-                )
+        # Display results
+        st.subheader('🖼️ Resultados da Segmentação:')
+        cols = st.columns(3)
+        for idx, uploaded_file in enumerate(uploaded_files):
+            result_path = os.path.join(OUTPUT_FOLDER, uploaded_file.name)
+            result_image = Image.open(result_path)
+            cols[idx % 3].image(result_image, caption=f"Resultado {idx + 1} - {uploaded_file.name}")
 
 
 
@@ -183,7 +177,7 @@ def main():
 
     if uploaded_files:
         if st.button('🚀 Rodar predição'):
-            run_prediction(model, uploaded_files)
+            run_prediction(uploaded_files)
 
 if __name__ == '__main__':
     main()

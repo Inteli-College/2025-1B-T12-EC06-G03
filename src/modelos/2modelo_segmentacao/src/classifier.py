@@ -18,7 +18,7 @@ def load_class_map():
     return class_to_idx, idx_to_class
 
 
-class CrackClassifierCNN(nn.Module):
+class CrackClassifierCNN(nn.Module):    
     def __init__(self, num_classes):
         super(CrackClassifierCNN, self).__init__()
         # Two conv layers as used in modeloB

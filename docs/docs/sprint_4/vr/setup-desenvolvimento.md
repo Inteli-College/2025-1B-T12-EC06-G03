@@ -5,7 +5,7 @@ sidebar_position: 1
 
 # Setup de Desenvolvimento VR
 
-Este guia detalha como configurar o ambiente de desenvolvimento para a aplicação VR de controle de drone.
+&emsp;Este guia detalha como configurar o ambiente de desenvolvimento para a aplicação VR de controle de drone.
 
 ## Pré-requisitos
 
@@ -48,7 +48,7 @@ pip install flask flask-cors
 
 ### 3. Configurar HTTPS (Necessário para WebXR)
 
-Para que as funcionalidades VR funcionem, é necessário servir a aplicação via HTTPS:
+&emsp;Para que as funcionalidades VR funcionem, é necessário servir a aplicação via HTTPS:
 
 #### Opção 1: Certificado Local (Desenvolvimento)
 
@@ -78,7 +78,7 @@ ngrok http 5000
 
 ### 4. Configuração de Rede
 
-Editar o arquivo de configuração para ajustar endpoints do drone:
+&emsp;Editar o arquivo de configuração para ajustar endpoints do drone:
 
 ```javascript
 // Em templates/index.html, localizar e ajustar:
@@ -119,7 +119,7 @@ python app.py
 
 ### Desktop (Desenvolvimento sem VR)
 
-Para desenvolvimento sem headset VR:
+&emsp;Para desenvolvimento sem headset VR:
 
 1. **Chrome**: Habilitar WebXR Emulator
    - Instalar extensão "WebXR API Emulator"
@@ -133,7 +133,7 @@ Para desenvolvimento sem headset VR:
 
 ### Console de Debug VR
 
-A aplicação inclui um sistema de debug integrado:
+&emsp;A aplicação inclui um sistema de debug integrado:
 
 ```javascript
 // Logs automáticos são exibidos no console do browser
@@ -152,7 +152,7 @@ chrome://inspect/#devices
 
 ### A-Frame Inspector
 
-Pressione `Ctrl + Alt + I` na aplicação para abrir o inspetor 3D do A-Frame.
+&emsp;Pressione `Ctrl + Alt + I` na aplicação para abrir o inspetor 3D do A-Frame.
 
 ## Estrutura de Desenvolvimento
 

@@ -1,13 +1,13 @@
 ---
 title: Arquitetura Técnica
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # Arquitetura Técnica
 
 ## Camada de Apresentação (UI)
 
-Esta camada contém todos os widgets Flutter que compõem a interface do usuário:
+&emsp;Esta camada contém todos os widgets Flutter que compõem a interface do usuário:
 
 - **Pages**: Telas completas do aplicativo
   - `HomePage`: Tela principal com controles do drone
@@ -23,7 +23,7 @@ Esta camada contém todos os widgets Flutter que compõem a interface do usuári
 
 ## Camada de Gerenciamento de Estado (BLoC)
 
-Implementa o padrão BLoC (Business Logic Component) para gerenciar o fluxo de dados e estado do aplicativo:
+&emsp;Implementa o padrão BLoC (Business Logic Component) para gerenciar o fluxo de dados e estado do aplicativo:
 
 - `DroneBloc`: Gerencia o estado geral do sistema de controle do drone
   ```dart
@@ -85,7 +85,7 @@ Implementa o padrão BLoC (Business Logic Component) para gerenciar o fluxo de d
 
 ## Camada de Serviços
 
-Responsável pela comunicação com sistemas externos:
+&emsp;Responsável pela comunicação com sistemas externos:
 
 - `DroneService`: Gerencia a comunicação com o servidor de controle do drone
   ```dart
@@ -113,7 +113,7 @@ Responsável pela comunicação com sistemas externos:
 
 ## Camada de Modelos
 
-Define as estruturas de dados utilizadas no aplicativo:
+&emsp;Define as estruturas de dados utilizadas no aplicativo:
 
 - `DroneCommand`: Representa um comando a ser enviado ao drone
   ```dart
@@ -174,7 +174,7 @@ Define as estruturas de dados utilizadas no aplicativo:
 
 ## Fluxo de Dados
 
-O fluxo de dados no aplicativo segue um padrão unidirecional:
+&emsp;O fluxo de dados no aplicativo segue um padrão unidirecional:
 
 1. **Evento de Interação do Usuário**: Um evento é disparado pela interação do usuário com a interface
 2. **Processamento pelo BLoC**: O `DroneBloc` processa o evento e chama o `DroneService` conforme necessário
@@ -184,7 +184,7 @@ O fluxo de dados no aplicativo segue um padrão unidirecional:
 
 ## Comunicação com o Servidor
 
-O aplicativo utiliza dois métodos principais para comunicação com o servidor:
+&emsp;O aplicativo utiliza dois métodos principais para comunicação com o servidor:
 
 ### Socket.IO para Comunicação em Tempo Real
 
@@ -210,7 +210,7 @@ void _setupSocketListeners() {
 
 ### HTTP (Dio) para Comandos Específicos
 
-Utilizado para:
+&emsp;Utilizado para:
 - Comandos que exigem confirmação (decolagem, pouso, RTH)
 - Upload/download de arquivos
 - Configurações e atualizações do sistema
@@ -246,7 +246,7 @@ Future<DroneResponse> _sendHttpCommand(DroneCommand command) async {
 
 ### Gerenciamento de Memória
 
-O aplicativo implementa estratégias eficientes de gerenciamento de memória:
+&emsp;O aplicativo implementa estratégias eficientes de gerenciamento de memória:
 
 - Cancelamento automático de `StreamSubscription` quando não mais necessário
 - Liberação de recursos de vídeo quando o streaming é interrompido
@@ -254,7 +254,7 @@ O aplicativo implementa estratégias eficientes de gerenciamento de memória:
 
 ### Gerenciamento de Energia
 
-Para otimizar o uso da bateria do dispositivo móvel:
+&emsp;Para otimizar o uso da bateria do dispositivo móvel:
 
 - Ajuste dinâmico da taxa de atualização da UI com base na atividade
 - Redução da frequência de comunicação quando o drone está em modo estacionário

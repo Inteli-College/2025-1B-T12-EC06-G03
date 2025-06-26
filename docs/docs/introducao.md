@@ -25,6 +25,10 @@ sidebar_position: 1
 
 &emsp;  A detecção e monitoramento de fissuras em edificações é uma questão crítica na engenharia civil, pois fissuras podem comprometer a segurança e a integridade estrutural de um edifício. O projeto Athena visa oferecer uma solução inovadora e eficiente para esse problema, utilizando tecnologias avançadas que possibilitam uma análise mais precisa e rápida das condições das edificações. Além disso, o uso de drones ou câmeras de alta resolução para captura de imagens torna o processo mais seguro e acessível.
 
+&emsp; A seguir, é possívrl acessar um vídeo de demonstração do controle do drone e da usabilidade da plataforma web da nossa solução.
+
+[Vídeo de demonstração da solução](https://youtu.be/i9uvU1WtSGA)
+
 # Integrantes do Projeto
 
 O projeto Athena é desenvolvido por uma equipe multidisciplinar de estudantes do Instituto de Tecnologia e Liderança (Inteli). A equipe é composta por estudantes do curso de Engenharia de Computação, sendo eles:
@@ -41,6 +45,14 @@ O projeto Athena é desenvolvido por uma equipe multidisciplinar de estudantes d
 
 &emsp;A seguir, são apresentados os links para as apresentações das sprints realizadas pela equipe do projeto Athena. Cada sprint corresponde a um ciclo de desenvolvimento do projeto, com atividades específicas e entregáveis definidos.
 
-## Sprint 1
-
+### Sprint 1
 - [Apresentação Sprint Review 1](https://www.canva.com/design/DAGll_G221g/aTCXDS9PbqYvJSSz5un9gg/edit)
+### Sprint 2
+- [Apresentação Sprint Review 2](https://www.canva.com/design/DAGnWzsDDIE/4tOlfCTfZXlSC4t-6Payug/edit?ui=eyJEIjp7IlAiOnsiQiI6ZmFsc2V9fX0)
+### Sprint 3
+- [Apresentação Sprint Review 3](https://www.canva.com/design/DAGll_G221g/aTCXDS9PbqYvJSSz5un9gg/edit)
+### Sprint 4
+- [Apresentação Sprint Review 4](https://www.canva.com/design/DAGqFIHeQ7I/PgN49dDkJF5xGS64GlYJbA/edit)
+### Sprint 5
+- [Apresentação Sprint Review 5 - PITCH FINAL](https://www.canva.com/design/DAGrM_Ac1Dw/car3sovfmVwZ-vS05cNhHQ/edit)
+

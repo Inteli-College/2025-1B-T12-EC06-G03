@@ -1,0 +1,8 @@
+{
+    "label": "Aplicativo de Controle de Drone",
+    "position": 5,
+    "link": {
+      "type": "generated-index",
+      "description": "Nesta seção, iremos explorar o aplicativo de controle de drone, que é uma parte essencial do nosso projeto. O aplicativo permite o controle remoto do drone, possibilitando a captura de imagens e vídeos, bem como a realização de missões específicas. A seguir, apresentaremos os detalhes técnicos do aplicativo, incluindo sua arquitetura, funcionalidades e integração com o sistema de monitoramento."
+    }
+  }
