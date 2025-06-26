@@ -31,6 +31,7 @@ sidebar_position: 1
 ## Perspectivas Futuras
 
 - Integração com Realidade Virtual: Exploração de novas formas de interação com os dados através da realidade virtual.
+- **Integração do Modelo com o Frontend**: Conclusão da integração do modelo de segmentação com o frontend, permitindo a visualização interativa e em tempo real dos resultados de segmentação diretamente na interface de usuário.
 - Aprimoramento dos Algoritmos de IA: Investimento em novos algoritmos de visão computacional para melhorar a precisão e a eficiência da detecção e classificação de fissuras.
 - Expansão para Outras Aplicações: Adaptação da solução para outras áreas da engenharia civil, como a inspeção de pontes, túneis e outras estruturas.
 
